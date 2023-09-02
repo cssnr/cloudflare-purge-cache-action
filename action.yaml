@@ -1,0 +1,15 @@
+name: "Cloudflare Purge Cache"
+description: "Purge Cloudflare Zone Cache"
+author: "Shane"
+
+inputs:
+  zone:
+    description: "Cloudflare Zone Name"
+    required: true
+  token:
+    description: "Cloudflare API Token"
+    required: true
+
+runs:
+  using: "docker"
+  image: "Dockerfile"
