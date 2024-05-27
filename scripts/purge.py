@@ -7,7 +7,7 @@ input_zone = os.environ['INPUT_ZONE']
 input_token = os.environ['INPUT_TOKEN']
 headers = {"Authorization": f"Bearer {input_token}"}
 
-print(os.environ)
+# print(os.environ)
 
 
 print('--- Getting Zones ---')
