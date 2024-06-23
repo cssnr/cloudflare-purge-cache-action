@@ -1,4 +1,4 @@
-[![Tags](https://github.com/cssnr/cf-purge-cache-action/actions/workflows/tags.yaml/badge.svg)](https://github.com/cssnr/cf-purge-cache-action/actions/workflows/tags.yaml)
+[![Tags](https://github.com/cssnr/cloudflare-purge-cache-action/actions/workflows/tags.yaml/badge.svg)](https://github.com/cssnr/cloudflare-purge-cache-action/actions/workflows/tags.yaml)
 
 # Cloudflare Purge Cache Action
 
@@ -16,7 +16,7 @@ For more details see: [action.yaml](action.yaml)
 
 ```yaml
   - name: "Purge Cache"
-    uses: cssnr/cf-purge-cache-action@master
+    uses: cssnr/cloudflare-purge-cache-action@master
     with:
       token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       domains: example.com
@@ -38,7 +38,7 @@ jobs:
 
     steps:
       - name: "Purge Cache"
-        uses: cssnr/cf-purge-cache-action@master
+        uses: cssnr/cloudflare-purge-cache-action@master
         with:
           token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           domains: |

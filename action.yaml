@@ -1,5 +1,5 @@
-name: "Cloudflare Purge Cache"
-description: "Purge Cloudflare Zone Cache"
+name: "Cloudflare Purge Zone Cache"
+description: "Cloudflare Purge Zone Cache"
 author: "Shane"
 branding:
   icon: "cloud"
