@@ -1,8 +1,15 @@
 import os
 import requests
 
-input_token = os.environ['INPUT_TOKEN']
-input_domains = os.environ['INPUT_DOMAINS'] or os.environ['INPUT_ZONE']
+print('\u001b[36mStarting Cloudflare Purge Cache Action')
+
+input_token: str = os.environ['INPUT_TOKEN']
+input_domains: str = os.environ.get('INPUT_DOMAINS') or os.environ.get('INPUT_ZONE')
+
+print(f'input_domains: {input_domains}')
+
+if not input_domains:
+    raise ValueError('No Domains Provided to Purge.')
 
 base_url = 'https://api.cloudflare.com/client/v4/{0}'
 headers = {"Authorization": f"Bearer {input_token}"}
@@ -44,7 +51,6 @@ def get_zone(all_zones: list, zone_name: str) -> dict:
             return z
 
 
-print('Starting Cloudflare Purge Cache Action')
 domains: list = [x.strip() for x in input_domains.split()]
 print(f'domains: {domains}')
 zones: list = get_zones()
@@ -77,4 +83,10 @@ for domain in domains:
 if not success:
     raise ValueError('All Zone Cache Purges Failed!')
 
-print(f'Purged {len(success)}/{len(domains)} domains: {success}')
+if len(success) == len(domains):
+    print(f'\u001b[32;1mSuccessfully Purged {len(domains)} Domains.')
+else:
+    for domain in domains:
+        if domain not in success:
+            print(f"::warning::Failed to purge domain: {domain}")
+    print(f'\u001b[33;1mPurged {len(success)}/{len(domains)} domains: {success}')
