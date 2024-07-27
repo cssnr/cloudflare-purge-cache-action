@@ -2,7 +2,6 @@ FROM python:3.11-alpine
 
 RUN python -m pip install requests
 
-COPY --chmod=0755 docker-entrypoint.sh /
-COPY --chmod=0755 scripts/ /scripts
+COPY src/main.py /main.py
 
-ENTRYPOINT ["/docker-entrypoint.sh"]
+ENTRYPOINT ["python", "/main.py"]

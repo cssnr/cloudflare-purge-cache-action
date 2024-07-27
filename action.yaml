@@ -1,14 +1,21 @@
-name: "Cloudflare Purge Cache"
-description: "Purge Cloudflare Zone Cache"
+name: "Cloudflare Purge Zone Cache"
+description: "Cloudflare Purge Zone Cache"
 author: "Shane"
+branding:
+  icon: "cloud"
+  color: "orange"
 
 inputs:
-  zone:
-    description: "Cloudflare Zone Name"
-    required: true
   token:
     description: "Cloudflare API Token"
     required: true
+  domains:
+    description: "Cloudflare Domains to Purge"
+    required: false
+    default: ""
+  zone:
+    description: "For Backwards Compatibility ONLY"
+    required: false
 
 runs:
   using: "docker"
