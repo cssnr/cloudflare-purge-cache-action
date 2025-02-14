@@ -1,6 +1,7 @@
 import os
 import re
 import requests
+from common import cyan, green, magenta, yellow
 
 
 print("🏳️ Starting Cloudflare Purge Cache Action")
@@ -11,7 +12,7 @@ print("🏳️ Starting Cloudflare Purge Cache Action")
 input_token: str = os.environ["INPUT_TOKEN"]
 input_domains: str = os.environ.get("INPUT_DOMAINS") or os.environ.get("INPUT_ZONE")
 input_domains = input_domains.strip()
-print(f"input_domains: \u001b[36;1m{repr(input_domains)}")
+print(f"input_domains: {magenta}{repr(input_domains)}")
 if not input_domains:
     raise ValueError("No Domains Provided to Purge.")
 
@@ -65,7 +66,7 @@ def get_zone(all_zones: list, zone_name: str) -> dict:
 # Action
 
 domains: list = [x.strip() for x in re.split("[,|\n]", input_domains)]
-print(f"domains: \u001b[36;1m{domains}")
+print(f"domains: {cyan}{domains}")
 zones: list = get_zones()
 # print(f'zones: {zones}')
 
@@ -74,10 +75,10 @@ success = []
 print(f"⌛ Processing {len(domains)} Domain(s)")
 for domain in domains:
     try:
-        print(f"Purging: \u001b[36;1m{domain}")
+        print(f"Purging: {cyan}{domain}")
         zone: dict = get_zone(zones, domain)
         if not zone:
-            print(f"⚠️ \u001b[33;1mWarning: Zone Not Found: \u001b[36;1m{zone}")
+            print(f"⚠️ {yellow}Warning: Zone Not Found: {cyan}{zone}")
             continue
         # print(f'zone: {zone["id"]}')
         url: str = base_url.format(f"zones/{zone['id']}/purge_cache")
@@ -94,7 +95,7 @@ for domain in domains:
             success.append(domain)
 
     except Exception as error:
-        print(f"⛔️ Error Purging: \u001b[36;1m{domain}: \u001b[32;1m{error}")
+        print(f"⛔️ Error Purging: {cyan}{domain}: {yellow}{error}")
         continue
 
 
@@ -104,10 +105,10 @@ if not success:
     raise ValueError("All Zone Cache Purges Failed!")
 
 if len(success) == len(domains):
-    print(f"✅ \u001b[32;1mSuccessfully Purged {len(domains)} Domains")
+    print(f"✅ {green}Successfully Purged {len(domains)} Domains")
 else:
     for domain in domains:
         if domain not in success:
             print(f"::warning::Failed to purge domain: {domain}")
-    print(f"⚠️ \u001b[33;1mPurged Domains: \u001b[37;1m{len(success)}/{len(domains)}")
-    print(f"\u001b[32;1mSuccessful domains: \u001b[36;1m{success}")
+    print(f"⚠️ {yellow}Purged Domains: {cyan}{len(success)}/{len(domains)}")
+    print(f"{green}Successful domains: {cyan}{success}")

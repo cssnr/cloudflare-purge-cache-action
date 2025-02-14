@@ -1,0 +1,7 @@
+white = "\u001b[37;1m"
+cyan = "\u001b[36;1m"
+magenta = "\u001b[35;1m"
+blue = "\u001b[34;1m"
+yellow = "\u001b[33;1m"
+green = "\u001b[32;1m"
+red = "\u001b[31;1m"
