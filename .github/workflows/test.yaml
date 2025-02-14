@@ -6,6 +6,9 @@ on:
   push:
     branches: [master]
 
+env:
+  DOMAINS: cssnr.com
+
 jobs:
   test:
     name: "Test"
@@ -30,8 +33,7 @@ jobs:
         uses: ./
         with:
           token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          domains: |
-            cssnr.com
+          domains: ${{ env.DOMAINS }}
 
       #- name: "Validate Outputs"
       #  run: |

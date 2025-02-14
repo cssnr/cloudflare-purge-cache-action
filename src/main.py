@@ -1,7 +1,7 @@
 import os
 import re
 import requests
-from common import cyan, green, magenta, yellow
+import text_formatting as tf
 
 
 print("🏳️ Starting Cloudflare Purge Cache Action")
@@ -12,7 +12,7 @@ print("🏳️ Starting Cloudflare Purge Cache Action")
 input_token: str = os.environ["INPUT_TOKEN"]
 input_domains: str = os.environ.get("INPUT_DOMAINS") or os.environ.get("INPUT_ZONE")
 input_domains = input_domains.strip()
-print(f"input_domains: {magenta}{repr(input_domains)}")
+print(f"input_domains: {tf.purple}{repr(input_domains)}")
 if not input_domains:
     raise ValueError("No Domains Provided to Purge.")
 
@@ -66,7 +66,7 @@ def get_zone(all_zones: list, zone_name: str) -> dict:
 # Action
 
 domains: list = [x.strip() for x in re.split("[,|\n]", input_domains)]
-print(f"domains: {cyan}{domains}")
+print(f"domains: {tf.cyan}{domains}")
 zones: list = get_zones()
 # print(f'zones: {zones}')
 
@@ -75,10 +75,10 @@ success = []
 print(f"⌛ Processing {len(domains)} Domain(s)")
 for domain in domains:
     try:
-        print(f"Purging: {cyan}{domain}")
+        print(f"Purging: {tf.cyan}{domain}")
         zone: dict = get_zone(zones, domain)
         if not zone:
-            print(f"⚠️ {yellow}Warning: Zone Not Found: {cyan}{zone}")
+            print(f"⚠️ {tf.yellow}Warning: Zone Not Found: {tf.cyan}{domain}")
             continue
         # print(f'zone: {zone["id"]}')
         url: str = base_url.format(f"zones/{zone['id']}/purge_cache")
@@ -95,7 +95,7 @@ for domain in domains:
             success.append(domain)
 
     except Exception as error:
-        print(f"⛔️ Error Purging: {cyan}{domain}: {yellow}{error}")
+        print(f"⛔️ Error Purging: {tf.cyan}{domain}: {tf.yellow}{error}")
         continue
 
 
@@ -105,10 +105,10 @@ if not success:
     raise ValueError("All Zone Cache Purges Failed!")
 
 if len(success) == len(domains):
-    print(f"✅ {green}Successfully Purged {len(domains)} Domains")
+    print(f"✅ {tf.green}Successfully Purged All domains: {tf.rst}{len(domains)}")
 else:
     for domain in domains:
         if domain not in success:
             print(f"::warning::Failed to purge domain: {domain}")
-    print(f"⚠️ {yellow}Purged Domains: {cyan}{len(success)}/{len(domains)}")
-    print(f"{green}Successful domains: {cyan}{success}")
+    print(f"⚠️ {tf.yellow}Purged domains: {tf.rst}{len(success)}/{len(domains)}")
+    print(f"{tf.green}Successful domains: {tf.cyan}{success}")
