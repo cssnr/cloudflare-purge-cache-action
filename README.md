@@ -32,7 +32,7 @@ For more details see: [action.yml](action.yml) and [src/main.py](src/main.py).
   uses: cssnr/cloudflare-purge-cache-action@v1
   with:
     token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-    domains: example.com
+    domains: cssnr.com,example.com
 ```
 
 ## Examples
@@ -55,8 +55,8 @@ jobs:
         with:
           token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           domains: |
+            cssnr.com
             example.com
-            test.example.com
 ```
 
 # Support

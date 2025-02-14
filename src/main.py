@@ -5,16 +5,6 @@ import requests
 
 print("🏳️ Starting Cloudflare Purge Cache Action")
 
-# Debug
-print("\u001b[37;1m White")
-print("\u001b[36;1m Cyan")
-print("\u001b[35;1m Magenta")
-print("\u001b[34;1m Blue")
-print("\u001b[33;1m Yellow")
-print("\u001b[32;1m Green")
-print("\u001b[31;1m Red")
-print("\u001b[30;1m Grey")
-
 
 # Inputs
 
@@ -29,7 +19,8 @@ base_url = "https://api.cloudflare.com/client/v4/{0}"
 headers = {"Authorization": f"Bearer {input_token}"}
 
 
-# TODO: If only 1 domain is provided, use a `match` param filter that domain
+# TODO: Split cloudflare class/functions into its own file
+# TODO: If only 1 domain is provided use this function vs get_zones
 # def get_zones_single(zone_name: str) -> list:
 #     zones_url = base_url.format("zones")
 #     print(f"zones_url: {zones_url}")
@@ -46,11 +37,11 @@ headers = {"Authorization": f"Bearer {input_token}"}
 
 def get_zones() -> list:
     zones_url = base_url.format("zones")
-    print(f"get_zones: {zones_url}")
+    # print(f"get_zones: {zones_url}")
     page = 1
     results = []
     while True:
-        print(f"Processing Page: {page}")
+        # print(f"page: {page}")
         params = {"per_page": 50, "page:": page}
         response = requests.get(zones_url, headers=headers, params=params)
         # print(f"response.status_code: {response.status_code}")
@@ -80,19 +71,19 @@ zones: list = get_zones()
 
 success = []
 
-print(f"⌛ Purging {len(domains)} Domain(s)")
+print(f"⌛ Processing {len(domains)} Domain(s)")
 for domain in domains:
     try:
-        print(f"Processing: \u001b[36;1m{domain}")
+        print(f"Purging: \u001b[36;1m{domain}")
         zone: dict = get_zone(zones, domain)
         if not zone:
             print(f"⚠️ \u001b[33;1mWarning: Zone Not Found: \u001b[36;1m{zone}")
             continue
         # print(f'zone: {zone["id"]}')
-        url = base_url.format(f"zones/{zone['id']}/purge_cache")
+        url: str = base_url.format(f"zones/{zone['id']}/purge_cache")
         # print(f"url: {url}")
 
-        # Disable Purge
+        # Perform Purge
         r = requests.post(url, headers=headers, json={"purge_everything": True})
         # print(f"r.status_code: {r.status_code}")
         r.raise_for_status()
@@ -101,9 +92,13 @@ for domain in domains:
         print(f"Result: {result}")
         if result["success"]:
             success.append(domain)
+
     except Exception as error:
         print(f"⛔️ Error Purging: \u001b[36;1m{domain}: \u001b[32;1m{error}")
         continue
+
+
+# Results
 
 if not success:
     raise ValueError("All Zone Cache Purges Failed!")
