@@ -2,7 +2,9 @@ name: "Test"
 
 on:
   workflow_dispatch:
+  pull_request:
   push:
+    branches: [master]
 
 jobs:
   test:
@@ -14,6 +16,15 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v4
 
+      - name: "Edit YAML"
+        uses: Liam-Johnston/yaml-helper@V1
+        if: ${{ !github.event.act }}
+        with:
+          file-location: "action.yml"
+          content: |
+            runs:
+              image: src/Dockerfile
+
       - name: "Test Local Action"
         id: test
         uses: ./
@@ -22,9 +33,13 @@ jobs:
           domains: |
             cssnr.com
 
-      #- name: "Echo Outputs"
+      #- name: "Validate Outputs"
       #  run: |
-      #    echo '${{ steps.test.outputs.time }}'
+      #    echo "domains: '${{ steps.test.outputs.domains }}'"
+      #    if [ -z '${{ steps.test.outputs.domains }}' ];then
+      #      echo "No Output: domains"
+      #      exit 1
+      #    fi
 
   lint:
     name: "Lint"
@@ -35,7 +50,7 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v4
 
-      - name: "Setup Python"
+      - name: "Setup Python 3.11"
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"

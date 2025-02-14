@@ -1,0 +1,63 @@
+name: "Build"
+
+on:
+  release:
+    types: [published]
+  #workflow_dispatch:
+  #  inputs:
+  #    tags:
+  #      description: "Override Tags: comma,separated"
+  #      required: false
+
+jobs:
+  build:
+    name: "Build"
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v4
+
+      - name: "Version Tags"
+        id: version
+        uses: cssnr/update-version-tags-action@skip
+        with:
+          write: false
+
+      - name: "Docker Tags"
+        id: tags
+        uses: smashedr/docker-tags-action@master
+        with:
+          images: "ghcr.io/${{ github.repository }}"
+          extra: ${{ steps.version.outputs.tags }}
+          latest: false
+
+      - name: "Echo Tags"
+        run: |
+          echo "tags: '${{ steps.tags.outputs.tags }}'"
+
+      - name: "Docker Login"
+        uses: docker/login-action@v3
+        with:
+          registry: "ghcr.io"
+          username: ${{ vars.GHCR_USER }}
+          password: ${{ secrets.GHCR_PASS }}
+
+      - name: "Setup Buildx"
+        uses: docker/setup-buildx-action@v3
+      #  with:
+      #    platforms: linux/amd64,linux/arm64
+
+      - name: "Build and Push"
+        uses: docker/build-push-action@v6
+        with:
+          context: src
+          push: true
+          tags: ${{ steps.tags.outputs.tags }}
+          #platforms: linux/amd64,linux/arm64
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

@@ -11,7 +11,7 @@
 
 Purge Cloudflare Cache for a Domain or list of Domains.
 
-For more details see: [action.yaml](action.yaml) and [src/main.py](src/main.py).
+For more details see: [action.yml](action.yml) and [src/main.py](src/main.py).
 
 - [Inputs](#Inputs)
 - [Examples](#Examples)
@@ -20,14 +20,16 @@ For more details see: [action.yaml](action.yaml) and [src/main.py](src/main.py).
 
 ## Inputs
 
-| input   | required | default | description          |
-| ------- | -------- | ------- | -------------------- |
-| token   | **Yes**  | -       | Cloudflare API Token |
-| domains | **Yes**  | -       | Domain(s) to Purge   |
+| input   | required | default | description           |
+| ------- | -------- | ------- | --------------------- |
+| token   | **Yes**  | -       | Cloudflare API Token  |
+| domains | **Yes**  | -       | Domain(s) to Purge \* |
+
+**domains** - CSV or Newline Delimited list of zones to purge.
 
 ```yaml
 - name: 'Purge Cache'
-  uses: cssnr/cloudflare-purge-cache-action@master
+  uses: cssnr/cloudflare-purge-cache-action@v1
   with:
     token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
     domains: example.com
@@ -36,7 +38,7 @@ For more details see: [action.yaml](action.yaml) and [src/main.py](src/main.py).
 ## Examples
 
 ```yaml
-name: 'Test Purge Cache'
+name: 'Purge Cache'
 
 on:
   push:
@@ -49,7 +51,7 @@ jobs:
 
     steps:
       - name: 'Purge Cache'
-        uses: cssnr/cloudflare-purge-cache-action@master
+        uses: cssnr/cloudflare-purge-cache-action@v1
         with:
           token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           domains: |
@@ -82,7 +84,10 @@ Additionally, you can support other GitHub Actions I have published:
 - [Update JSON Value Action](https://github.com/cssnr/update-json-value-action)
 - [Parse Issue Form Action](https://github.com/cssnr/parse-issue-form-action)
 - [Mirror Repository Action](https://github.com/cssnr/mirror-repository-action)
+- [Stack Deploy Action](https://github.com/cssnr/stack-deploy-action)
 - [Portainer Stack Deploy](https://github.com/cssnr/portainer-stack-deploy-action)
 - [Mozilla Addon Update Action](https://github.com/cssnr/mozilla-addon-update-action)
 
 For a full list of current projects to support visit: [https://cssnr.github.io/](https://cssnr.github.io/)
+
+If you would like to submit a PR, please review the [CONTRIBUTING.md](CONTRIBUTING.md).

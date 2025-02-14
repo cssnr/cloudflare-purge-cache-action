@@ -1,5 +1,5 @@
 name: "Cloudflare Purge Zone Cache"
-description: "Cloudflare Purge Zone Cache"
+description: "Clear or Purge the cache of a zone or multiple domains on Cloudflare."
 author: "Shane"
 branding:
   icon: "cloud"
@@ -19,4 +19,4 @@ inputs:
 
 runs:
   using: "docker"
-  image: "Dockerfile"
+  image: "docker://ghcr.io/cssnr/cloudflare-purge-cache-action:v1"
