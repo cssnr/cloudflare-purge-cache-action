@@ -7,7 +7,7 @@ on:
     branches: [master]
 
 env:
-  DOMAINS: cssnr.com
+  DOMAINS: cssnr.com,example.com
 
 jobs:
   test:

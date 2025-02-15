@@ -99,19 +99,22 @@ for domain in domains:
 
 # Results
 
+failed = []
+for domain in domains:
+    if domain not in success:
+        failed.append(domain)
+        print(f"::warning::Failed to purge domain: {domain}")
+
+# print(f"success: [b green]{success}")
+# print(f"failed: [b red]{failed}")
+
 if not success:
     print(f":no_entry: [b red]All {len(domains)} Cache Purges Failed!")
     raise ValueError("All Zone Cache Purges Failed!")
 
-failed = []
-
 if len(success) == len(domains):
     print(":white_check_mark: [b green]Successfully Purged All Domains")
 else:
-    for domain in domains:
-        if domain not in success:
-            failed.append(domain)
-            print(f"::warning::Failed to purge domain: {domain}")
-    print(f"[b green]Successful domains: [b magenta]{success}")
-    print(f"[b red]Failed domains: [b magenta]{failed}")
+    print(f"[b green]Successful domains: [b green]{success}")
+    print(f"[b red]Failed domains: [b red]{failed}")
     print(f":warning: [b yellow]Purged domains:[/] {len(success)}/{len(domains)}")
