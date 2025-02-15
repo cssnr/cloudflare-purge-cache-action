@@ -6,6 +6,11 @@ from rich import print
 
 print(":white_flag-emoji: Starting Cloudflare Purge Cache Action")
 
+print("[b yellow]one solid color")
+print("one [b yellow]color and normal")
+print("one on [b yellow]last")
+print("[b yellow]two [b green]colors")
+
 
 # Inputs
 
