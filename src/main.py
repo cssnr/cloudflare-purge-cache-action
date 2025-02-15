@@ -30,14 +30,13 @@ headers = {"Authorization": f"Bearer {input_token}"}
 def get_zones(name: str = "") -> list:
     zones_url = base_url.format("zones")
     # print(f"get_zones: {zones_url}")
-    page = 1
+    params = {"per_page": 50, "page:": 1}
+    if name:
+        print(f"zone filter: [b yellow]{name}")
+        params["name"] = name
+    # print(f"params: {params}")
     results = []
     while True:
-        # print(f"page: {page}")
-        params = {"per_page": 50, "page:": page}
-        if name:
-            print(f"zone filter: [b yellow]{name}")
-            params["name"] = name
         response = requests.get(zones_url, headers=headers, params=params)
         # print(f"response.status_code: {response.status_code}")
         response.raise_for_status()
@@ -45,8 +44,8 @@ def get_zones(name: str = "") -> list:
         # print(f'result_info: {data["result_info"]}')
         # print(f'messages/errors: {data["messages"]} / {data["errors"]}')
         results.extend(data["result"])
-        if page < data["result_info"]["total_pages"]:
-            page += 1
+        if params["page"] < data["result_info"]["total_pages"]:
+            params["page"] += 1
             continue
         return results
 
