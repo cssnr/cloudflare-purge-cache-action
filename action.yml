@@ -25,6 +25,12 @@ inputs:
     description: "For Backwards Compatibility ONLY"
     required: false
 
+outputs:
+  success:
+    description: "Successful Domains"
+  failed:
+    description: "Failed Domains"
+
 runs:
   using: "docker"
   image: "docker://ghcr.io/cssnr/cloudflare-purge-cache-action:v1"

@@ -111,6 +111,13 @@ for domain in domains:
 # print(f"failed: \033[31;1m{failed}")
 
 
+# Outputs
+
+with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+    print(f"success={','.join(success)}", file=f)
+    print(f"failed={','.join(failed)}", file=f)
+
+
 # Summary
 
 if input_summary in ["y", "yes", "true", "on"]:

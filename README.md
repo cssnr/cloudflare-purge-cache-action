@@ -14,6 +14,7 @@ Purge Cloudflare Cache for a Domain or list of Domains.
 For more details see: [action.yml](action.yml) and [src/main.py](src/main.py).
 
 - [Inputs](#Inputs)
+- [Outputs](#Outputs)
 - [Examples](#Examples)
 - [Support](#Support)
 - [Contributing](#Contributing)
@@ -35,6 +36,24 @@ For more details see: [action.yml](action.yml) and [src/main.py](src/main.py).
   with:
     token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
     domains: cssnr.com,example.com
+```
+
+## Outputs
+
+| output  | description             |
+| ------- | ----------------------- |
+| success | Successful Domains, CSV |
+| failed  | Failed Domains, CSV     |
+
+```yaml
+- name: 'Docker Test Action'
+  id: purge
+  uses: smashedr/docker-test-action@v1
+
+- name: 'Echo Output'
+  run: |
+    echo "success: '${{ steps.purge.outputs.success }}'"
+    echo "failed: '${{ steps.purge.outputs.failed }}'"
 ```
 
 ## Examples
