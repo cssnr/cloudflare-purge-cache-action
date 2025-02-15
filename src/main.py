@@ -100,18 +100,18 @@ for domain in domains:
 
 # Results
 
-results = ["<table><tr><th>🚽</th><th>Zone</th></tr>"]
+results_table = ["<table><tr><th>🚽</th><th>Zone</th></tr>"]
 failed = []
 for domain in domains:
     if domain not in success:
-        results.append(f"<tr><td>⛔</td><td>{domain}</td></tr>")
+        results_table.append(f"<tr><td>⛔</td><td>{domain}</td></tr>")
         failed.append(domain)
         print(f"::warning::Failed to purge domain: {domain}")
     else:
-        results.append(f"<tr><td>✅</td><td>{domain}</td></tr>")
-results.append("</table>")
+        results_table.append(f"<tr><td>✅</td><td>{domain}</td></tr>")
+results_table.append("</table>")
 
-print(f"results: {results}")
+# print(f"results_table: {results_table}")
 # print(f"success: \033[32;1m{success}")
 # print(f"failed: \033[31;1m{failed}")
 
@@ -132,7 +132,10 @@ if input_summary in ["y", "yes", "true", "on"]:
             f"✅ Success: {len(success) or 'None'}  \n⛔ Failed: {len(failed) or 'None'}",
             file=f,
         )
-        print(f"<details><summary>Results</summary>{''.join(results)}", file=f)
+        print(
+            f"<details><summary>Results</summary>{''.join(results_table)}</details>",
+            file=f,
+        )
         print(
             f"<details><summary>Inputs</summary><table><tr><th>Input</th><th>Value</th></tr><tr><td>domains</td><td>{input_domains}</td></tr><tr><td>summary</td><td>{input_summary}</td></tr><tr><td>dry_run</td><td>{input_dry_run}</td></tr></table></details>\n",  # noqa: E501
             file=f,
