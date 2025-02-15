@@ -24,6 +24,7 @@ For more details see: [action.yml](action.yml) and [src/main.py](src/main.py).
 | ------- | -------- | ------- | --------------------- |
 | token   | **Yes**  | -       | Cloudflare API Token  |
 | domains | **Yes**  | -       | Domain(s) to Purge \* |
+| summary | No       | true    | Add Summary to Job    |
 | dry_run | No       | false   | Run Without Purging   |
 
 **domains** - CSV or Newline Delimited list of zones to purge.

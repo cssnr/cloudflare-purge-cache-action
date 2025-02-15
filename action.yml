@@ -10,9 +10,13 @@ inputs:
     description: "Cloudflare API Token"
     required: true
   domains:
-    description: "Cloudflare Domains to Purge"
+    description: "Domains to Purge"
     required: false
     default: ""
+  summary:
+    description: "Add Summary to Job"
+    required: false
+    default: "true"
   dry_run:
     description: "Run Without Purging Cache"
     required: false

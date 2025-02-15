@@ -16,6 +16,8 @@ print(f"input_domains: \033[35;1m{repr(input_domains)}")
 if not input_domains:
     # TODO: This check is only needed for backwards compatibility
     raise ValueError("No Domains Provided to Purge.")
+input_summary = os.environ.get("INPUT_SUMMARY", "").strip()
+print(f"input_summary: \033[35;1m{input_summary}")
 input_dry_run = os.environ.get("INPUT_DRY_RUN", "").strip().lower()
 print(f"input_dry_run: \033[35;1m{input_dry_run}")
 
@@ -107,6 +109,26 @@ for domain in domains:
 
 # print(f"success: \033[32;1m{success}")
 # print(f"failed: \033[31;1m{failed}")
+
+
+# Summary
+
+if input_summary in ["y", "yes", "true", "on"]:
+    with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as f:
+        print("### Cloudflare Purge Cache Action", file=f)
+        print(
+            f"✅ Success: {len(success) or 'None'}  \n⛔ Failed: {len(failed) or 'None'}",
+            file=f,
+        )
+        print(
+            f"<details><summary>Inputs</summary><table><tr><th>Input</th><th>Value</th></tr><tr><td>domains</td><td>{input_domains}</td></tr><tr><td>summary</td><td>{input_summary}</td></tr><tr><td>dry_run</td><td>{input_dry_run}</td></tr></table></details>\n",  # noqa: E501
+            file=f,
+        )
+        print(
+            "[Report an issue or request a feature](https://github.com/cssnr/cloudflare-purge-cache-action/issues)",
+            file=f,
+        )
+
 
 if not success:
     print(f"⛔ \033[31;1mAll {len(domains)} Cache Purges Failed!")
