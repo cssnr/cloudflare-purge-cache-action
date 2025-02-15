@@ -63,7 +63,7 @@ print(f"domains: [b magenta]{domains}")
 print(f":hourglass: Processing {len(domains)} Domain")
 
 zones: list = get_zones(domains[0] if len(domains) == 1 else "")
-# print(zones)
+# print(zones)  # print as formatting string for non-pretty print
 
 success = []
 for domain in domains:
@@ -88,7 +88,7 @@ for domain in domains:
         r.raise_for_status()
         # print(f"Cache Purged: {domain}")
         result = r.json()
-        print(result)  # print as formatted string for non-pretty
+        print(f"{result}")  # print without string formatting for pretty print
         if result["success"]:
             success.append(domain)
 
