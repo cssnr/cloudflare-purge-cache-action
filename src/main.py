@@ -127,15 +127,13 @@ with open(os.environ["GITHUB_OUTPUT"], "a") as f:
 
 
 if input_summary in ["y", "yes", "true", "on"]:
-    inputs_table = [
-        "<details><summary>Inputs</summary><table><tr><th>Input</th><th>Value</th></tr>"
-    ]
+    inputs_table = ["<table><tr><th>Input</th><th>Value</th></tr>"]
     for x in ["input_domains", "input_summary", "input_dry_run"]:
         name = x.replace("input_", "")
         value = globals()[x]
         inputs_table.append(f"<tr><td>{name}</td><td>{value}</td></tr>")
     inputs_table.append("</table>")
-    print(f"results_table: {results_table}")
+    print(f"inputs_table: {inputs_table}")
 
     with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as f:
         print("### Cloudflare Purge Cache Action", file=f)
