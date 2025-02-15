@@ -111,8 +111,9 @@ for domain in domains:
         results.append(f"<tr><td>✅</td><td>{domain}</td></tr>")
 results.append("</table>")
 
-print(f"success: \033[32;1m{success}")
-print(f"failed: \033[31;1m{failed}")
+print(f"results: {results}")
+# print(f"success: \033[32;1m{success}")
+# print(f"failed: \033[31;1m{failed}")
 
 
 # Outputs
@@ -131,7 +132,7 @@ if input_summary in ["y", "yes", "true", "on"]:
             f"✅ Success: {len(success) or 'None'}  \n⛔ Failed: {len(failed) or 'None'}",
             file=f,
         )
-        print(f"<details><summary>Results</summary>{results}", file=f)
+        print(f"<details><summary>Results</summary>{''.join(results)}", file=f)
         print(
             f"<details><summary>Inputs</summary><table><tr><th>Input</th><th>Value</th></tr><tr><td>domains</td><td>{input_domains}</td></tr><tr><td>summary</td><td>{input_summary}</td></tr><tr><td>dry_run</td><td>{input_dry_run}</td></tr></table></details>\n",  # noqa: E501
             file=f,
