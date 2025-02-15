@@ -4,11 +4,7 @@ import requests
 from rich import print
 
 
-print("🏳️ Starting Cloudflare Purge Cache Action")
-print("🏳 Starting Cloudflare Purge Cache Action")
-print(":white_flag: Starting Cloudflare Purge Cache Action")
 print(":white_flag-emoji: Starting Cloudflare Purge Cache Action")
-print(":white_flag-text: Starting Cloudflare Purge Cache Action")
 
 
 # Inputs
