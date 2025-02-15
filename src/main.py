@@ -110,8 +110,8 @@ for domain in domains:
     else:
         results_table.append(f"<tr><td>✅</td><td>{domain}</td></tr>")
 results_table.append("</table>")
-
 # print(f"results_table: {results_table}")
+
 # print(f"success: \033[32;1m{success}")
 # print(f"failed: \033[31;1m{failed}")
 
@@ -125,7 +125,18 @@ with open(os.environ["GITHUB_OUTPUT"], "a") as f:
 
 # Summary
 
+
 if input_summary in ["y", "yes", "true", "on"]:
+    inputs_table = [
+        "<details><summary>Inputs</summary><table><tr><th>Input</th><th>Value</th></tr>"
+    ]
+    for x in ["input_domains", "input_summary", "input_dry_run"]:
+        name = x.replace("input_", "")
+        value = globals()[x]
+        inputs_table.append(f"<tr><td>{name}</td><td>{value}</td></tr>")
+    inputs_table.append("</table>")
+    print(f"results_table: {results_table}")
+
     with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as f:
         print("### Cloudflare Purge Cache Action", file=f)
         print(
@@ -137,9 +148,13 @@ if input_summary in ["y", "yes", "true", "on"]:
             file=f,
         )
         print(
-            f"<details><summary>Inputs</summary><table><tr><th>Input</th><th>Value</th></tr><tr><td>domains</td><td>{input_domains}</td></tr><tr><td>summary</td><td>{input_summary}</td></tr><tr><td>dry_run</td><td>{input_dry_run}</td></tr></table></details>\n",  # noqa: E501
+            f"<details><summary>Inputs</summary>{''.join(inputs_table)}</details>\n",
             file=f,
         )
+        # print(
+        #     f"<details><summary>Inputs</summary><table><tr><th>Input</th><th>Value</th></tr><tr><td>domains</td><td>{input_domains}</td></tr><tr><td>summary</td><td>{input_summary}</td></tr><tr><td>dry_run</td><td>{input_dry_run}</td></tr></table></details>\n",  # noqa: E501
+        #     file=f,
+        # )
         print(
             "[Report an issue or request a feature](https://github.com/cssnr/cloudflare-purge-cache-action/issues)",
             file=f,
