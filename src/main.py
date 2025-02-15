@@ -149,10 +149,6 @@ if input_summary in ["y", "yes", "true", "on"]:
             f"<details><summary>Inputs</summary>{''.join(inputs_table)}</details>\n",
             file=f,
         )
-        # print(
-        #     f"<details><summary>Inputs</summary><table><tr><th>Input</th><th>Value</th></tr><tr><td>domains</td><td>{input_domains}</td></tr><tr><td>summary</td><td>{input_summary}</td></tr><tr><td>dry_run</td><td>{input_dry_run}</td></tr></table></details>\n",  # noqa: E501
-        #     file=f,
-        # )
         print(
             "[Report an issue or request a feature](https://github.com/cssnr/cloudflare-purge-cache-action/issues)",
             file=f,
