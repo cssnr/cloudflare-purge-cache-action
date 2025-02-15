@@ -25,10 +25,19 @@ For more details see: [action.yml](action.yml) and [src/main.py](src/main.py).
 | ------- | -------- | ------- | --------------------- |
 | token   | **Yes**  | -       | Cloudflare API Token  |
 | domains | **Yes**  | -       | Domain(s) to Purge \* |
+| files   | No       | -       | Files to Purge \*     |
+| prefix  | No       | -       | File Prefix to Add \* |
 | summary | No       | true    | Add Summary to Job    |
 | dry_run | No       | false   | Run Without Purging   |
 
 **domains** - CSV or Newline Delimited list of zones to purge.
+
+**files** - CSV or Newline Delimited list of files to purge.
+This is applied to all `domains` and is limited to 30 files on the free plan and 500 for enterprise.
+
+**prefix** - If provided, the `prefix` be prepended to all the files. See
+the [Cloudflare Purge by single-file](https://developers.cloudflare.com/cache/how-to/purge-cache/purge-by-single-file/)
+documentation for more information.
 
 ```yaml
 - name: 'Purge Cache'

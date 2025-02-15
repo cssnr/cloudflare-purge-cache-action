@@ -15,6 +15,12 @@ print(f"input_domains: \033[35;1m{repr(input_domains)}")
 if not input_domains:
     # TODO: This check is only needed for backwards compatibility
     raise ValueError("No Domains Provided to Purge.")
+
+input_files = os.environ.get("INPUT_FILES", "").strip()
+print(f"input_files: \033[35;1m{repr(input_files)}")
+input_prefix = os.environ.get("INPUT_PREFIX", "").strip()
+print(f"input_prefix: \033[35;1m{input_prefix}")
+
 input_summary = os.environ.get("INPUT_SUMMARY", "").strip()
 print(f"input_summary: \033[35;1m{input_summary}")
 input_dry_run = os.environ.get("INPUT_DRY_RUN", "").strip().lower()
@@ -61,6 +67,16 @@ def get_zone(all_zones: list, zone_name: str) -> dict:
 domains: list = [x.strip() for x in re.split("[,|\n]", input_domains)]
 print(f"domains: \033[36;1m{domains}")
 
+if input_files:
+    files: list = [
+        f"{input_prefix}{x.strip()}" for x in re.split("[,|\n]", input_files)
+    ]
+    print(f"files: \033[36;1m{files}")
+    purge_data = {"files": files}
+else:
+    purge_data = {"purge_everything": True}
+print(f"purge_data: {purge_data}")
+
 zones: list = get_zones(domains[0] if len(domains) == 1 else "")
 # print(zones)
 
@@ -84,7 +100,7 @@ for domain in domains:
             continue
 
         # Perform Purge
-        r = requests.post(url, headers=headers, json={"purge_everything": True})
+        r = requests.post(url, headers=headers, json=purge_data)
         # print(f"r.status_code: {r.status_code}")
         r.raise_for_status()
         # print(f"Cache Purged: {domain}")
@@ -110,7 +126,7 @@ for domain in domains:
     else:
         results_table.append(f"<tr><td>✅</td><td>{domain}</td></tr>")
 results_table.append("</table>")
-# print(f"results_table: {results_table}")
+print(f"results_table: {results_table}")
 
 # print(f"success: \033[32;1m{success}")
 # print(f"failed: \033[31;1m{failed}")
@@ -128,9 +144,8 @@ with open(os.environ["GITHUB_OUTPUT"], "a") as f:
 
 if input_summary in ["y", "yes", "true", "on"]:
     inputs_table = ["<table><tr><th>Input</th><th>Value</th></tr>"]
-    for x in ["input_domains", "input_summary", "input_dry_run"]:
-        name = x.replace("input_", "")
-        value = globals()[x]
+    for name in ["domains", "files", "prefix", "summary", "dry_run"]:
+        value = globals()[f"input_{name}"]
         inputs_table.append(f"<tr><td>{name}</td><td>{value}</td></tr>")
     inputs_table.append("</table>")
     print(f"inputs_table: {inputs_table}")
@@ -138,7 +153,7 @@ if input_summary in ["y", "yes", "true", "on"]:
     with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as f:
         print("### Cloudflare Purge Cache Action", file=f)
         print(
-            f"✅ Success: {len(success) or 'None'}  \n⛔ Failed: {len(failed) or 'None'}",
+            f"✅ Success: {len(success)}  \n⛔ Failed: {len(failed)}",
             file=f,
         )
         print(

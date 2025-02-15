@@ -13,6 +13,14 @@ inputs:
     description: "Domains to Purge"
     required: false
     default: ""
+  files:
+    description: "Files to Purge"
+    required: false
+    default: ""
+  prefix:
+    description: "File Prefix"
+    required: false
+    default: ""
   summary:
     description: "Add Summary to Job"
     required: false
