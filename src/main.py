@@ -14,6 +14,7 @@ input_domains = os.environ.get("INPUT_DOMAINS") or os.environ.get("INPUT_ZONE")
 input_domains = input_domains.strip()
 print(f"input_domains: \033[35;1m{repr(input_domains)}")
 if not input_domains:
+    # TODO: This check is only needed for backwards compatibility
     raise ValueError("No Domains Provided to Purge.")
 input_dry_run = os.environ.get("INPUT_DRY_RUN", "").strip().lower()
 print(f"input_dry_run: \033[35;1m{input_dry_run}")
@@ -30,7 +31,7 @@ def get_zones(name: str = "") -> list:
     # print(f"get_zones: {zones_url}")
     params = {"per_page": 50, "page": 1}
     if name:
-        print(f"zone filter: \033[33;1m{name}")
+        print(f"using filter: \033[33;1m{name}")
         params["name"] = name
     # print(f"params: {params}")
     results = []
@@ -57,27 +58,27 @@ def get_zone(all_zones: list, zone_name: str) -> dict:
 # Action
 
 domains: list = [x.strip() for x in re.split("[,|\n]", input_domains)]
-print(f"domains: \033[35;1m{domains}")
-
-print(f"⌛ Processing {len(domains)} Domain")
+print(f"domains: \033[36;1m{domains}")
 
 zones: list = get_zones(domains[0] if len(domains) == 1 else "")
 # print(zones)
 
+print(f"⌛ Processing {len(domains)} Domain(s)")
+
 success = []
 for domain in domains:
     try:
-        print(f" Purging: \033[35;1m{domain}")
+        print(f"-- \033[36;1m{domain}")
         zone: dict = get_zone(zones, domain)
         if not zone:
-            print(f" ⚠️ \033[33;1mWarning: Zone Not Found: \033[35;1m{domain}")
+            print("\033[33;1mZone Not Found!")
             continue
         # print(f'zone: {zone["id"]}')
         url: str = base_url.format(f"zones/{zone['id']}/purge_cache")
         # print(f"url: {url}")
 
         if input_dry_run in ["y", "yes", "true", "on"]:
-            print(" \033[33;1mDry Run enabled, not purging...")
+            print("\033[34;1mDry Run Enabled.")
             success.append(domain)
             continue
 
@@ -92,7 +93,7 @@ for domain in domains:
             success.append(domain)
 
     except Exception as error:
-        print(f" :no_entry: Error Purging: \033[35;1m{domain}: \033[33;1m{error}")
+        print(f"\033[31;1mError Purging: \033[31m{error}")
         continue
 
 
@@ -109,11 +110,11 @@ for domain in domains:
 
 if not success:
     print(f"⛔ \033[31;1mAll {len(domains)} Cache Purges Failed!")
-    raise ValueError("All Zone Cache Purges Failed!")
+    raise ValueError(f"All {len(domains)} Zone Cache Purges Failed!")
 
 if len(success) == len(domains):
-    print("✅ \033[32;1mSuccessfully Purged All Domains")
+    print("✅ \033[32;1mSuccessfully Purged All Domains Cache")
 else:
     print(f"Successful domains: \033[32;1m{success}")
     print(f"Failed domains: \033[31;1m{failed}")
-    print(f"⚠️ \033[33;1mPurged domains: {len(success)}/{len(domains)}")
+    print(f"⚠️ \033[33;1mPurged Domains: {len(success)}/{len(domains)}")
