@@ -6,10 +6,49 @@ from rich import print
 
 print(":white_flag-emoji: Starting Cloudflare Purge Cache Action")
 
-print("[b yellow]one solid color")
-print("one [b yellow]color and normal")
-print("one on [b yellow]last")
-print("[b yellow]two [b green]colors")
+print("[yellow]one solid color")
+print("one [yellow]color and normal")
+print("one on [yellow]last")
+print("[yellow]two [green]colors")
+
+print("[cyan]cyan")
+print("[b cyan]b cyan")
+print("[blue]blue")
+print("[b blue]b blue")
+print("[red]red")
+print("[b red]b red")
+print("[green]green")
+print("[b green]b green")
+
+print("----------")
+
+print("one \u001b[33;1mcolor and normal")
+print("one on \u001b[33;1mlast")
+print("\u001b[33;1mtwo \u001b[32;1mcolors")
+
+print("\u001b[37;1m White Bold")
+print("\u001b[36;1m Cyan Bold")
+print("\u001b[35;1m Magenta Bold")
+print("\u001b[34;1m Blue Bold")
+print("\u001b[33;1m Yellow Bold")
+print("\u001b[32;1m Green Bold")
+print("\u001b[31;1m Red Bold")
+print("\u001b[30;1m Grey Bold")
+
+print("\u001b[37m White")
+print("\u001b[36m Cyan")
+print("\u001b[35m Magenta")
+print("\u001b[34m Blue")
+print("\u001b[33m Yellow")
+print("\u001b[32m Green")
+print("\u001b[31m Red")
+print("\u001b[30m Grey")
+
+print("\u001b[32m Green")
+print("\x1b[32m Green")
+print("\033[32m Green")
+
+print("done")
 
 
 # Inputs

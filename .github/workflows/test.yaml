@@ -35,6 +35,7 @@ jobs:
         with:
           token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           domains: ${{ env.DOMAINS }}
+          dry_run: true
 
       #- name: "Validate Outputs"
       #  run: |
