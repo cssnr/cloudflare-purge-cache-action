@@ -146,7 +146,7 @@ if input_summary in ["y", "yes", "true", "on"]:
     inputs_table = ["<table><tr><th>Input</th><th>Value</th></tr>"]
     for name in ["domains", "files", "prefix", "summary", "dry_run"]:
         value = globals()[f"input_{name}"]
-        inputs_table.append(f"<tr><td>{name}</td><td>{value}</td></tr>")
+        inputs_table.append(f"<tr><td>{name}</td><td>{value or '-'}</td></tr>")
     inputs_table.append("</table>")
     print(f"inputs_table: {inputs_table}")
 
