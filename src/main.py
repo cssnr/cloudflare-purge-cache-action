@@ -25,22 +25,9 @@ headers = {"Authorization": f"Bearer {input_token}"}
 
 
 # TODO: Split cloudflare class/functions into its own file
-# TODO: If only 1 domain is provided use this function vs get_zones
-# def get_zones_single(zone_name: str) -> list:
-#     zones_url = base_url.format("zones")
-#     print(f"zones_url: {zones_url}")
-#     params = {"name": zone_name}
-#     response = requests.get(zones_url, headers=headers, params=params)
-#     print(response.status_code)
-#     response.raise_for_status()
-#     data = response.json()
-#     print(f"data: {data}")
-#     if not data["result"]:
-#         raise ValueError(f"No zones returned for name: {zones_url}")
-#     return data["result"]
 
 
-def get_zones() -> list:
+def get_zones(name: str = "") -> list:
     zones_url = base_url.format("zones")
     # print(f"get_zones: {zones_url}")
     page = 1
@@ -48,6 +35,9 @@ def get_zones() -> list:
     while True:
         # print(f"page: {page}")
         params = {"per_page": 50, "page:": page}
+        if name:
+            print(f"zone filter: [b yellow]{name}")
+            params["name"] = name
         response = requests.get(zones_url, headers=headers, params=params)
         # print(f"response.status_code: {response.status_code}")
         response.raise_for_status()
@@ -71,10 +61,11 @@ def get_zone(all_zones: list, zone_name: str) -> dict:
 
 domains: list = [x.strip() for x in re.split("[,|\n]", input_domains)]
 print(f"domains: [b magenta]{domains}")
-zones: list = get_zones()
-# print(f'zones: {zones}')
 
 print(f":hourglass: Processing {len(domains)} Domain")
+
+zones: list = get_zones(domains[0] if len(domains) == 1 else "")
+# print(zones)
 
 success = []
 for domain in domains:
@@ -94,7 +85,7 @@ for domain in domains:
         r.raise_for_status()
         # print(f"Cache Purged: {domain}")
         result = r.json()
-        print(result)
+        print(result)  # print as formatted string for non-pretty
         if result["success"]:
             success.append(domain)
 
