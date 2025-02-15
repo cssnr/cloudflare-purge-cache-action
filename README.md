@@ -39,12 +39,30 @@ This is applied to all `domains` and is limited to 30 files on the free plan and
 the [Cloudflare Purge by single-file](https://developers.cloudflare.com/cache/how-to/purge-cache/purge-by-single-file/)
 documentation for more information.
 
+With required inputs:
+
 ```yaml
 - name: 'Purge Cache'
-  uses: cssnr/cloudflare-purge-cache-action@v1
+  uses: cssnr/cloudflare-purge-cache-action@v2
   with:
     token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
     domains: cssnr.com,example.com
+```
+
+With all inputs:
+
+```yaml
+- name: 'Purge Cache'
+  uses: cssnr/cloudflare-purge-cache-action@v2
+  with:
+    token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+    domains: cssnr.com
+    files: |
+      favicon.ico
+      logo.png
+    prefix: 'https://cssnr.com/'
+    summary: true
+    dry_run: false
 ```
 
 ## Outputs
@@ -55,9 +73,12 @@ documentation for more information.
 | failed  | Failed Domains, CSV     |
 
 ```yaml
-- name: 'Docker Test Action'
+- name: 'Purge Cache'
   id: purge
-  uses: smashedr/docker-test-action@v1
+  uses: cssnr/cloudflare-purge-cache-action@v2
+  with:
+    token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+    domains: cssnr.com,example.com
 
 - name: 'Echo Output'
   run: |
@@ -81,7 +102,7 @@ jobs:
 
     steps:
       - name: 'Purge Cache'
-        uses: cssnr/cloudflare-purge-cache-action@v1
+        uses: cssnr/cloudflare-purge-cache-action@v2
         with:
           token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           domains: |

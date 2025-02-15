@@ -1,2 +1,2 @@
-docker build src --platform linux/amd64 --tag ghcr.io/cssnr/cloudflare-purge-cache-action:v1
+docker build src --platform linux/amd64 --tag ghcr.io/cssnr/cloudflare-purge-cache-action:v2
 act -j test -e event.json --action-offline-mode "$@"
