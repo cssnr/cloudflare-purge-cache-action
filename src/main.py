@@ -126,7 +126,7 @@ for domain in domains:
     else:
         results_table.append(f"<tr><td>✅</td><td>{domain}</td></tr>")
 results_table.append("</table>")
-print(f"results_table: {results_table}")
+# print(f"results_table: {results_table}")
 
 # print(f"success: \033[32;1m{success}")
 # print(f"failed: \033[31;1m{failed}")
@@ -144,11 +144,11 @@ with open(os.environ["GITHUB_OUTPUT"], "a") as f:
 
 if input_summary in ["y", "yes", "true", "on"]:
     inputs_table = ["<table><tr><th>Input</th><th>Value</th></tr>"]
-    for name in ["domains", "files", "prefix", "summary", "dry_run"]:
-        value = globals()[f"input_{name}"]
-        inputs_table.append(f"<tr><td>{name}</td><td>{value or '-'}</td></tr>")
+    for x in ["domains", "files", "prefix", "summary", "dry_run"]:
+        value = globals()[f"input_{x}"]
+        inputs_table.append(f"<tr><td>{x}</td><td>{value or '-'}</td></tr>")
     inputs_table.append("</table>")
-    print(f"inputs_table: {inputs_table}")
+    # print(f"inputs_table: {inputs_table}")
 
     with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as f:
         print("### Cloudflare Purge Cache Action", file=f)
