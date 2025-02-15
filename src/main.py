@@ -1,18 +1,18 @@
 import os
 import re
 import requests
-import text_formatting as tf
+from rich import print
 
 
-print("🏳️ Starting Cloudflare Purge Cache Action")
+print(":white_flag: Starting Cloudflare Purge Cache Action")
 
 
 # Inputs
 
-input_token: str = os.environ["INPUT_TOKEN"]
-input_domains: str = os.environ.get("INPUT_DOMAINS") or os.environ.get("INPUT_ZONE")
+input_token = os.environ["INPUT_TOKEN"]
+input_domains = os.environ.get("INPUT_DOMAINS") or os.environ.get("INPUT_ZONE")
 input_domains = input_domains.strip()
-print(f"input_domains: {tf.purple}{repr(input_domains)}")
+print(f"input_domains: [b magenta]{repr(input_domains)}")
 if not input_domains:
     raise ValueError("No Domains Provided to Purge.")
 
@@ -66,19 +66,19 @@ def get_zone(all_zones: list, zone_name: str) -> dict:
 # Action
 
 domains: list = [x.strip() for x in re.split("[,|\n]", input_domains)]
-print(f"domains: {tf.cyan}{domains}")
+print(f"domains: [b magenta]{domains}")
 zones: list = get_zones()
 # print(f'zones: {zones}')
 
-success = []
+print(f":hourglass: Processing {len(domains)} Domain")
 
-print(f"⌛ Processing {len(domains)} Domain(s)")
+success = []
 for domain in domains:
     try:
-        print(f"Purging: {tf.cyan}{domain}")
+        print(f" Purging: [b magenta]{domain}")
         zone: dict = get_zone(zones, domain)
         if not zone:
-            print(f"⚠️ {tf.yellow}Warning: Zone Not Found: {tf.cyan}{domain}")
+            print(f" :warning: [b yellow]Warning: Zone Not Found: [b magenta]{domain}")
             continue
         # print(f'zone: {zone["id"]}')
         url: str = base_url.format(f"zones/{zone['id']}/purge_cache")
@@ -90,30 +90,30 @@ for domain in domains:
         r.raise_for_status()
         # print(f"Cache Purged: {domain}")
         result = r.json()
-        print(f"Result: {result}")
+        print(result)
         if result["success"]:
             success.append(domain)
 
     except Exception as error:
-        print(f"⛔️ Error Purging: {tf.cyan}{domain}: {tf.yellow}{error}")
+        print(f" :no_entry: Error Purging: [b magenta]{domain}: [b yellow]{error}")
         continue
 
 
 # Results
 
 if not success:
-    print(f"⛔️ {tf.red}All {len(domains)} Cache Purges Failed!")
+    print(f":no_entry: [b red]All {len(domains)} Cache Purges Failed!")
     raise ValueError("All Zone Cache Purges Failed!")
 
 failed = []
 
 if len(success) == len(domains):
-    print(f"✅ {tf.green}Successfully Purged All {len(domains)} domains")
+    print(":white_check_mark: [b green]Successfully Purged All Domains")
 else:
     for domain in domains:
         if domain not in success:
             failed.append(domain)
             print(f"::warning::Failed to purge domain: {domain}")
-    print(f"⚠️ {tf.yellow}Purged domains: {tf.rst}{len(success)}/{len(domains)}")
-    print(f"{tf.green}Successful domains: {tf.cyan}{success}")
-    print(f"{tf.red}Failed domains: {tf.cyan}{failed}")
+    print(f"[b green]Successful domains: [b magenta]{success}")
+    print(f"[b red]Failed domains: [b magenta]{failed}")
+    print(f":warning: [b yellow]Purged domains:[/] {len(success)}/{len(domains)}")

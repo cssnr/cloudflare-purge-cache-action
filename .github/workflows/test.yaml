@@ -24,6 +24,7 @@ jobs:
         if: ${{ !github.event.act }}
         with:
           file-location: "action.yml"
+          create-if-does-not-exist: false
           content: |
             runs:
               image: src/Dockerfile
