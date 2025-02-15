@@ -102,13 +102,18 @@ for domain in domains:
 # Results
 
 if not success:
+    print(f"⛔️ {tf.red}All {len(domains)} Cache Purges Failed!")
     raise ValueError("All Zone Cache Purges Failed!")
 
+failed = []
+
 if len(success) == len(domains):
-    print(f"✅ {tf.green}Successfully Purged All domains: {tf.rst}{len(domains)}")
+    print(f"✅ {tf.green}Successfully Purged All {len(domains)} domains")
 else:
     for domain in domains:
         if domain not in success:
+            failed.append(domain)
             print(f"::warning::Failed to purge domain: {domain}")
     print(f"⚠️ {tf.yellow}Purged domains: {tf.rst}{len(success)}/{len(domains)}")
     print(f"{tf.green}Successful domains: {tf.cyan}{success}")
+    print(f"{tf.red}Failed domains: {tf.cyan}{failed}")
