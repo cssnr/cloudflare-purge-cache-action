@@ -13,6 +13,10 @@ inputs:
     description: "Cloudflare Domains to Purge"
     required: false
     default: ""
+  dry_run:
+    description: "Run Without Purging Cache"
+    required: false
+    default: "false"
   zone:
     description: "For Backwards Compatibility ONLY"
     required: false

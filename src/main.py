@@ -13,12 +13,15 @@ print(":white_flag-text: Starting Cloudflare Purge Cache Action")
 
 # Inputs
 
-input_token = os.environ["INPUT_TOKEN"]
+input_token = os.environ["INPUT_TOKEN"].strip()
+# print(f"input_token: [b magenta]{input_token}")
 input_domains = os.environ.get("INPUT_DOMAINS") or os.environ.get("INPUT_ZONE")
 input_domains = input_domains.strip()
 print(f"input_domains: [b magenta]{repr(input_domains)}")
 if not input_domains:
     raise ValueError("No Domains Provided to Purge.")
+input_dry_run = os.environ.get("INPUT_DRY_RUN", "").strip().lower()
+print(f"input_dry_run: [b magenta]{input_dry_run}")
 
 base_url = "https://api.cloudflare.com/client/v4/{0}"
 headers = {"Authorization": f"Bearer {input_token}"}
@@ -30,7 +33,7 @@ headers = {"Authorization": f"Bearer {input_token}"}
 def get_zones(name: str = "") -> list:
     zones_url = base_url.format("zones")
     # print(f"get_zones: {zones_url}")
-    params = {"per_page": 50, "page:": 1}
+    params = {"per_page": 50, "page": 1}
     if name:
         print(f"zone filter: [b yellow]{name}")
         params["name"] = name
@@ -77,6 +80,11 @@ for domain in domains:
         # print(f'zone: {zone["id"]}')
         url: str = base_url.format(f"zones/{zone['id']}/purge_cache")
         # print(f"url: {url}")
+
+        if input_dry_run in ["y", "yes", "true", "on"]:
+            print(" [b yellow]Dry Run enabled, not purging...")
+            success.append(domain)
+            continue
 
         # Perform Purge
         r = requests.post(url, headers=headers, json={"purge_everything": True})
