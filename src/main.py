@@ -1,7 +1,6 @@
 import os
 import re
 import requests
-from tomlkit import table
 
 print("🏳️ Starting Cloudflare Purge Cache Action")
 
