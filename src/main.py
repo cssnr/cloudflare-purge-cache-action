@@ -1,67 +1,22 @@
 import os
 import re
 import requests
-from rich import print
 
 
-print(":white_flag-emoji: Starting Cloudflare Purge Cache Action")
-
-print("[yellow]one solid color")
-print("one [yellow]color and normal")
-print("one on [yellow]last")
-print("[yellow]two [green]colors")
-
-print("[cyan]cyan")
-print("[b cyan]b cyan")
-print("[blue]blue")
-print("[b blue]b blue")
-print("[red]red")
-print("[b red]b red")
-print("[green]green")
-print("[b green]b green")
-
-print("----------")
-
-print("one \u001b[33;1mcolor and normal")
-print("one on \u001b[33;1mlast")
-print("\u001b[33;1mtwo \u001b[32;1mcolors")
-
-print("\u001b[37;1m White Bold")
-print("\u001b[36;1m Cyan Bold")
-print("\u001b[35;1m Magenta Bold")
-print("\u001b[34;1m Blue Bold")
-print("\u001b[33;1m Yellow Bold")
-print("\u001b[32;1m Green Bold")
-print("\u001b[31;1m Red Bold")
-print("\u001b[30;1m Grey Bold")
-
-print("\u001b[37m White")
-print("\u001b[36m Cyan")
-print("\u001b[35m Magenta")
-print("\u001b[34m Blue")
-print("\u001b[33m Yellow")
-print("\u001b[32m Green")
-print("\u001b[31m Red")
-print("\u001b[30m Grey")
-
-print("\u001b[32m Green")
-print("\x1b[32m Green")
-print("\033[32m Green")
-
-print("done")
+print("🏳️ Starting Cloudflare Purge Cache Action")
 
 
 # Inputs
 
 input_token = os.environ["INPUT_TOKEN"].strip()
-# print(f"input_token: [b magenta]{input_token}")
+# print(f"input_token: \033[35;1m{input_token}")
 input_domains = os.environ.get("INPUT_DOMAINS") or os.environ.get("INPUT_ZONE")
 input_domains = input_domains.strip()
-print(f"input_domains: [b magenta]{repr(input_domains)}")
+print(f"input_domains: \033[35;1m{repr(input_domains)}")
 if not input_domains:
     raise ValueError("No Domains Provided to Purge.")
 input_dry_run = os.environ.get("INPUT_DRY_RUN", "").strip().lower()
-print(f"input_dry_run: [b magenta]{input_dry_run}")
+print(f"input_dry_run: \033[35;1m{input_dry_run}")
 
 base_url = "https://api.cloudflare.com/client/v4/{0}"
 headers = {"Authorization": f"Bearer {input_token}"}
@@ -75,7 +30,7 @@ def get_zones(name: str = "") -> list:
     # print(f"get_zones: {zones_url}")
     params = {"per_page": 50, "page": 1}
     if name:
-        print(f"zone filter: [b yellow]{name}")
+        print(f"zone filter: \033[33;1m{name}")
         params["name"] = name
     # print(f"params: {params}")
     results = []
@@ -102,27 +57,27 @@ def get_zone(all_zones: list, zone_name: str) -> dict:
 # Action
 
 domains: list = [x.strip() for x in re.split("[,|\n]", input_domains)]
-print(f"domains: [b magenta]{domains}")
+print(f"domains: \033[35;1m{domains}")
 
-print(f":hourglass: Processing {len(domains)} Domain")
+print(f"⌛ Processing {len(domains)} Domain")
 
 zones: list = get_zones(domains[0] if len(domains) == 1 else "")
-# print(zones)  # print as formatting string for non-pretty print
+# print(zones)
 
 success = []
 for domain in domains:
     try:
-        print(f" Purging: [b magenta]{domain}")
+        print(f" Purging: \033[35;1m{domain}")
         zone: dict = get_zone(zones, domain)
         if not zone:
-            print(f" :warning: [b yellow]Warning: Zone Not Found: [b magenta]{domain}")
+            print(f" ⚠️ \033[33;1mWarning: Zone Not Found: \033[35;1m{domain}")
             continue
         # print(f'zone: {zone["id"]}')
         url: str = base_url.format(f"zones/{zone['id']}/purge_cache")
         # print(f"url: {url}")
 
         if input_dry_run in ["y", "yes", "true", "on"]:
-            print(" [b yellow]Dry Run enabled, not purging...")
+            print(" \033[33;1mDry Run enabled, not purging...")
             success.append(domain)
             continue
 
@@ -132,12 +87,12 @@ for domain in domains:
         r.raise_for_status()
         # print(f"Cache Purged: {domain}")
         result = r.json()
-        print(f"{result}")  # print without string formatting for pretty print
+        print(result)
         if result["success"]:
             success.append(domain)
 
     except Exception as error:
-        print(f" :no_entry: Error Purging: [b magenta]{domain}: [b yellow]{error}")
+        print(f" :no_entry: Error Purging: \033[35;1m{domain}: \033[33;1m{error}")
         continue
 
 
@@ -149,16 +104,16 @@ for domain in domains:
         failed.append(domain)
         print(f"::warning::Failed to purge domain: {domain}")
 
-# print(f"success: [b green]{success}")
-# print(f"failed: [b red]{failed}")
+# print(f"success: \033[32;1m{success}")
+# print(f"failed: \033[31;1m{failed}")
 
 if not success:
-    print(f":no_entry: [b red]All {len(domains)} Cache Purges Failed!")
+    print(f"⛔ \033[31;1mAll {len(domains)} Cache Purges Failed!")
     raise ValueError("All Zone Cache Purges Failed!")
 
 if len(success) == len(domains):
-    print(":white_check_mark: [b green]Successfully Purged All Domains")
+    print("✅ \033[32;1mSuccessfully Purged All Domains")
 else:
-    print(f"[b green]Successful domains: [b green]{success}")
-    print(f"[b red]Failed domains: [b red]{failed}")
-    print(f":warning: [b yellow]Purged domains:[/] {len(success)}/{len(domains)}")
+    print(f"Successful domains: \033[32;1m{success}")
+    print(f"Failed domains: \033[31;1m{failed}")
+    print(f"⚠️ \033[33;1mPurged domains: {len(success)}/{len(domains)}")
