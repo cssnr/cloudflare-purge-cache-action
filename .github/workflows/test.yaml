@@ -39,6 +39,7 @@ jobs:
 
       - name: "Validate Outputs"
         run: |
+          # TODO: Update this to loop through env.DOMAINS
           echo "success: '${{ steps.test.outputs.success }}'"
           if [ "${{ steps.test.outputs.success }}" != "cssnr.com" ];then
             echo "Output Verification Failed: success"
