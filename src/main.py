@@ -3,11 +3,7 @@ import re
 import requests
 
 
-if os.path.isfile("version.txt"):
-    with open("version.txt", "r") as file:
-        version = file.read().strip()
-else:
-    version = "Dev Build"
+version = open("version.txt").read().strip() if os.path.isfile("version.txt") else "Dev Build"
 print(f"🏳️ Starting Cloudflare Purge Cache Action - {version}")
 
 
@@ -22,9 +18,7 @@ print(f"input_domains: \033[35;1m{repr(input_domains)}")
 if not input_domains:
     raise ValueError("No Domains Provided to Purge.")
 if os.environ.get("INPUT_ZONE"):
-    print(
-        "::notice::Notice: You are using a deprecated input 'zone'. Please change this to 'domains' ASAP!"
-    )
+    print("::notice::Notice: You are using a deprecated input 'zone'. Please change this to 'domains' ASAP!")
 
 input_files = os.environ.get("INPUT_FILES", "").strip()
 print(f"input_files: \033[35;1m{repr(input_files)}")
@@ -83,9 +77,7 @@ domains: list = [x.strip() for x in re.split("[,|\n]", input_domains)]
 print(f"domains: \033[36;1m{domains}")
 
 if input_files:
-    files: list = [
-        f"{input_prefix}{x.strip()}" for x in re.split("[,|\n]", input_files)
-    ]
+    files: list = [f"{input_prefix}{x.strip()}" for x in re.split("[,|\n]", input_files)]
     print(f"files: \033[36;1m{files}")
     purge_data = {"files": files}
 else:
@@ -175,14 +167,8 @@ if input_summary in ["y", "yes", "true", "on"]:
             print(f"⚠️ Only {len(failed)}/{len(domains)} Domains Purged!", file=f)
         if input_dry_run in ["y", "yes", "true", "on"]:
             print("\n⚠️ Dry Run! Remove or disable `dry_run` to purge cache.", file=f)
-        print(
-            f"<details><summary>Purge Results</summary>{''.join(results_table)}</details>\n",
-            file=f,
-        )
-        print(
-            f"<details><summary>Inputs</summary>{''.join(inputs_table)}</details>\n",
-            file=f,
-        )
+        print(f"<details><summary>Purge Results</summary>{''.join(results_table)}</details>\n", file=f)
+        print(f"<details><summary>Inputs</summary>{''.join(inputs_table)}</details>\n", file=f)
         print(
             "[Report an issue or request a feature](https://github.com/cssnr/cloudflare-purge-cache-action/issues)",
             file=f,
