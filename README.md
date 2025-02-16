@@ -21,14 +21,15 @@ For more details see: [action.yml](action.yml) and [src/main.py](src/main.py).
 
 ## Inputs
 
-| input   | required | default | description           |
-| ------- | -------- | ------- | --------------------- |
-| token   | **Yes**  | -       | Cloudflare API Token  |
-| domains | **Yes**  | -       | Domain(s) to Purge \* |
-| files   | No       | -       | Files to Purge \*     |
-| prefix  | No       | -       | File Prefix to Add \* |
-| summary | No       | true    | Add Summary to Job    |
-| dry_run | No       | false   | Run Without Purging   |
+| input   | required | default | description                 |
+| ------- | -------- | ------- | --------------------------- |
+| token   | **Yes**  | -       | Cloudflare API Token        |
+| domains | **Yes**  | -       | Domain(s) to Purge \*       |
+| files   | No       | -       | Files to Purge \*           |
+| prefix  | No       | -       | File Prefix to Add \*       |
+| fail    | No       | all     | Fail Mode: [all, any, none] |
+| summary | No       | true    | Add Summary to Job          |
+| dry_run | No       | false   | Run Without Purging         |
 
 **domains** - CSV or Newline Delimited list of zones to purge.
 
@@ -61,6 +62,7 @@ With all inputs:
       favicon.ico
       logo.png
     prefix: 'https://cssnr.com/'
+    fail: all
     summary: true
     dry_run: false
 ```

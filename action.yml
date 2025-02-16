@@ -21,6 +21,10 @@ inputs:
     description: "File Prefix"
     required: false
     default: ""
+  fail:
+    description: "Fail Mode"
+    required: false
+    default: "all"
   summary:
     description: "Add Summary to Job"
     required: false

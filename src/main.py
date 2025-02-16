@@ -25,7 +25,10 @@ print(f"input_files: \033[35;1m{repr(input_files)}")
 input_prefix = os.environ.get("INPUT_PREFIX", "").strip()
 print(f"input_prefix: \033[35;1m{input_prefix}")
 
-input_summary = os.environ.get("INPUT_SUMMARY", "").strip()
+input_fail = os.environ.get("INPUT_FAIL", "").strip().lower()
+print(f"input_fail: \033[35;1m{input_fail}")
+
+input_summary = os.environ.get("INPUT_SUMMARY", "").strip().lower()
 print(f"input_summary: \033[35;1m{input_summary}")
 input_dry_run = os.environ.get("INPUT_DRY_RUN", "").strip().lower()
 print(f"input_dry_run: \033[35;1m{input_dry_run}")
@@ -148,7 +151,7 @@ with open(os.environ["GITHUB_OUTPUT"], "a") as f:
 
 if input_summary in ["y", "yes", "true", "on"]:
     inputs_table = ["<table><tr><th>Input</th><th>Value</th></tr>"]
-    for x in ["domains", "files", "prefix", "summary", "dry_run"]:
+    for x in ["domains", "files", "prefix", "fail", "summary", "dry_run"]:
         value = globals()[f"input_{x}"]
         inputs_table.append(f"<tr><td>{x}</td><td>{value or '-'}</td></tr>")
     inputs_table.append("</table>")
@@ -158,7 +161,7 @@ if input_summary in ["y", "yes", "true", "on"]:
         print("### Cloudflare Purge Cache Action", file=f)
         if len(success) == len(domains):
             print(f"✅ All {len(domains)} Domain(s) were Successfully Purged.", file=f)
-        elif len(success) == 0:
+        elif not success:
             print(f"⛔ All {len(domains)} Domain(s) Failed to Purge!", file=f)
         else:
             print(f"⚠️ Only {len(failed)}/{len(domains)} Domains Purged!", file=f)
@@ -177,13 +180,15 @@ if input_summary in ["y", "yes", "true", "on"]:
         )
 
 
-if not success:
-    print(f"⛔ \033[31;1mAll {len(domains)} Cache Purges Failed!")
-    raise ValueError(f"All {len(domains)} Zone Cache Purges Failed!")
-
 if len(success) == len(domains):
-    print("✅ \033[32;1mSuccessfully Purged All Domains Cache")
+    print("✅ \033[32;1mSuccessfully Purged All Domains")
+elif not success:
+    print(f"⛔ \033[31;1mAll {len(domains)} Cache Purges Failed")
+    if input_fail in ["all", "any"]:
+        raise ValueError(f"All {len(domains)} Cache Purges Failed!")
 else:
     print(f"Successful domains: \033[32;1m{success}")
     print(f"Failed domains: \033[31;1m{failed}")
     print(f"⚠️ \033[33;1mPurged Domains: {len(success)}/{len(domains)}")
+    if input_fail in ["any"]:
+        raise ValueError(f"Only Purged {len(success)}/{len(domains)} Domains!")
