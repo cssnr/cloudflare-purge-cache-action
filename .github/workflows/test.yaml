@@ -34,7 +34,7 @@ jobs:
         uses: ./
         with:
           token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          domains: ${{ env.DOMAINS }}
+          zone: ${{ env.DOMAINS }} # DO NOT USE 'zone'! Use 'domains' instead!
           dry_run: true
 
       - name: "Validate Outputs"

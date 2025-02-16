@@ -12,9 +12,13 @@ input_token = os.environ["INPUT_TOKEN"].strip()
 input_domains = os.environ.get("INPUT_DOMAINS") or os.environ.get("INPUT_ZONE")
 input_domains = input_domains.strip()
 print(f"input_domains: \033[35;1m{repr(input_domains)}")
+# TODO: These checks are only needed for backwards compatibility w/ INPUT_ZONE
 if not input_domains:
-    # TODO: This check is only needed for backwards compatibility w/ INPUT_ZONE
     raise ValueError("No Domains Provided to Purge.")
+if os.environ.get("INPUT_ZONE"):
+    print(
+        "::notice::Notice: You are using a deprecated input 'zone'. Please change this to 'domains' ASAP!"
+    )
 
 input_files = os.environ.get("INPUT_FILES", "").strip()
 print(f"input_files: \033[35;1m{repr(input_files)}")
