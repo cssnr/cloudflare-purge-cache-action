@@ -42,6 +42,7 @@ jobs:
           dry_run: true
 
       - name: "Validate Outputs"
+        if: ${{ env.DOMAINS == 'cssnr.com,example.com' }}
         run: |
           echo "success: '${{ steps.test.outputs.success }}'"
           if [ "${{ steps.test.outputs.success }}" != "cssnr.com" ];then
