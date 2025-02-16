@@ -91,7 +91,7 @@ With all inputs:
 ## Examples
 
 ```yaml
-name: 'Purge Cache'
+name: 'Test Job'
 
 on:
   push:
