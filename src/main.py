@@ -13,7 +13,7 @@ input_domains = os.environ.get("INPUT_DOMAINS") or os.environ.get("INPUT_ZONE")
 input_domains = input_domains.strip()
 print(f"input_domains: \033[35;1m{repr(input_domains)}")
 if not input_domains:
-    # TODO: This check is only needed for backwards compatibility
+    # TODO: This check is only needed for backwards compatibility w/ INPUT_ZONE
     raise ValueError("No Domains Provided to Purge.")
 
 input_files = os.environ.get("INPUT_FILES", "").strip()
@@ -75,7 +75,7 @@ if input_files:
     purge_data = {"files": files}
 else:
     purge_data = {"purge_everything": True}
-print(f"purge_data: {purge_data}")
+# print(f"purge_data: {purge_data}")
 
 zones: list = get_zones(domains[0] if len(domains) == 1 else "")
 # print(zones)
