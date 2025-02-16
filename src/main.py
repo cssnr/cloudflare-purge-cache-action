@@ -140,7 +140,7 @@ with open(os.environ["GITHUB_OUTPUT"], "a") as f:
 
 
 # Summary
-
+# TODO: Collect errors and add to Summary
 
 if input_summary in ["y", "yes", "true", "on"]:
     inputs_table = ["<table><tr><th>Input</th><th>Value</th></tr>"]
@@ -159,7 +159,10 @@ if input_summary in ["y", "yes", "true", "on"]:
         else:
             print(f"⚠️ Only {len(failed)}/{len(domains)} Domains Purged!", file=f)
             # print(f"✅ Success: {len(success)}  \n⛔ Failed: {len(failed)}", file=f)
-        print(f"{''.join(results_table)}", file=f)
+        print(
+            f"<details><summary>Purge Results</summary>{''.join(results_table)}</details>\n",
+            file=f,
+        )
         print(
             f"<details><summary>Inputs</summary>{''.join(inputs_table)}</details>\n",
             file=f,
