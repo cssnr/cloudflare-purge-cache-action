@@ -32,6 +32,8 @@ input_summary = os.environ.get("INPUT_SUMMARY", "").strip().lower()
 print(f"input_summary: \033[35;1m{input_summary}")
 input_dry_run = os.environ.get("INPUT_DRY_RUN", "").strip().lower()
 print(f"input_dry_run: \033[35;1m{input_dry_run}")
+if input_dry_run in ["y", "yes", "true", "on"]:
+    print("::notice::Notice: Dry Run is enabled and no cache is being purged!")
 
 base_url = "https://api.cloudflare.com/client/v4/{0}"
 headers = {"Authorization": f"Bearer {input_token}"}
@@ -159,6 +161,8 @@ if input_summary in ["y", "yes", "true", "on"]:
 
     with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as f:
         print("### Cloudflare Purge Cache Action", file=f)
+        if input_dry_run in ["y", "yes", "true", "on"]:
+            print("🔔 Dry Run! Remove or disable `dry_run` to purge cache.", file=f)
         if len(success) == len(domains):
             print(f"✅ All {len(domains)} Domain(s) were Successfully Purged.", file=f)
         elif not success:
