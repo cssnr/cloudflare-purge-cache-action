@@ -85,9 +85,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: "Update Version Tags"
-        id: version
+        id: tags
         uses: cssnr/update-version-tags-action@v1
 
       - name: "Echo Tags"
         run: |
-          echo "tags: ${{ steps.version.outputs.tags }}"
+          echo "tags: ${{ steps.tags.outputs.tags }}"
