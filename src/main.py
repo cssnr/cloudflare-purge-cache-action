@@ -161,15 +161,14 @@ if input_summary in ["y", "yes", "true", "on"]:
 
     with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as f:
         print("### Cloudflare Purge Cache Action", file=f)
-        if input_dry_run in ["y", "yes", "true", "on"]:
-            print("🔔 Dry Run! Remove or disable `dry_run` to purge cache.", file=f)
         if len(success) == len(domains):
             print(f"✅ All {len(domains)} Domain(s) were Successfully Purged.", file=f)
         elif not success:
             print(f"⛔ All {len(domains)} Domain(s) Failed to Purge!", file=f)
         else:
             print(f"⚠️ Only {len(failed)}/{len(domains)} Domains Purged!", file=f)
-            # print(f"✅ Success: {len(success)}  \n⛔ Failed: {len(failed)}", file=f)
+        if input_dry_run in ["y", "yes", "true", "on"]:
+            print("\n⚠️ Dry Run! Remove or disable `dry_run` to purge cache.", file=f)
         print(
             f"<details><summary>Purge Results</summary>{''.join(results_table)}</details>\n",
             file=f,
