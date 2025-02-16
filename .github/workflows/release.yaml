@@ -5,47 +5,27 @@ on:
     types: [published]
 
 jobs:
-  tags:
-    name: "Tags"
+  verify:
+    name: "Verify"
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    outputs:
-      tags: ${{ steps.tags.outputs.tags }}
-    permissions:
-      contents: write
 
     steps:
       - name: "Checkout"
         uses: actions/checkout@v4
 
-      - name: "Verify Tags"
+      - name: "Verify Action Tag"
         run: |
           set -e
           echo "Verifying Version TAG in action.yaml: ${GITHUB_REF_NAME}"
           echo "image: ghcr.io/${GITHUB_REPOSITORY}:${GITHUB_REF_NAME}"
           grep "ghcr.io/${GITHUB_REPOSITORY}:${GITHUB_REF_NAME}" action.yml
 
-      - name: "Update Version Tags"
-        id: version
-        uses: cssnr/update-version-tags-action@v1
-
-      - name: "Generate Docker Tags"
-        id: tags
-        uses: smashedr/docker-tags-action@master
-        with:
-          images: "ghcr.io/${{ github.repository }}"
-          extra: ${{ steps.version.outputs.tags }}
-          latest: false
-
-      - name: "Echo Tags"
-        run: |
-          echo "tags: ${{ steps.tags.outputs.tags }}"
-
   build:
     name: "Build"
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    needs: [tags]
+    needs: [verify]
     permissions:
       packages: write
 
@@ -53,14 +33,22 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v4
 
-      - name: "Echo Tags"
-        run: |
-          echo "tags: ${{ needs.tags.outputs.tags }}"
-
       - name: "Write Version"
         run: |
           echo "version: ${GITHUB_REF_NAME}"
           echo -n "${GITHUB_REF_NAME}" > src/version.txt
+
+      - name: "Generate Docker Tags"
+        id: tags
+        uses: smashedr/docker-tags-action@master
+        with:
+          images: "ghcr.io/${{ github.repository }}"
+          extra: ${{ github.ref_name }}
+          latest: false
+
+      - name: "Echo Tags"
+        run: |
+          echo "tags: ${{ steps.tags.outputs.tags }}"
 
       - name: "Docker Login"
         uses: docker/login-action@v3
@@ -79,7 +67,27 @@ jobs:
         with:
           context: src
           push: true
-          tags: ${{ needs.tags.outputs.tags }}
+          tags: ${{ steps.tags.outputs.tags }}
           #platforms: linux/amd64,linux/arm64
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  tags:
+    name: "Tags"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: [build]
+    permissions:
+      contents: write
+
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v4
+
+      - name: "Update Version Tags"
+        id: version
+        uses: cssnr/update-version-tags-action@v1
+
+      - name: "Echo Tags"
+        run: |
+          echo "tags: ${{ steps.version.outputs.tags }}"
