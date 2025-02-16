@@ -2,29 +2,57 @@ name: "Test"
 
 on:
   workflow_dispatch:
+  pull_request_target:
+    branches: [master]
   push:
+    branches: [master]
+
+env:
+  DOMAINS: cssnr.com,example.com
 
 jobs:
   test:
     name: "Test"
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    permissions:
+      contents: write
 
     steps:
       - name: "Checkout"
         uses: actions/checkout@v4
+
+      - name: "Edit YAML"
+        uses: Liam-Johnston/yaml-helper@V1
+        if: ${{ !github.event.act }}
+        with:
+          file-location: "action.yml"
+          create-if-does-not-exist: false
+          content: |
+            runs:
+              image: src/Dockerfile
 
       - name: "Test Local Action"
         id: test
         uses: ./
         with:
           token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          domains: |
-            cssnr.com
+          zone: ${{ env.DOMAINS }} # DO NOT USE 'zone'! Use 'domains' instead!
+          dry_run: true
 
-      #- name: "Echo Outputs"
-      #  run: |
-      #    echo '${{ steps.test.outputs.time }}'
+      - name: "Validate Outputs"
+        if: ${{ env.DOMAINS == 'cssnr.com,example.com' }}
+        run: |
+          echo "success: '${{ steps.test.outputs.success }}'"
+          if [ "${{ steps.test.outputs.success }}" != "cssnr.com" ];then
+            echo "Output Verification Failed: success"
+            exit 1
+          fi
+          echo "failed: '${{ steps.test.outputs.failed }}'"
+          if [ "${{ steps.test.outputs.failed }}" != "example.com" ];then
+            echo "Output Verification Failed: failed"
+            exit 1
+          fi
 
   lint:
     name: "Lint"
@@ -35,12 +63,12 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v4
 
-      - name: "Setup Python"
-        uses: actions/setup-python@v5
+      - name: "Ruff"
+        uses: astral-sh/ruff-action@v3
         with:
-          python-version: "3.11"
+          src: "src"
 
-      - name: "Flake8"
-        run: |
-          python -m pip install flake8
-          flake8 src
+      - name: "Black"
+        uses: psf/black@stable
+        with:
+          src: "src"

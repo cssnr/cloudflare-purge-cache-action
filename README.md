@@ -9,34 +9,89 @@
 
 # Cloudflare Purge Cache Action
 
-Purge Cloudflare Cache for a Domain or list of Domains.
+Purge Cloudflare cache for a domain or list of domains with optional file/url filter.
 
-For more details see: [action.yaml](action.yaml) and [src/main.py](src/main.py).
+For more details see: [action.yml](action.yml) and [src/main.py](src/main.py).
 
 - [Inputs](#Inputs)
+- [Outputs](#Outputs)
 - [Examples](#Examples)
 - [Support](#Support)
 - [Contributing](#Contributing)
 
 ## Inputs
 
-| input   | required | default | description          |
-| ------- | -------- | ------- | -------------------- |
-| token   | **Yes**  | -       | Cloudflare API Token |
-| domains | **Yes**  | -       | Domain(s) to Purge   |
+| input   | required | default | description                 |
+| ------- | -------- | ------- | --------------------------- |
+| token   | **Yes**  | -       | Cloudflare API Token        |
+| domains | **Yes**  | -       | Domain(s) to Purge \*       |
+| files   | No       | -       | Files to Purge \*           |
+| prefix  | No       | -       | File Prefix to Add \*       |
+| fail    | No       | all     | Fail Mode: [all, any, none] |
+| summary | No       | true    | Add Summary to Job          |
+| dry_run | No       | false   | Run Without Purging         |
+
+**domains** - CSV or Newline Delimited list of zones to purge.
+
+**files** - CSV or Newline Delimited list of files to purge.
+This is applied to all `domains` and is limited to 30 files on the free plan and 500 for enterprise.
+
+**prefix** - If provided, the `prefix` will be prepended to all the files. See
+the [Cloudflare Purge by single-file](https://developers.cloudflare.com/cache/how-to/purge-cache/purge-by-single-file/)
+documentation for more information.
+
+With required inputs:
 
 ```yaml
 - name: 'Purge Cache'
-  uses: cssnr/cloudflare-purge-cache-action@master
+  uses: cssnr/cloudflare-purge-cache-action@v2
   with:
     token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-    domains: example.com
+    domains: cssnr.com,example.com
+```
+
+With all inputs:
+
+```yaml
+- name: 'Purge Cache'
+  uses: cssnr/cloudflare-purge-cache-action@v2
+  with:
+    token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+    domains: cssnr.com
+    files: |
+      favicon.ico
+      static/logo.png
+    prefix: 'https://cssnr.com/'
+    fail: all
+    summary: true
+    dry_run: false
+```
+
+## Outputs
+
+| output  | description             |
+| ------- | ----------------------- |
+| success | Successful Domains, CSV |
+| failed  | Failed Domains, CSV     |
+
+```yaml
+- name: 'Purge Cache'
+  id: purge
+  uses: cssnr/cloudflare-purge-cache-action@v2
+  with:
+    token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+    domains: cssnr.com,example.com
+
+- name: 'Echo Output'
+  run: |
+    echo "success: '${{ steps.purge.outputs.success }}'"
+    echo "failed: '${{ steps.purge.outputs.failed }}'"
 ```
 
 ## Examples
 
 ```yaml
-name: 'Test Purge Cache'
+name: 'Test Job'
 
 on:
   push:
@@ -49,12 +104,12 @@ jobs:
 
     steps:
       - name: 'Purge Cache'
-        uses: cssnr/cloudflare-purge-cache-action@master
+        uses: cssnr/cloudflare-purge-cache-action@v2
         with:
           token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           domains: |
+            cssnr.com
             example.com
-            test.example.com
 ```
 
 # Support
@@ -82,7 +137,10 @@ Additionally, you can support other GitHub Actions I have published:
 - [Update JSON Value Action](https://github.com/cssnr/update-json-value-action)
 - [Parse Issue Form Action](https://github.com/cssnr/parse-issue-form-action)
 - [Mirror Repository Action](https://github.com/cssnr/mirror-repository-action)
+- [Stack Deploy Action](https://github.com/cssnr/stack-deploy-action)
 - [Portainer Stack Deploy](https://github.com/cssnr/portainer-stack-deploy-action)
 - [Mozilla Addon Update Action](https://github.com/cssnr/mozilla-addon-update-action)
 
 For a full list of current projects to support visit: [https://cssnr.github.io/](https://cssnr.github.io/)
+
+If you would like to submit a PR, please review the [CONTRIBUTING.md](CONTRIBUTING.md).

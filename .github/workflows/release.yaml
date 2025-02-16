@@ -1,0 +1,85 @@
+name: "Release"
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  tags:
+    name: "Tags"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      tags: ${{ steps.tags.outputs.tags }}
+    permissions:
+      contents: write
+
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v4
+
+      - name: "Verify Tags"
+        run: |
+          set -e
+          echo "Verifying Version TAG in action.yaml: ${GITHUB_REF_NAME}"
+          echo "image: ghcr.io/${GITHUB_REPOSITORY}:${GITHUB_REF_NAME}"
+          grep "ghcr.io/${GITHUB_REPOSITORY}:${GITHUB_REF_NAME}" action.yml
+
+      - name: "Update Version Tags"
+        id: version
+        uses: cssnr/update-version-tags-action@v1
+
+      - name: "Generate Docker Tags"
+        id: tags
+        uses: smashedr/docker-tags-action@master
+        with:
+          images: "ghcr.io/${{ github.repository }}"
+          extra: ${{ steps.version.outputs.tags }}
+          latest: false
+
+      - name: "Echo Tags"
+        run: |
+          echo "tags: ${{ steps.tags.outputs.tags }}"
+
+  build:
+    name: "Build"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: [tags]
+    permissions:
+      packages: write
+
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v4
+
+      - name: "Echo Tags"
+        run: |
+          echo "tags: ${{ needs.tags.outputs.tags }}"
+
+      - name: "Write Version"
+        run: |
+          echo "version: ${GITHUB_REF_NAME}"
+          echo -n "${GITHUB_REF_NAME}" > src/version.txt
+
+      - name: "Docker Login"
+        uses: docker/login-action@v3
+        with:
+          registry: "ghcr.io"
+          username: ${{ vars.GHCR_USER }}
+          password: ${{ secrets.GHCR_PASS }}
+
+      - name: "Setup Buildx"
+        uses: docker/setup-buildx-action@v3
+      #  with:
+      #    platforms: linux/amd64,linux/arm64
+
+      - name: "Build and Push"
+        uses: docker/build-push-action@v6
+        with:
+          context: src
+          push: true
+          tags: ${{ needs.tags.outputs.tags }}
+          #platforms: linux/amd64,linux/arm64
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

@@ -1,0 +1,48 @@
+name: "Cloudflare Purge Zone Cache"
+description: "Clear or Purge the cache of a zone or multiple domains on Cloudflare."
+author: "Shane"
+branding:
+  icon: "cloud"
+  color: "orange"
+
+inputs:
+  token:
+    description: "Cloudflare API Token"
+    required: true
+  domains:
+    description: "Domains to Purge"
+    required: false
+    default: ""
+  files:
+    description: "Files to Purge"
+    required: false
+    default: ""
+  prefix:
+    description: "File Prefix"
+    required: false
+    default: ""
+  fail:
+    description: "Fail Mode"
+    required: false
+    default: "all"
+  summary:
+    description: "Add Summary to Job"
+    required: false
+    default: "true"
+  dry_run:
+    description: "Run Without Purging Cache"
+    required: false
+    default: "false"
+  zone:
+    description: "For Backwards Compatibility ONLY"
+    required: false
+
+outputs:
+  success:
+    description: "Successful Domains"
+  failed:
+    description: "Failed Domains"
+
+runs:
+  using: "docker"
+  image: "docker://ghcr.io/cssnr/cloudflare-purge-cache-action:v2.0.0"
