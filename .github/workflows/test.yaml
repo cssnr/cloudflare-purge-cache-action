@@ -2,8 +2,9 @@ name: "Test"
 
 on:
   workflow_dispatch:
-  pull_request_target:
-    branches: [master]
+  pull_request:
+  #pull_request_target:
+  #  branches: [master]
   push:
     branches: [master]
 
@@ -40,7 +41,6 @@ jobs:
 
       - name: "Validate Outputs"
         run: |
-          # TODO: Update this to loop through env.DOMAINS
           echo "success: '${{ steps.test.outputs.success }}'"
           if [ "${{ steps.test.outputs.success }}" != "cssnr.com" ];then
             echo "Output Verification Failed: success"
