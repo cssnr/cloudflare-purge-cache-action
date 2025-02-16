@@ -39,7 +39,7 @@ jobs:
 
       - name: "Echo Tags"
         run: |
-          echo "tags: '${{ steps.tags.outputs.tags }}'"
+          echo "tags: ${{ steps.tags.outputs.tags }}"
 
   build:
     name: "Build"
@@ -55,10 +55,11 @@ jobs:
 
       - name: "Echo Tags"
         run: |
-          echo "tags: '${{ needs.tags.outputs.tags }}'"
+          echo "tags: ${{ needs.tags.outputs.tags }}"
 
       - name: "Write Version"
         run: |
+          echo "version: ${GITHUB_REF_NAME}"
           echo -n "${GITHUB_REF_NAME}" > src/version.txt
 
       - name: "Docker Login"
