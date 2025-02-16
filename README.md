@@ -9,7 +9,7 @@
 
 # Cloudflare Purge Cache Action
 
-Purge Cloudflare Cache for a Domain or list of Domains.
+Purge Cloudflare cache for a domain or list of domains with optional file/url filter.
 
 For more details see: [action.yml](action.yml) and [src/main.py](src/main.py).
 
@@ -36,7 +36,7 @@ For more details see: [action.yml](action.yml) and [src/main.py](src/main.py).
 **files** - CSV or Newline Delimited list of files to purge.
 This is applied to all `domains` and is limited to 30 files on the free plan and 500 for enterprise.
 
-**prefix** - If provided, the `prefix` be prepended to all the files. See
+**prefix** - If provided, the `prefix` will be prepended to all the files. See
 the [Cloudflare Purge by single-file](https://developers.cloudflare.com/cache/how-to/purge-cache/purge-by-single-file/)
 documentation for more information.
 
@@ -60,7 +60,7 @@ With all inputs:
     domains: cssnr.com
     files: |
       favicon.ico
-      logo.png
+      static/logo.png
     prefix: 'https://cssnr.com/'
     fail: all
     summary: true
