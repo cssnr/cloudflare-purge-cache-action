@@ -2,7 +2,13 @@ import os
 import re
 import requests
 
-print("🏳️ Starting Cloudflare Purge Cache Action")
+
+if os.path.isfile("version.txt"):
+    with open("version.txt", "r") as file:
+        version = file.read().strip()
+else:
+    version = "Dev Build"
+print(f"🏳️ Starting Cloudflare Purge Cache Action - {version}")
 
 
 # Inputs
