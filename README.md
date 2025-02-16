@@ -1,4 +1,4 @@
-[![Tags](https://img.shields.io/github/actions/workflow/status/cssnr/cloudflare-purge-cache-action/tags.yaml?logo=github&logoColor=white&label=tags)](https://github.com/cssnr/cloudflare-purge-cache-action/actions/workflows/tags.yaml)
+[![Release](https://img.shields.io/github/actions/workflow/status/cssnr/cloudflare-purge-cache-action/release.yaml?logo=github&logoColor=white&label=release)](https://github.com/cssnr/cloudflare-purge-cache-action/actions/workflows/release.yaml)
 [![Test](https://img.shields.io/github/actions/workflow/status/cssnr/cloudflare-purge-cache-action/test.yaml?logo=github&logoColor=white&label=test)](https://github.com/cssnr/cloudflare-purge-cache-action/actions/workflows/test.yaml)
 [![GitHub Release Version](https://img.shields.io/github/v/release/cssnr/cloudflare-purge-cache-action?logo=github)](https://github.com/cssnr/cloudflare-purge-cache-action/releases/latest)
 [![GitHub Last Commit](https://img.shields.io/github/last-commit/cssnr/cloudflare-purge-cache-action?logo=github&logoColor=white&label=updated)](https://github.com/cssnr/cloudflare-purge-cache-action/graphs/commit-activity)
