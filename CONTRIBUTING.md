@@ -14,14 +14,13 @@ Linting (this is checked by actions):
 
 ## Running Locally
 
-To run actions locally you can use act: https://github.com/nektos/act
-
 1. Install `act`: https://nektosact.com/installation/index.html
 2. Create a `.secrets` file with: `CLOUDFLARE_API_TOKEN="xxx"`
-3. Run `act -j test --env DOMAINS=example.com` with your zone!
+3. Run `act -j test --env DOMAINS=example.com` with your domain!
 
-Note: the test updates the [action.yml](action.yml) to use the [Dockerfile](src/Dockerfile).
+The test updates the [action.yml](action.yml) to use the [Dockerfile](src/Dockerfile).
+This ensures the test will always use your local changes.
 
-To test the docker image locally you can simply run: [build.sh](build.sh)
+To test the docker image, run: [build.sh](build.sh)
 
 To see all available jobs run: `act -l`

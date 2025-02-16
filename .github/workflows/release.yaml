@@ -1,34 +1,36 @@
-name: "Build"
+name: "Release"
 
 on:
   release:
     types: [published]
-  #workflow_dispatch:
-  #  inputs:
-  #    tags:
-  #      description: "Override Tags: comma,separated"
-  #      required: false
 
 jobs:
-  build:
-    name: "Build"
+  tags:
+    name: "Tags"
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 5
+    outputs:
+      tags: ${{ steps.tags.outputs.tags }}
     permissions:
-      contents: read
-      packages: write
+      contents: write
 
     steps:
       - name: "Checkout"
         uses: actions/checkout@v4
 
-      - name: "Version Tags"
-        id: version
-        uses: cssnr/update-version-tags-action@skip
-        with:
-          write: false
+      - name: "Verify Tags"
+        run: |
+          echo "Verifying Version TAG: ${GITHUB_REF_NAME}"
+          echo "Checking: action.yaml"
+          grep "ghcr.io/cssnr/cloudflare-purge-cache-action:${GITHUB_REF_NAME}" action.yml
+          echo "Checking: build.sh"
+          grep "ghcr.io/cssnr/cloudflare-purge-cache-action:${GITHUB_REF_NAME}" build.sh
 
-      - name: "Docker Tags"
+      - name: "Update Version Tags"
+        id: version
+        uses: cssnr/update-version-tags-action@v1
+
+      - name: "Generate Docker Tags"
         id: tags
         uses: smashedr/docker-tags-action@master
         with:
@@ -39,6 +41,19 @@ jobs:
       - name: "Echo Tags"
         run: |
           echo "tags: '${{ steps.tags.outputs.tags }}'"
+
+  build:
+    name: "Build"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: [tags]
+    permissions:
+      packages: write
+
+    steps:
+      - name: "Echo Tags"
+        run: |
+          echo "tags: '${{ needs.tags.outputs.tags }}'"
 
       - name: "Docker Login"
         uses: docker/login-action@v3
@@ -57,7 +72,7 @@ jobs:
         with:
           context: src
           push: true
-          tags: ${{ steps.tags.outputs.tags }}
+          tags: ${{ needs.tags.outputs.tags }}
           #platforms: linux/amd64,linux/arm64
           cache-from: type=gha
           cache-to: type=gha,mode=max
