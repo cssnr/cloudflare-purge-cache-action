@@ -43,7 +43,7 @@ jobs:
         uses: smashedr/docker-tags-action@master
         with:
           images: "ghcr.io/${{ github.repository }}"
-          extra: ${{ github.ref_name }}
+          tags: ${{ github.ref_name }}
           latest: false
 
       - name: "Echo Tags"
@@ -81,9 +81,6 @@ jobs:
       contents: write
 
     steps:
-      - name: "Checkout"
-        uses: actions/checkout@v4
-
       - name: "Update Version Tags"
         id: tags
         uses: cssnr/update-version-tags-action@v1

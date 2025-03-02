@@ -1,0 +1,7 @@
+black
+isort
+mypy
+pyyaml
+requests
+ruff
+types-requests

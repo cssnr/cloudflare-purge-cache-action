@@ -1,5 +1,7 @@
 import os
 import re
+from typing import Any, Dict, List, Optional
+
 import requests
 
 
@@ -11,7 +13,7 @@ print(f"🏳️ Starting Cloudflare Purge Cache Action - {version}")
 
 input_token = os.environ["INPUT_TOKEN"].strip()
 # print(f"input_token: \033[35;1m{input_token}")
-input_domains = os.environ.get("INPUT_DOMAINS") or os.environ.get("INPUT_ZONE")
+input_domains: str = os.environ.get("INPUT_DOMAINS", "") or os.environ.get("INPUT_ZONE", "")
 input_domains = input_domains.strip()
 print(f"input_domains: \033[35;1m{repr(input_domains)}")
 # TODO: These checks are only needed for backwards compatibility w/ INPUT_ZONE
@@ -42,10 +44,10 @@ headers = {"Authorization": f"Bearer {input_token}"}
 # TODO: Split cloudflare class/functions into its own file
 
 
-def get_zones(name: str = "") -> list:
+def get_zones(name: str = "") -> Optional[list]:
     zones_url = base_url.format("zones")
     # print(f"get_zones: {zones_url}")
-    params = {"per_page": 50, "page": 1}
+    params: Dict[str, Any] = {"per_page": 50, "page": 1}
     if name:
         print(f"using filter: \033[33;1m{name}")
         params["name"] = name
@@ -65,10 +67,12 @@ def get_zones(name: str = "") -> list:
         return results
 
 
-def get_zone(all_zones: list, zone_name: str) -> dict:
-    for z in all_zones:
-        if z["name"] == zone_name:
-            return z
+def get_zone(all_zones: Optional[List[dict]], zone_name: str) -> Optional[dict]:
+    if all_zones:
+        for z in all_zones:
+            if z["name"] == zone_name:
+                return z
+    return None
 
 
 # Action
@@ -76,15 +80,17 @@ def get_zone(all_zones: list, zone_name: str) -> dict:
 domains: list = [x.strip() for x in re.split("[,|\n]", input_domains)]
 print(f"domains: \033[36;1m{domains}")
 
+purge_data: Dict[str, Any]
+
 if input_files:
     files: list = [f"{input_prefix}{x.strip()}" for x in re.split("[,|\n]", input_files)]
-    print(f"files: \033[36;1m{files}")
+    # print(f"files: \033[36;1m{files}")
     purge_data = {"files": files}
 else:
     purge_data = {"purge_everything": True}
 # print(f"purge_data: {purge_data}")
 
-zones: list = get_zones(domains[0] if len(domains) == 1 else "")
+zones: Optional[list] = get_zones(domains[0] if len(domains) == 1 else "")
 # print(zones)
 
 print(f"⌛ Processing {len(domains)} Domain(s)")
@@ -93,7 +99,7 @@ success = []
 for domain in domains:
     try:
         print(f"-- \033[36;1m{domain}")
-        zone: dict = get_zone(zones, domain)
+        zone: Optional[dict] = get_zone(zones, domain)
         if not zone:
             print("\033[33;1mZone Not Found!")
             continue
@@ -142,7 +148,9 @@ results_table.append("</table>")
 # Outputs
 
 with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+    # noinspection PyTypeChecker
     print(f"success={','.join(success)}", file=f)
+    # noinspection PyTypeChecker
     print(f"failed={','.join(failed)}", file=f)
 
 
@@ -158,21 +166,27 @@ if input_summary in ["y", "yes", "true", "on"]:
     # print(f"inputs_table: {inputs_table}")
 
     with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as f:
-        print("### Cloudflare Purge Cache Action", file=f)
+        # noinspection PyTypeChecker
+        print("## Cloudflare Purge Cache Action", file=f)
         if len(success) == len(domains):
+            # noinspection PyTypeChecker
             print(f"✅ All {len(domains)} Domain(s) were Successfully Purged.", file=f)
         elif not success:
+            # noinspection PyTypeChecker
             print(f"⛔ All {len(domains)} Domain(s) Failed to Purge!", file=f)
         else:
+            # noinspection PyTypeChecker
             print(f"⚠️ Only {len(failed)}/{len(domains)} Domains Purged!", file=f)
         if input_dry_run in ["y", "yes", "true", "on"]:
+            # noinspection PyTypeChecker
             print("\n⚠️ Dry Run! Remove or disable `dry_run` to purge cache.", file=f)
+        # noinspection PyTypeChecker
         print(f"<details><summary>Purge Results</summary>{''.join(results_table)}</details>\n", file=f)
+        # noinspection PyTypeChecker
         print(f"<details><summary>Inputs</summary>{''.join(inputs_table)}</details>\n", file=f)
-        print(
-            "[Report an issue or request a feature](https://github.com/cssnr/cloudflare-purge-cache-action/issues)",
-            file=f,
-        )
+        url = "https://github.com/cssnr/cloudflare-purge-cache-action"
+        # noinspection PyTypeChecker
+        print(f"[Report an issue or request a feature]({url}?tab=readme-ov-file#readme)\n\n---", file=f)
 
 
 if len(success) == len(domains):
