@@ -1,5 +1,6 @@
 import os
 import re
+from pprint import pprint
 from typing import Any, Dict, List, Optional
 
 import requests
@@ -143,20 +144,19 @@ for domain in domains:
             print("\033[32;1m  Purge Successful")
         else:
             print("\033[31;1m  Purge Failed")
-            print(result)
+            print("  " + result)
 
     except Exception as error:
         # print(f"⛔ Error: \033[31m{error}")
         print("\033[31;1m  Error Purging")
-        print(error)
-        print(f"::error::Error purging domain: {domain}")
+        print("  " + str(error))
         results[domain] = error
         continue
 
 
 # Results
 
-print(f"results: {results}")
+print("::group::Results")
 
 results_table = ["<table><tr><th>🚽</th><th>Zone</th></tr>"]
 failed = []
@@ -164,14 +164,16 @@ for domain in domains:
     if domain not in success:
         results_table.append(f"<tr><td>⛔</td><td>{domain}</td></tr>")
         failed.append(domain)
-        print(f"::warning::Failed to purge domain: {domain}")
+        print(f"::error::Failed to purge domain: {domain}")
     else:
         results_table.append(f"<tr><td>✅</td><td>{domain}</td></tr>")
 results_table.append("</table>")
 
 # print(f"results_table: {results_table}")
-# print(f"success: \033[32;1m{success}")
-# print(f"failed: \033[31;1m{failed}")
+print(f"success: \033[32;1m{success}")
+print(f"failed: \033[31;1m{failed}")
+pprint(results)
+print("::endgroup::")
 
 
 # Outputs
