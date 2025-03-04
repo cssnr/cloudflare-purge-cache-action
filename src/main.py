@@ -42,7 +42,7 @@ print(f"input_summary: \033[36;1m{input_summary}")
 input_dry_run = os.environ.get("INPUT_DRY_RUN", "").strip().lower()
 print(f"input_dry_run: \033[36;1m{input_dry_run}")
 if input_dry_run in ["y", "yes", "true", "on"]:
-    print("::notice::Dry Run is enabled and no cache is being purged!")
+    print("::warning::Dry Run is enabled and no cache is being purged!")
 print("::endgroup::")  # Inputs
 
 
@@ -113,8 +113,8 @@ zones: Optional[list] = get_zones(domains[0] if len(domains) == 1 else "")
 
 # print(f"⌛ Processing {len(domains)} Domain(s)")
 
-results = dict.fromkeys(domains)
 success = []
+results = dict.fromkeys(domains)
 for domain in domains:
     try:
         print(f"Processing: \033[36;1m{domain}")
@@ -156,10 +156,8 @@ for domain in domains:
 
 # Results
 
-print("::group::Results")
-
-results_table = ["<table><tr><th>🚽</th><th>Zone</th></tr>"]
 failed = []
+results_table = ["<table><tr><th>🚽</th><th>Zone</th></tr>"]
 for domain in domains:
     if domain not in success:
         results_table.append(f"<tr><td>⛔</td><td>{domain}</td></tr>")
@@ -169,10 +167,17 @@ for domain in domains:
         results_table.append(f"<tr><td>✅</td><td>{domain}</td></tr>")
 results_table.append("</table>")
 
+print("::group::Results")
 # print(f"results_table: {results_table}")
-print(f"success: \033[32;1m{success}")
-print(f"failed: \033[31;1m{failed}")
-pprint(results)
+# print(f"success: \033[32;1m{success}")
+# print(f"failed: \033[31;1m{failed}")
+# pprint(results)
+for domain, result in results.items():
+    if domain in success:
+        print(f"\033[32;1m{domain}")
+    else:
+        print(f"\033[31;1m{domain}")
+    pprint(result)
 print("::endgroup::")
 
 
@@ -220,6 +225,8 @@ if input_summary in ["y", "yes", "true", "on"]:
         print(f"[Report an issue or request a feature]({url}?tab=readme-ov-file#readme)\n\n---", file=f)
 
 
+# Finish
+
 if len(success) == len(domains):
     print("✅ \033[32;1mSuccessfully Purged All Domains")
 elif not success:
@@ -232,3 +239,7 @@ else:
     print(f"⚠️ \033[33;1mPurged Domains: {len(success)}/{len(domains)}")
     if input_fail in ["any"]:
         raise ValueError(f"Only Purged {len(success)}/{len(domains)} Domains!")
+
+if input_dry_run in ["y", "yes", "true", "on"]:
+    # noinspection PyTypeChecker
+    print("\033[33mThis was a Dry Run! Remove or disable `dry_run` to purge cache.")
