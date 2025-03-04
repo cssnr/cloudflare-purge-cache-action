@@ -8,7 +8,7 @@ on:
 
 env:
   DOMAINS: cssnr.com,example.com
-  FILES: favicon.ico,logo.png
+  FILES: favicon.ico,static/logo.png
 
 jobs:
   test:
