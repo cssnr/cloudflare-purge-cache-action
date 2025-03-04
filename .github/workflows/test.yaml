@@ -8,6 +8,7 @@ on:
 
 env:
   DOMAINS: cssnr.com,example.com
+  FILES: favicon.ico,static/logo.png
 
 jobs:
   test:
@@ -38,6 +39,8 @@ jobs:
           token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           zone: ${{ env.DOMAINS }} # DO NOT USE 'zone'! Use 'domains' instead!
           dry_run: true
+          prefix: "https://cssnr.com/"
+          files: ${{ env.FILES }}
 
       - name: "Verify Outputs"
         if: ${{ env.DOMAINS == 'cssnr.com,example.com' }}
