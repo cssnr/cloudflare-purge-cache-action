@@ -19,38 +19,36 @@ print(f"🏳️ Starting Cloudflare Purge Cache Action - {version}")
 
 print("::group::Parsed Inputs")
 input_token = os.environ["INPUT_TOKEN"].strip()
-# print(f"input_token: \033[35;1m{input_token}")
+print(f"input_token: \033[36;1m{input_token}")
+
 input_domains: str = os.environ.get("INPUT_DOMAINS", "") or os.environ.get("INPUT_ZONE", "")
 input_domains = input_domains.strip()
-print(f"input_domains: \033[35;1m{repr(input_domains)}")
+print(f"input_domains: \033[36;1m{repr(input_domains)}")
 # TODO: These checks are only needed for backwards compatibility w/ INPUT_ZONE
 if not input_domains:
     raise ValueError("No Domains Provided to Purge.")
 if os.environ.get("INPUT_ZONE"):
-    print("::notice::Notice: You are using a deprecated input 'zone'. Please change this to 'domains' ASAP!")
+    print("::notice::You are using a deprecated input 'zone'. Change this to 'domains' ASAP!")
 
 input_files = os.environ.get("INPUT_FILES", "").strip()
-print(f"input_files: \033[35;1m{repr(input_files)}")
+print(f"input_files: \033[36;1m{repr(input_files)}")
 input_prefix = os.environ.get("INPUT_PREFIX", "").strip()
-print(f"input_prefix: \033[35;1m{input_prefix}")
-
+print(f"input_prefix: \033[36;1m{input_prefix}")
 input_fail = os.environ.get("INPUT_FAIL", "").strip().lower()
-print(f"input_fail: \033[35;1m{input_fail}")
-
+print(f"input_fail: \033[36;1m{input_fail}")
 input_summary = os.environ.get("INPUT_SUMMARY", "").strip().lower()
-print(f"input_summary: \033[35;1m{input_summary}")
+print(f"input_summary: \033[36;1m{input_summary}")
 input_dry_run = os.environ.get("INPUT_DRY_RUN", "").strip().lower()
-print(f"input_dry_run: \033[35;1m{input_dry_run}")
+print(f"input_dry_run: \033[36;1m{input_dry_run}")
 if input_dry_run in ["y", "yes", "true", "on"]:
-    print("::notice::Notice: Dry Run is enabled and no cache is being purged!")
-
+    print("::notice::Dry Run is enabled and no cache is being purged!")
 print("::endgroup::")  # Inputs
-
-base_url = "https://api.cloudflare.com/client/v4/{0}"
-headers = {"Authorization": f"Bearer {input_token}"}
 
 
 # TODO: Split cloudflare class/functions into its own file
+
+base_url = "https://api.cloudflare.com/client/v4/{0}"
+headers = {"Authorization": f"Bearer {input_token}"}
 
 
 def get_zones(name: str = "") -> Optional[list]:
@@ -87,14 +85,14 @@ def get_zone(all_zones: Optional[List[dict]], zone_name: str) -> Optional[dict]:
 # Action
 
 domains: list = [x.strip() for x in re.split("[,|\n]", input_domains)]
-print(f"Parsed Domains: \033[36;1m{domains}")
+print(f"Parsed {len(domains)} Domains: \033[35;1m{domains}")
 
 purge_data: Dict[str, Any]
 
 if input_files:
     files: list = [f"{input_prefix}{x.strip()}" for x in re.split("[,|\n]", input_files)]
     total = len(files)
-    print(f"::group::Collected {total} File Paths")
+    print(f"::group::Parsed {total} Files")
     # print(f"files: \033[36;1m{files}")
     # print(*files, sep="\n")
     # from itertools import count
@@ -112,21 +110,23 @@ else:
 zones: Optional[list] = get_zones(domains[0] if len(domains) == 1 else "")
 # print(zones)  # sensitive information
 
-print(f"⌛ Processing {len(domains)} Domain(s)")
+# print(f"⌛ Processing {len(domains)} Domain(s)")
 
 results = dict.fromkeys(domains)
 success = []
 for domain in domains:
     try:
-        # print(f"-- \033[36;1m{domain}")
+        print(f"Processing: \033[36;1m{domain}")
         zone: Optional[dict] = get_zone(zones, domain)
         # print(f"zone: {zone}")  # sensitive information
         if not zone:
-            print(f"\033[33;1mZone Not Found: \033[0m{domain}")
+            # print(f"\033[33;1mZone Not Found: \033[0m{domain}")
+            print("\033[33;1m  Zone Not Found")
             continue
 
         if input_dry_run in ["y", "yes", "true", "on"]:
-            print(f"\033[34;1mDry Run Enabled: \033[0m{domain}")
+            # print(f"\033[34;1mDry Run Enabled: \033[0m{domain}")
+            print("\033[34;1m  Dry Run Enabled")
             success.append(domain)
             continue
 
@@ -137,14 +137,19 @@ for domain in domains:
         r.raise_for_status()
         # print(f"Cache Purged: {domain}")
         result = r.json()
-        print(result)
         results[domain] = result
         if result["success"]:
             success.append(domain)
+            print("\033[32;1m  Purge Successful")
+        else:
+            print("\033[31;1m  Purge Failed")
+            print(result)
 
     except Exception as error:
+        # print(f"⛔ Error: \033[31m{error}")
+        print("\033[31;1m  Error Purging")
+        print(error)
         print(f"::error::Error purging domain: {domain}")
-        print(f"⛔ Error: \033[31m{error}")
         results[domain] = error
         continue
 
@@ -163,8 +168,8 @@ for domain in domains:
     else:
         results_table.append(f"<tr><td>✅</td><td>{domain}</td></tr>")
 results_table.append("</table>")
-# print(f"results_table: {results_table}")
 
+# print(f"results_table: {results_table}")
 # print(f"success: \033[32;1m{success}")
 # print(f"failed: \033[31;1m{failed}")
 
