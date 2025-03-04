@@ -37,8 +37,8 @@ For more details see: [action.yml](action.yml) and [src/main.py](src/main.py).
 **files** - CSV or Newline Delimited list of files to purge.
 This is applied to all `domains` and is limited to 30 files on the free plan and 500 for enterprise.
 
-**prefix** - If provided, the `prefix` will be prepended to all the files. See
-the [Cloudflare Purge by single-file](https://developers.cloudflare.com/cache/how-to/purge-cache/purge-by-single-file/)
+**prefix** - If provided, the `prefix` will be prepended to all the files. See the
+[Cloudflare Purge by single-file](https://developers.cloudflare.com/cache/how-to/purge-cache/purge-by-single-file/)
 documentation for more information.
 
 **summary** - Write a Summary for the job. To disable this set to `false`.
@@ -145,8 +145,7 @@ If you are experiencing an issue/bug or getting unexpected results, you can:
 
 - Report an Issue: https://github.com/cssnr/portainer-stack-deploy-action/issues
 - Chat with us on Discord: https://discord.gg/wXy6m2X8wY
-- Provide General
-  Feedback: [https://cssnr.github.io/feedback/](https://cssnr.github.io/feedback/?app=Portainer%20Stack%20Deploy)
+- Provide General Feedback: [https://cssnr.github.io/feedback/](https://cssnr.github.io/feedback/?app=Portainer%20Stack%20Deploy)
 
 # Contributing
 

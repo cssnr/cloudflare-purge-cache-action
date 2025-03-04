@@ -5,12 +5,19 @@ from typing import Any, Dict, List, Optional
 import requests
 
 
-version = open("version.txt").read().strip() if os.path.isfile("version.txt") else "Dev Build"
+# version = open("version.txt").read().strip() if os.path.isfile("version.txt") else "Local Source"
+# print(f"🏳️ Starting Cloudflare Purge Cache Action - {version}")
+
+version = os.environ.get("GITHUB_ACTION_REF") or "Local Source"
+if os.path.isfile("/src/version.txt"):
+    with open("/src/version.txt", "r") as f:
+        version = f.read().strip()
 print(f"🏳️ Starting Cloudflare Purge Cache Action - {version}")
 
 
 # Inputs
 
+print("::group::Parsed Inputs")
 input_token = os.environ["INPUT_TOKEN"].strip()
 # print(f"input_token: \033[35;1m{input_token}")
 input_domains: str = os.environ.get("INPUT_DOMAINS", "") or os.environ.get("INPUT_ZONE", "")
@@ -37,6 +44,8 @@ print(f"input_dry_run: \033[35;1m{input_dry_run}")
 if input_dry_run in ["y", "yes", "true", "on"]:
     print("::notice::Notice: Dry Run is enabled and no cache is being purged!")
 
+print("::endgroup::")  # Inputs
+
 base_url = "https://api.cloudflare.com/client/v4/{0}"
 headers = {"Authorization": f"Bearer {input_token}"}
 
@@ -49,10 +58,10 @@ def get_zones(name: str = "") -> Optional[list]:
     # print(f"get_zones: {zones_url}")
     params: Dict[str, Any] = {"per_page": 50, "page": 1}
     if name:
-        print(f"using filter: \033[33;1m{name}")
+        print(f"\033[33;1mFiltering zones for: \033[0m{name}")
         params["name"] = name
     # print(f"params: {params}")
-    results = []
+    all_zones = []
     while True:
         response = requests.get(zones_url, headers=headers, params=params)
         # print(f"response.status_code: {response.status_code}")
@@ -60,11 +69,11 @@ def get_zones(name: str = "") -> Optional[list]:
         data = response.json()
         # print(f'result_info: {data["result_info"]}')
         # print(f'messages/errors: {data["messages"]} / {data["errors"]}')
-        results.extend(data["result"])
+        all_zones.extend(data["result"])
         if params["page"] < data["result_info"]["total_pages"]:
             params["page"] += 1
             continue
-        return results
+        return all_zones
 
 
 def get_zone(all_zones: Optional[List[dict]], zone_name: str) -> Optional[dict]:
@@ -78,56 +87,71 @@ def get_zone(all_zones: Optional[List[dict]], zone_name: str) -> Optional[dict]:
 # Action
 
 domains: list = [x.strip() for x in re.split("[,|\n]", input_domains)]
-print(f"domains: \033[36;1m{domains}")
+print(f"Parsed Domains: \033[36;1m{domains}")
 
 purge_data: Dict[str, Any]
 
 if input_files:
     files: list = [f"{input_prefix}{x.strip()}" for x in re.split("[,|\n]", input_files)]
+    total = len(files)
+    print(f"::group::Collected {total} File Paths")
     # print(f"files: \033[36;1m{files}")
+    # print(*files, sep="\n")
+    # from itertools import count
+    # print(*(map("{}: {}".format, count(), files)), sep="\n")
+    pad = len(str(total))
+    for i, file in enumerate(files, 1):
+        print(f"{i:0{pad}d}: {file}")
+    print("::endgroup::")  # File Paths
     purge_data = {"files": files}
 else:
+    print("Purging Everything")
     purge_data = {"purge_everything": True}
-# print(f"purge_data: {purge_data}")
 
+# if only 1 domain is provided, use a filter when getting zones
 zones: Optional[list] = get_zones(domains[0] if len(domains) == 1 else "")
-# print(zones)
+# print(zones)  # sensitive information
 
 print(f"⌛ Processing {len(domains)} Domain(s)")
 
+results = dict.fromkeys(domains)
 success = []
 for domain in domains:
     try:
-        print(f"-- \033[36;1m{domain}")
+        # print(f"-- \033[36;1m{domain}")
         zone: Optional[dict] = get_zone(zones, domain)
+        # print(f"zone: {zone}")  # sensitive information
         if not zone:
-            print("\033[33;1mZone Not Found!")
+            print(f"\033[33;1mZone Not Found: \033[0m{domain}")
             continue
-        # print(f'zone: {zone["id"]}')
-        url: str = base_url.format(f"zones/{zone['id']}/purge_cache")
-        # print(f"url: {url}")
 
         if input_dry_run in ["y", "yes", "true", "on"]:
-            print("\033[34;1mDry Run Enabled.")
+            print(f"\033[34;1mDry Run Enabled: \033[0m{domain}")
             success.append(domain)
             continue
 
         # Perform Purge
+        url: str = base_url.format(f"zones/{zone['id']}/purge_cache")
         r = requests.post(url, headers=headers, json=purge_data)
         # print(f"r.status_code: {r.status_code}")
         r.raise_for_status()
         # print(f"Cache Purged: {domain}")
         result = r.json()
         print(result)
+        results[domain] = result
         if result["success"]:
             success.append(domain)
 
     except Exception as error:
-        print(f"\033[31;1mError Purging: \033[31m{error}")
+        print(f"::error::Error purging domain: {domain}")
+        print(f"⛔ Error: \033[31m{error}")
+        results[domain] = error
         continue
 
 
 # Results
+
+print(f"results: {results}")
 
 results_table = ["<table><tr><th>🚽</th><th>Zone</th></tr>"]
 failed = []
@@ -155,9 +179,9 @@ with open(os.environ["GITHUB_OUTPUT"], "a") as f:
 
 
 # Summary
-# TODO: Collect errors and add to Summary
 
 if input_summary in ["y", "yes", "true", "on"]:
+    print("📝 Writing Job Summary")
     inputs_table = ["<table><tr><th>Input</th><th>Value</th></tr>"]
     for x in ["domains", "files", "prefix", "fail", "summary", "dry_run"]:
         value = globals()[f"input_{x}"]

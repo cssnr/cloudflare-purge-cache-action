@@ -48,7 +48,9 @@ jobs:
 
       - name: "Echo Tags"
         run: |
-          echo "tags: ${{ steps.tags.outputs.tags }}"
+          echo tags:\n'${{ steps.tags.outputs.tags }}'
+          echo labels:\n'${{ steps.tags.outputs.labels }}'
+          echo annotations:\n'${{ steps.tags.outputs.annotations }}'
 
       - name: "Docker Login"
         uses: docker/login-action@v3
@@ -68,6 +70,8 @@ jobs:
           context: src
           push: true
           tags: ${{ steps.tags.outputs.tags }}
+          labels: ${{ steps.tags.outputs.labels }}
+          annotations: ${{ steps.tags.outputs.labels }}
           #platforms: linux/amd64,linux/arm64
           cache-from: type=gha
           cache-to: type=gha,mode=max
