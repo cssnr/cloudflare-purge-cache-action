@@ -86,7 +86,7 @@ def get_zone(all_zones: Optional[List[dict]], zone_name: str) -> Optional[dict]:
 # Action
 
 domains: list = [x.strip() for x in re.split("[,|\n]", input_domains)]
-print(f"Parsed {len(domains)} Domains: \033[35;1m{domains}")
+print(f"Parsed {len(domains)} Domains \n  \033[35;1m{domains}")
 
 purge_data: Dict[str, Any]
 
@@ -227,6 +227,10 @@ if input_summary in ["y", "yes", "true", "on"]:
 
 # Finish
 
+if input_dry_run in ["y", "yes", "true", "on"]:
+    # noinspection PyTypeChecker
+    print("\033[33mThis was a Dry Run! Remove or disable `dry_run` to purge cache.")
+
 if len(success) == len(domains):
     print("✅ \033[32;1mSuccessfully Purged All Domains")
 elif not success:
@@ -239,7 +243,3 @@ else:
     print(f"⚠️ \033[33;1mPurged Domains: {len(success)}/{len(domains)}")
     if input_fail in ["any"]:
         raise ValueError(f"Only Purged {len(success)}/{len(domains)} Domains!")
-
-if input_dry_run in ["y", "yes", "true", "on"]:
-    # noinspection PyTypeChecker
-    print("\033[33mThis was a Dry Run! Remove or disable `dry_run` to purge cache.")
