@@ -1,6 +1,6 @@
 import os
 import re
-from pprint import pprint
+from pprint import pformat, pprint
 from typing import Any, Dict, List, Optional
 
 import requests
@@ -136,17 +136,15 @@ if not purge_data:
     print("Purging Everything")
     purge_data = {"purge_everything": True}
 
-
-print("Purging Data:")
-from pprint import pformat
-
+print("Purge Data:")
 print(f"\033[35;1m{pformat(purge_data)}")
-# pprint(purge_data, indent=2)
+
 
 # TODO: Allow also purging by zone ID
 # if only 1 zone is provided, use a filter when getting zones
 all_zones: Optional[list] = get_zones(zones[0] if total == 1 else "")
 # print(all_zones)  # sensitive information
+
 
 # print(f"⌛ Processing {total} Zone(s)")
 
