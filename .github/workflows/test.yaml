@@ -31,7 +31,7 @@ jobs:
         uses: Liam-Johnston/yaml-helper@V1
         if: ${{ !github.event.act }}
         with:
-          file-location: "action.yml"
+          file-location: "action.yaml"
           create-if-does-not-exist: false
           content: |
             runs:

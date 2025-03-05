@@ -18,7 +18,7 @@
 
 Purge Cloudflare cache for a zone or list of zones with optional file/url filter.
 
-For more details see: [action.yml](action.yml) and [src/main.py](src/main.py).
+For more details see: [action.yaml](action.yaml) and [src/main.py](src/main.py).
 
 ## Inputs
 

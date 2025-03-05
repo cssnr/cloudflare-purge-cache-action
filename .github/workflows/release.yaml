@@ -21,7 +21,7 @@ jobs:
           set -e
           echo "Verifying Version TAG in action.yaml: ${GITHUB_REF_NAME}"
           echo "image: ghcr.io/${GITHUB_REPOSITORY}:${GITHUB_REF_NAME}"
-          grep "ghcr.io/${GITHUB_REPOSITORY}:${GITHUB_REF_NAME}" action.yml
+          grep "ghcr.io/${GITHUB_REPOSITORY}:${GITHUB_REF_NAME}" action.yaml
 
       - name: "Rollback Failed Verification"
         if: ${{ failure() }}
