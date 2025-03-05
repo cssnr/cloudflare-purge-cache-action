@@ -22,24 +22,33 @@ For more details see: [action.yml](action.yml) and [src/main.py](src/main.py).
 
 ## Inputs
 
-| input   | required | default | description                       |
-| ------- | :------: | ------- | --------------------------------- |
-| token   | **Yes**  | -       | Cloudflare API Token              |
-| zones   | **Yes**  | -       | Zones(s) to Purge \*              |
-| files   |    -     | -       | Files to Purge \*                 |
-| prefix  |    -     | -       | File Prefix to Add \*             |
-| fail    |    -     | `all`   | Fail Mode: [`all`, `any`, `none`] |
-| summary |    -     | `true`  | Add Summary to Job \*             |
-| dry_run |    -     | `false` | Run Without Purging               |
+| input    | required | default | description                            |
+| -------- | :------: | ------- | -------------------------------------- |
+| token    | **Yes**  | -       | Cloudflare API Token                   |
+| zones    | **Yes**  | -       | Zones(s) to Purge \*                   |
+| files    |    -     | -       | Files to Purge \*                      |
+| prefix   |    -     | -       | File Prefix to Add \*                  |
+| tags     |    -     | -       | Tags to Purge (Enterprise only) \*     |
+| hosts    |    -     | -       | Hosts to Purge (Enterprise only) \*    |
+| prefixes |    -     | -       | Prefixes to Purge (Enterprise only) \* |
+| fail     |    -     | `all`   | Fail Mode: [`all`, `any`, `none`]      |
+| summary  |    -     | `true`  | Add Summary to Job \*                  |
+| dry_run  |    -     | `false` | Run Without Purging                    |
 
 **zones** - CSV or Newline Delimited list of zones to purge.
 
 **files** - CSV or Newline Delimited list of files to purge.
-This is applied to all `zones` and is limited to 30 files on the free plan and 500 for enterprise.
+This is limited to 30 files on the free plan and 500 for enterprise.
+For more information view docs for purge by
+[file](https://developers.cloudflare.com/cache/how-to/purge-cache/purge-by-single-file/)
 
-**prefix** - If provided, the `prefix` will be prepended to all the files. See the
-[Cloudflare Purge by single-file](https://developers.cloudflare.com/cache/how-to/purge-cache/purge-by-single-file/)
-documentation for more information.
+**prefix** - If provided, the `prefix` will be prepended to all the files.
+
+**tags/hosts/prefixes** - CSV or Newline Delimited list of tags/hosts/prefixes to purge.
+For more information view docs for purge by
+[tags](https://developers.cloudflare.com/cache/how-to/purge-cache/purge-by-tags/#purge-cache-by-cache-tags-enterprise-only),
+[hostname](https://developers.cloudflare.com/cache/how-to/purge-cache/purge-by-hostname/),
+[prefix](https://developers.cloudflare.com/cache/how-to/purge-cache/purge_by_prefix/).
 
 **summary** - Write a Summary for the job. To disable this set to `false`.
 
@@ -84,6 +93,11 @@ With all inputs:
       favicon.ico
       static/logo.png
     prefix: 'https://cssnr.com/'
+    tags: prod, dev
+    prefixes: |
+      example.com
+      example.com/foo
+    hosts: example.com, dev.example.com
     fail: all
     summary: true
     dry_run: false

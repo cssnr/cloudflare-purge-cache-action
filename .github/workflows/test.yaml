@@ -9,6 +9,7 @@ on:
 env:
   ZONES: cssnr.com,example.com
   FILES: favicon.ico,static/logo.png
+  TAGS: dev, prod
 
 jobs:
   test:
@@ -41,6 +42,7 @@ jobs:
           dry_run: true
           prefix: "https://cssnr.com/"
           files: ${{ env.FILES }}
+          tags: ${{ env.TAGS }}
 
       - name: "Verify Outputs"
         if: ${{ env.ZONES == 'cssnr.com,example.com' }}

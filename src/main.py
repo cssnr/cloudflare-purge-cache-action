@@ -15,10 +15,12 @@ if os.path.isfile("/src/version.txt"):
         version = f.read().strip()
 print(f"🏳️ Starting Cloudflare Purge Cache Action - {version}")
 
+input_notice = 'You are using a deprecated input "{old}". Change this to input "{new}" before it is removed in v3.'
 
 # Inputs
 
 print("::group::Parsed Inputs")
+
 input_token = os.environ["INPUT_TOKEN"].strip()
 print(f"input_token: \033[36;1m{input_token}")
 
@@ -30,15 +32,23 @@ print(f"input_zones: \033[36;1m{repr(input_zones)}")
 # TODO: These checks are only needed for backwards compatibility w/ INPUT_ZONE/INPUT_DOMAINS
 if not input_zones:
     raise ValueError("No Zones Provided to Purge.")
-if os.environ.get("INPUT_DOMAINS"):
-    print("::notice::You are using a deprecated input 'domains'. Change this to 'zones' ASAP!")
 if os.environ.get("INPUT_ZONE"):
-    print("::notice::You are using a deprecated input 'zone'. Change this to 'zones' ASAP!")
+    print(f"::notice::{input_notice.format(old='zone', new='zones')}")
+if os.environ.get("INPUT_DOMAINS"):
+    print(f"::notice::{input_notice.format(old='domains', new='zones')}")
 
 input_files = os.environ.get("INPUT_FILES", "").strip()
 print(f"input_files: \033[36;1m{repr(input_files)}")
 input_prefix = os.environ.get("INPUT_PREFIX", "").strip()
 print(f"input_prefix: \033[36;1m{input_prefix}")
+
+input_tags = os.environ.get("INPUT_TAGS", "").strip()
+print(f"input_tags: \033[36;1m{repr(input_tags)}")
+input_hosts = os.environ.get("INPUT_HOSTS", "").strip()
+print(f"input_hosts: \033[36;1m{repr(input_hosts)}")
+input_prefixes = os.environ.get("INPUT_PREFIXES", "").strip()
+print(f"input_prefixes: \033[36;1m{repr(input_prefixes)}")
+
 input_fail = os.environ.get("INPUT_FAIL", "").strip().lower()
 print(f"input_fail: \033[36;1m{input_fail}")
 input_summary = os.environ.get("INPUT_SUMMARY", "").strip().lower()
@@ -47,6 +57,7 @@ input_dry_run = os.environ.get("INPUT_DRY_RUN", "").strip().lower()
 print(f"input_dry_run: \033[36;1m{input_dry_run}")
 if input_dry_run in ["y", "yes", "true", "on"]:
     print("::warning::Dry Run is enabled and no cache is being purged!")
+
 print("::endgroup::")  # Inputs
 
 
@@ -94,29 +105,48 @@ total = len(zones)
 print(f"Parsed {total} Zones \n  \033[35;1m{zones}")
 
 
-purge_data: Dict[str, Any]
+purge_data: Dict[str, Any] = {}
 
 if input_files:
     files: list = [f"{input_prefix}{x.strip()}" for x in re.split("[,|\n]", input_files)]
     files_count = len(files)
     print(f"::group::Parsed {files_count} Files")
-    # print(f"files: \033[36;1m{files}")
-    # print(*files, sep="\n")
-    # from itertools import count
-    # print(*(map("{}: {}".format, count(), files)), sep="\n")
+    if input_prefix:
+        print(f"Added prefix to files: {input_prefix}")
     pad = len(str(files_count))
     for i, file in enumerate(files, 1):
         print(f"{i:0{pad}d}: {file}")
     print("::endgroup::")  # File Paths
     purge_data = {"files": files}
-else:
+
+if input_tags:
+    tags: list = [x.strip() for x in re.split("[,|\n]", input_tags)]
+    print(f"Parsed {len(tags)} Tags \n  \033[35;1m{tags}")
+    purge_data = {"tags": tags}
+if input_hosts:
+    hosts: list = [x.strip() for x in re.split("[,|\n]", input_hosts)]
+    print(f"Parsed {len(hosts)} Hosts \n  \033[35;1m{hosts}")
+    purge_data = {"hosts": hosts}
+if input_prefixes:
+    prefixes: list = [x.strip() for x in re.split("[,|\n]", input_prefixes)]
+    print(f"Parsed {len(prefixes)} Prefixes \n  \033[35;1m{prefixes}")
+    purge_data = {"prefixes": prefixes}
+
+if not purge_data:
     print("Purging Everything")
     purge_data = {"purge_everything": True}
 
+
+print("Purging Data:")
+from pprint import pformat
+
+print(f"\033[35;1m{pformat(purge_data)}")
+# pprint(purge_data, indent=2)
+
+# TODO: Allow also purging by zone ID
 # if only 1 zone is provided, use a filter when getting zones
 all_zones: Optional[list] = get_zones(zones[0] if total == 1 else "")
 # print(all_zones)  # sensitive information
-
 
 # print(f"⌛ Processing {total} Zone(s)")
 
@@ -177,8 +207,8 @@ results_table.append("</table>")
 
 print("::group::Results")
 # print(f"results_table: {results_table}")
-print(f"success: \033[32;1m{success}")
-print(f"failed: \033[31;1m{failed}")
+# print(f"success: \033[32;1m{success}")
+# print(f"failed: \033[31;1m{failed}")
 # pprint(results)
 for zone, result in results.items():  # type: ignore
     if zone in success:
@@ -236,7 +266,6 @@ if input_summary in ["y", "yes", "true", "on"]:
 # Finish
 
 if input_dry_run in ["y", "yes", "true", "on"]:
-    # noinspection PyTypeChecker
     print("\033[33mThis was a Dry Run! Remove or disable `dry_run` to purge cache.")
 
 if len(success) == total:

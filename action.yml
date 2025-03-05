@@ -21,6 +21,18 @@ inputs:
     description: "File Prefix"
     required: false
     default: ""
+  tags:
+    description: "Tags to Purge"
+    required: false
+    default: ""
+  hosts:
+    description: "Hosts to Purge"
+    required: false
+    default: ""
+  prefixes:
+    description: "Prefixes to Purge"
+    required: false
+    default: ""
   fail:
     description: "Fail Mode"
     required: false
