@@ -9,6 +9,8 @@ jobs:
     name: "Verify"
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    permissions:
+      contents: write
 
     steps:
       - name: "Checkout"
@@ -24,9 +26,9 @@ jobs:
       - name: "Rollback Failed Verification"
         if: ${{ failure() }}
         env:
-          GH_TOKEN: ${{ secrets.GH_PAT }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "Deleting Release Tag: ${{ github.ref_name }}"
+          echo "Deleting Release and Tag: ${{ github.ref_name }}"
           gh release delete ${{ github.ref_name }} --cleanup-tag
 
       - name: "Schedule Failure Notification"
