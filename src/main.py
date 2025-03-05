@@ -121,7 +121,8 @@ all_zones: Optional[list] = get_zones(zones[0] if total == 1 else "")
 # print(f"⌛ Processing {total} Zone(s)")
 
 success: List[str] = []
-results: Dict[str, Any] = dict.fromkeys(zones)
+results: Dict[str, Optional[Any]] = dict.fromkeys(zones)
+
 for name in zones:
     try:
         print(f"Processing: \033[36;1m{name}")
@@ -179,7 +180,7 @@ print("::group::Results")
 print(f"success: \033[32;1m{success}")
 print(f"failed: \033[31;1m{failed}")
 # pprint(results)
-for zone, result in results.items():
+for zone, result in results.items():  # type: ignore
     if zone in success:
         print(f"\033[32;1m{zone}")
     else:
