@@ -16,30 +16,39 @@
 - [Support](#Support)
 - [Contributing](#Contributing)
 
-Purge Cloudflare cache for a domain or list of domains with optional file/url filter.
+Purge Cloudflare cache for a zone or list of zones with optional file/url filter.
 
 For more details see: [action.yml](action.yml) and [src/main.py](src/main.py).
 
 ## Inputs
 
-| input   | required | default | description                       |
-| ------- | :------: | ------- | --------------------------------- |
-| token   | **Yes**  | -       | Cloudflare API Token              |
-| domains | **Yes**  | -       | Domain(s) to Purge \*             |
-| files   |    -     | -       | Files to Purge \*                 |
-| prefix  |    -     | -       | File Prefix to Add \*             |
-| fail    |    -     | `all`   | Fail Mode: [`all`, `any`, `none`] |
-| summary |    -     | `true`  | Add Summary to Job \*             |
-| dry_run |    -     | `false` | Run Without Purging               |
+| input    | required | default | description                            |
+| -------- | :------: | ------- | -------------------------------------- |
+| token    | **Yes**  | -       | Cloudflare API Token                   |
+| zones    | **Yes**  | -       | Zone Names to Purge \*                 |
+| files    |    -     | -       | Files to Purge \*                      |
+| prefix   |    -     | -       | Prefix Prepended to Files \*           |
+| tags     |    -     | -       | Tags to Purge (Enterprise only) \*     |
+| hosts    |    -     | -       | Hosts to Purge (Enterprise only) \*    |
+| prefixes |    -     | -       | Prefixes to Purge (Enterprise only) \* |
+| fail     |    -     | `all`   | Fail Mode: [`all`, `any`, `none`]      |
+| summary  |    -     | `true`  | Add Summary to Job \*                  |
+| dry_run  |    -     | `false` | Run Without Purging                    |
 
-**domains** - CSV or Newline Delimited list of zones to purge.
+**zones** - CSV or Newline Delimited list of zone names to purge.
 
 **files** - CSV or Newline Delimited list of files to purge.
-This is applied to all `domains` and is limited to 30 files on the free plan and 500 for enterprise.
+This is limited to 30 files on the free plan and 500 for enterprise.
+For more information view docs for purge by
+[file](https://developers.cloudflare.com/cache/how-to/purge-cache/purge-by-single-file/).
 
-**prefix** - If provided, the `prefix` will be prepended to all the files. See the
-[Cloudflare Purge by single-file](https://developers.cloudflare.com/cache/how-to/purge-cache/purge-by-single-file/)
-documentation for more information.
+**prefix** - If provided, the `prefix` will be prepended to all the `files`. Useful for generating full links from file paths.
+
+**tags/hosts/prefixes** - Enterprise only. CSV or Newline Delimited list of `tags`, `hosts` or `prefixes` to purge.
+For more information view docs for purge by
+[tags](https://developers.cloudflare.com/cache/how-to/purge-cache/purge-by-tags/),
+[hostname](https://developers.cloudflare.com/cache/how-to/purge-cache/purge-by-hostname/),
+[prefix](https://developers.cloudflare.com/cache/how-to/purge-cache/purge_by_prefix/).
 
 **summary** - Write a Summary for the job. To disable this set to `false`.
 
@@ -47,30 +56,29 @@ documentation for more information.
 
 ---
 
-⚠️ Only 1/2 Domains Purged!
+⚠️ Only 1/2 Zones Purged!
 
 ⚠️ Dry Run! Remove or disable `dry_run` to purge cache.
 
 <details><summary>Purge Results</summary><table><tr><th>🚽</th><th>Zone</th></tr><tr><td>✅</td><td>cssnr.com</td></tr><tr><td>⛔</td><td>example.com</td></tr></table></details>
 
-<details><summary>Inputs</summary><table><tr><th>Input</th><th>Value</th></tr><tr><td>domains</td><td>cssnr.com,example.com</td></tr><tr><td>files</td><td>-</td></tr><tr><td>prefix</td><td>-</td></tr><tr><td>fail</td><td>all</td></tr><tr><td>summary</td><td>true</td></tr><tr><td>dry_run</td><td>true</td></tr></table></details>
+<details><summary>Inputs</summary><table><tr><th>Input</th><th>Value</th></tr><tr><td>zones</td><td>cssnr.com,example.com</td></tr><tr><td>files</td><td>-</td></tr><tr><td>prefix</td><td>-</td></tr><tr><td>fail</td><td>all</td></tr><tr><td>summary</td><td>true</td></tr><tr><td>dry_run</td><td>true</td></tr></table></details>
 
 ---
 
 </details>
 
-To see a workflow run you can view a recent
-[test.yaml run](https://github.com/cssnr/cloudflare-purge-cache-action/actions/workflows/test.yaml) _(requires login)_.
-
-With required inputs:
+With minimal inputs, this will **purge everything**:
 
 ```yaml
 - name: 'Purge Cache Action'
   uses: cssnr/cloudflare-purge-cache-action@v2
   with:
     token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-    domains: cssnr.com,example.com
+    zones: cssnr.com,example.com
 ```
+
+To limit what is purged, specify either `files`, `tags`, `hosts`, or `prefixes`.
 
 With all inputs:
 
@@ -79,11 +87,16 @@ With all inputs:
   uses: cssnr/cloudflare-purge-cache-action@v2
   with:
     token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-    domains: cssnr.com
+    zones: cssnr.com
     files: |
       favicon.ico
       static/logo.png
     prefix: 'https://cssnr.com/'
+    tags: prod, dev
+    hosts: example.com, dev.example.com
+    prefixes: |
+      example.com
+      example.com/foo
     fail: all
     summary: true
     dry_run: false
@@ -91,10 +104,10 @@ With all inputs:
 
 ## Outputs
 
-| output  | description             |
-| ------- | ----------------------- |
-| success | Successful Domains, CSV |
-| failed  | Failed Domains, CSV     |
+| output  | description           |
+| ------- | --------------------- |
+| success | Successful Zones, CSV |
+| failed  | Failed Zones, CSV     |
 
 ```yaml
 - name: 'Purge Cache Action'
@@ -102,7 +115,7 @@ With all inputs:
   uses: cssnr/cloudflare-purge-cache-action@v2
   with:
     token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-    domains: cssnr.com,example.com
+    zones: cssnr.com,example.com
 
 - name: 'Echo Output'
   run: |
@@ -129,7 +142,7 @@ jobs:
         uses: cssnr/cloudflare-purge-cache-action@v2
         with:
           token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          domains: |
+          zones: |
             cssnr.com
             example.com
 ```

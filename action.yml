@@ -9,8 +9,8 @@ inputs:
   token:
     description: "Cloudflare API Token"
     required: true
-  domains:
-    description: "Domains to Purge"
+  zones:
+    description: "Zones to Purge"
     required: false
     default: ""
   files:
@@ -19,6 +19,18 @@ inputs:
     default: ""
   prefix:
     description: "File Prefix"
+    required: false
+    default: ""
+  tags:
+    description: "Tags to Purge"
+    required: false
+    default: ""
+  hosts:
+    description: "Hosts to Purge"
+    required: false
+    default: ""
+  prefixes:
+    description: "Prefixes to Purge"
     required: false
     default: ""
   fail:
@@ -34,15 +46,18 @@ inputs:
     required: false
     default: "false"
   zone:
-    description: "For Backwards Compatibility ONLY"
+    description: "DO NOT USE! Backwards Compatibility Only"
+    required: false
+  domains:
+    description: "DO NOT USE! Backwards Compatibility Only"
     required: false
 
 outputs:
   success:
-    description: "Successful Domains"
+    description: "Successful Zones"
   failed:
-    description: "Failed Domains"
+    description: "Failed Zones"
 
 runs:
   using: "docker"
-  image: "docker://ghcr.io/cssnr/cloudflare-purge-cache-action:v2.0.1"
+  image: "docker://ghcr.io/cssnr/cloudflare-purge-cache-action:v2.1.0"

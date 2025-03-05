@@ -31,6 +31,11 @@ jobs:
           python -m pip install -U pip
           python -m pip install -Ur requirements.txt
 
+      - name: "Flake8"
+        if: ${{ always() }}
+        run: |
+          flake8 --max-line-length 119 --extend-exclude ".github" .
+
       - name: "Ruff"
         if: ${{ always() }}
         uses: astral-sh/ruff-action@v3

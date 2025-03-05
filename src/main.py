@@ -1,6 +1,6 @@
 import os
 import re
-from pprint import pprint
+from pprint import pformat, pprint
 from typing import Any, Dict, List, Optional
 
 import requests
@@ -15,26 +15,40 @@ if os.path.isfile("/src/version.txt"):
         version = f.read().strip()
 print(f"🏳️ Starting Cloudflare Purge Cache Action - {version}")
 
+input_notice = 'You are using a deprecated input "{old}". Change this to input "{new}" before it is removed in v3.'
 
 # Inputs
 
-print("::group::Parsed Inputs")
+print("::group::Inputs")
+
 input_token = os.environ["INPUT_TOKEN"].strip()
 print(f"input_token: \033[36;1m{input_token}")
 
-input_domains: str = os.environ.get("INPUT_DOMAINS", "") or os.environ.get("INPUT_ZONE", "")
-input_domains = input_domains.strip()
-print(f"input_domains: \033[36;1m{repr(input_domains)}")
-# TODO: These checks are only needed for backwards compatibility w/ INPUT_ZONE
-if not input_domains:
-    raise ValueError("No Domains Provided to Purge.")
+input_zones: str = (
+    os.environ.get("INPUT_ZONES", "") or os.environ.get("INPUT_ZONE", "") or os.environ.get("INPUT_DOMAINS", "")
+)
+input_zones = input_zones.strip()
+print(f"input_zones: \033[36;1m{repr(input_zones)}")
+# TODO: These checks are only needed for backwards compatibility w/ INPUT_ZONE/INPUT_DOMAINS
+if not input_zones:
+    raise ValueError("No Zones Provided to Purge.")
 if os.environ.get("INPUT_ZONE"):
-    print("::notice::You are using a deprecated input 'zone'. Change this to 'domains' ASAP!")
+    print(f"::notice::{input_notice.format(old='zone', new='zones')}")
+if os.environ.get("INPUT_DOMAINS"):
+    print(f"::notice::{input_notice.format(old='domains', new='zones')}")
 
 input_files = os.environ.get("INPUT_FILES", "").strip()
 print(f"input_files: \033[36;1m{repr(input_files)}")
 input_prefix = os.environ.get("INPUT_PREFIX", "").strip()
 print(f"input_prefix: \033[36;1m{input_prefix}")
+
+input_tags = os.environ.get("INPUT_TAGS", "").strip()
+print(f"input_tags: \033[36;1m{repr(input_tags)}")
+input_hosts = os.environ.get("INPUT_HOSTS", "").strip()
+print(f"input_hosts: \033[36;1m{repr(input_hosts)}")
+input_prefixes = os.environ.get("INPUT_PREFIXES", "").strip()
+print(f"input_prefixes: \033[36;1m{repr(input_prefixes)}")
+
 input_fail = os.environ.get("INPUT_FAIL", "").strip().lower()
 print(f"input_fail: \033[36;1m{input_fail}")
 input_summary = os.environ.get("INPUT_SUMMARY", "").strip().lower()
@@ -43,6 +57,7 @@ input_dry_run = os.environ.get("INPUT_DRY_RUN", "").strip().lower()
 print(f"input_dry_run: \033[36;1m{input_dry_run}")
 if input_dry_run in ["y", "yes", "true", "on"]:
     print("::warning::Dry Run is enabled and no cache is being purged!")
+
 print("::endgroup::")  # Inputs
 
 
@@ -52,15 +67,15 @@ base_url = "https://api.cloudflare.com/client/v4/{0}"
 headers = {"Authorization": f"Bearer {input_token}"}
 
 
-def get_zones(name: str = "") -> Optional[list]:
+def get_zones(zone_name: str = "") -> Optional[list]:
     zones_url = base_url.format("zones")
     # print(f"get_zones: {zones_url}")
     params: Dict[str, Any] = {"per_page": 50, "page": 1}
-    if name:
-        print(f"\033[33;1mFiltering zones for: \033[0m{name}")
-        params["name"] = name
+    if zone_name:
+        print(f"\033[33;1mFiltering zones for: \033[0m{zone_name}")
+        params["name"] = zone_name
     # print(f"params: {params}")
-    all_zones = []
+    zone_list = []
     while True:
         response = requests.get(zones_url, headers=headers, params=params)
         # print(f"response.status_code: {response.status_code}")
@@ -68,67 +83,88 @@ def get_zones(name: str = "") -> Optional[list]:
         data = response.json()
         # print(f'result_info: {data["result_info"]}')
         # print(f'messages/errors: {data["messages"]} / {data["errors"]}')
-        all_zones.extend(data["result"])
+        zone_list.extend(data["result"])
         if params["page"] < data["result_info"]["total_pages"]:
             params["page"] += 1
             continue
-        return all_zones
+        return zone_list
 
 
-def get_zone(all_zones: Optional[List[dict]], zone_name: str) -> Optional[dict]:
-    if all_zones:
-        for z in all_zones:
+def get_zone(zone_list: Optional[List[dict]], zone_name: str) -> Optional[dict]:
+    if zone_list:
+        for z in zone_list:
             if z["name"] == zone_name:
                 return z
     return None
 
 
-# Action
+# Variables
 
-domains: list = [x.strip() for x in re.split("[,|\n]", input_domains)]
-print(f"Parsed {len(domains)} Domains \n  \033[35;1m{domains}")
+zones: list = [x.strip() for x in re.split("[,|\n]", input_zones)]
+total = len(zones)
+print(f"Parsed {total} Zones \n  \033[35;1m{zones}")
 
-purge_data: Dict[str, Any]
+purge_data: Dict[str, Any] = {}
 
 if input_files:
     files: list = [f"{input_prefix}{x.strip()}" for x in re.split("[,|\n]", input_files)]
-    total = len(files)
-    print(f"::group::Parsed {total} Files")
-    # print(f"files: \033[36;1m{files}")
-    # print(*files, sep="\n")
-    # from itertools import count
-    # print(*(map("{}: {}".format, count(), files)), sep="\n")
-    pad = len(str(total))
+    files_count = len(files)
+    print(f"::group::Parsed {files_count} Files")
+    if input_prefix:
+        print(f"Added prefix to files: {input_prefix}")
+    pad = len(str(files_count))
     for i, file in enumerate(files, 1):
         print(f"{i:0{pad}d}: {file}")
     print("::endgroup::")  # File Paths
     purge_data = {"files": files}
-else:
-    print("Purging Everything")
+
+if input_tags:
+    tags: list = [x.strip() for x in re.split("[,|\n]", input_tags)]
+    print(f"Parsed {len(tags)} Tags \n  \033[35;1m{tags}")
+    purge_data = {"tags": tags}
+if input_hosts:
+    hosts: list = [x.strip() for x in re.split("[,|\n]", input_hosts)]
+    print(f"Parsed {len(hosts)} Hosts \n  \033[35;1m{hosts}")
+    purge_data = {"hosts": hosts}
+if input_prefixes:
+    prefixes: list = [x.strip() for x in re.split("[,|\n]", input_prefixes)]
+    print(f"Parsed {len(prefixes)} Prefixes \n  \033[35;1m{prefixes}")
+    purge_data = {"prefixes": prefixes}
+
+if not purge_data:
+    print("Purging Everything...")
     purge_data = {"purge_everything": True}
 
-# if only 1 domain is provided, use a filter when getting zones
-zones: Optional[list] = get_zones(domains[0] if len(domains) == 1 else "")
-# print(zones)  # sensitive information
+print("::group::Purge Data")
+print(f"\033[35;1m{pformat(purge_data)}")
+print("::endgroup::")  # Purge Data
 
-# print(f"⌛ Processing {len(domains)} Domain(s)")
 
-success = []
-results = dict.fromkeys(domains)
-for domain in domains:
+# Action
+
+# TODO: Allow also purging by zone ID
+# if only 1 zone is provided, use a filter when getting zones
+all_zones: Optional[list] = get_zones(zones[0] if total == 1 else "")
+# print(all_zones)  # sensitive information
+
+
+success: List[str] = []
+results: Dict[str, Optional[Any]] = dict.fromkeys(zones)
+
+for name in zones:
     try:
-        print(f"Processing: \033[36;1m{domain}")
-        zone: Optional[dict] = get_zone(zones, domain)
+        print(f"⌛ Processing: \033[36;1m{name}")
+        zone: Optional[dict] = get_zone(all_zones, name)
         # print(f"zone: {zone}")  # sensitive information
         if not zone:
-            # print(f"\033[33;1mZone Not Found: \033[0m{domain}")
+            # print(f"\033[33;1mZone Not Found: \033[0m{zone}")
             print("\033[33;1m  Zone Not Found")
             continue
 
         if input_dry_run in ["y", "yes", "true", "on"]:
-            # print(f"\033[34;1mDry Run Enabled: \033[0m{domain}")
+            # print(f"\033[34;1mDry Run Enabled: \033[0m{zone}")
             print("\033[34;1m  Dry Run Enabled")
-            success.append(domain)
+            success.append(name)
             continue
 
         # Perform Purge
@@ -136,11 +172,11 @@ for domain in domains:
         r = requests.post(url, headers=headers, json=purge_data)
         # print(f"r.status_code: {r.status_code}")
         r.raise_for_status()
-        # print(f"Cache Purged: {domain}")
+        # print(f"Cache Purged: {zone}")
         result = r.json()
-        results[domain] = result
+        results[name] = result
         if result["success"]:
-            success.append(domain)
+            success.append(name)
             print("\033[32;1m  Purge Successful")
         else:
             print("\033[31;1m  Purge Failed")
@@ -150,21 +186,21 @@ for domain in domains:
         # print(f"⛔ Error: \033[31m{error}")
         print("\033[31;1m  Error Purging")
         print("  " + str(error))
-        results[domain] = error
+        results[name] = error
         continue
 
 
 # Results
 
-failed = []
+failed: List[str] = []
 results_table = ["<table><tr><th>🚽</th><th>Zone</th></tr>"]
-for domain in domains:
-    if domain not in success:
-        results_table.append(f"<tr><td>⛔</td><td>{domain}</td></tr>")
-        failed.append(domain)
-        print(f"::error::Failed to purge domain: {domain}")
+for name in zones:
+    if name not in success:
+        results_table.append(f"<tr><td>⛔</td><td>{name}</td></tr>")
+        failed.append(name)
+        print(f"::error::Failed to purge zone: {name}")
     else:
-        results_table.append(f"<tr><td>✅</td><td>{domain}</td></tr>")
+        results_table.append(f"<tr><td>✅</td><td>{name}</td></tr>")
 results_table.append("</table>")
 
 print("::group::Results")
@@ -172,11 +208,11 @@ print("::group::Results")
 # print(f"success: \033[32;1m{success}")
 # print(f"failed: \033[31;1m{failed}")
 # pprint(results)
-for domain, result in results.items():
-    if domain in success:
-        print(f"\033[32;1m{domain}")
+for zone, result in results.items():  # type: ignore
+    if zone in success:
+        print(f"\033[32;1m{zone}")
     else:
-        print(f"\033[31;1m{domain}")
+        print(f"\033[31;1m{zone}")
     pprint(result)
 print("::endgroup::")
 
@@ -195,7 +231,7 @@ with open(os.environ["GITHUB_OUTPUT"], "a") as f:
 if input_summary in ["y", "yes", "true", "on"]:
     print("📝 Writing Job Summary")
     inputs_table = ["<table><tr><th>Input</th><th>Value</th></tr>"]
-    for x in ["domains", "files", "prefix", "fail", "summary", "dry_run"]:
+    for x in ["zones", "files", "prefix", "fail", "summary", "dry_run"]:
         value = globals()[f"input_{x}"]
         inputs_table.append(f"<tr><td>{x}</td><td>{value or '-'}</td></tr>")
     inputs_table.append("</table>")
@@ -204,15 +240,15 @@ if input_summary in ["y", "yes", "true", "on"]:
     with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as f:
         # noinspection PyTypeChecker
         print("## Cloudflare Purge Cache Action", file=f)
-        if len(success) == len(domains):
+        if len(success) == total:
             # noinspection PyTypeChecker
-            print(f"✅ All {len(domains)} Domain(s) were Successfully Purged.", file=f)
+            print(f"✅ All {total} Zones(s) were Successfully Purged.", file=f)
         elif not success:
             # noinspection PyTypeChecker
-            print(f"⛔ All {len(domains)} Domain(s) Failed to Purge!", file=f)
+            print(f"⛔ All {total} Zones(s) Failed to Purge!", file=f)
         else:
             # noinspection PyTypeChecker
-            print(f"⚠️ Only {len(failed)}/{len(domains)} Domains Purged!", file=f)
+            print(f"⚠️ Only {len(failed)}/{total} Zones Purged!", file=f)
         if input_dry_run in ["y", "yes", "true", "on"]:
             # noinspection PyTypeChecker
             print("\n⚠️ Dry Run! Remove or disable `dry_run` to purge cache.", file=f)
@@ -228,18 +264,17 @@ if input_summary in ["y", "yes", "true", "on"]:
 # Finish
 
 if input_dry_run in ["y", "yes", "true", "on"]:
-    # noinspection PyTypeChecker
     print("\033[33mThis was a Dry Run! Remove or disable `dry_run` to purge cache.")
 
-if len(success) == len(domains):
-    print("✅ \033[32;1mSuccessfully Purged All Domains")
+if len(success) == total:
+    print("✅ \033[32;1mSuccessfully Purged All Zones")
 elif not success:
-    print(f"⛔ \033[31;1mAll {len(domains)} Cache Purges Failed")
+    print(f"⛔ \033[31;1mAll {total} Cache Purges Failed")
     if input_fail in ["all", "any"]:
-        raise ValueError(f"All {len(domains)} Cache Purges Failed!")
+        raise ValueError(f"All {total} Cache Purges Failed!")
 else:
-    print(f"Successful domains: \033[32;1m{success}")
-    print(f"Failed domains: \033[31;1m{failed}")
-    print(f"⚠️ \033[33;1mPurged Domains: {len(success)}/{len(domains)}")
+    print(f"Successful zones: \033[32;1m{success}")
+    print(f"Failed zones: \033[31;1m{failed}")
+    print(f"⚠️ \033[33;1mPurged Zones: {len(success)}/{total}")
     if input_fail in ["any"]:
-        raise ValueError(f"Only Purged {len(success)}/{len(domains)} Domains!")
+        raise ValueError(f"Only Purged {len(success)}/{total} Zones!")

@@ -7,8 +7,13 @@ on:
   push:
 
 env:
-  DOMAINS: cssnr.com,example.com
-  FILES: favicon.ico,static/logo.png
+  ZONES: ${{ vars.ZONES || 'cssnr.com,example.com' }}
+  FILES: ""
+  PREFIX: ""
+  TAGS: ""
+  HOSTS: ""
+  PREFIXES: ""
+  DRY_RUN: "true"
 
 jobs:
   test:
@@ -37,13 +42,16 @@ jobs:
         uses: ./
         with:
           token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          zone: ${{ env.DOMAINS }} # DO NOT USE 'zone'! Use 'domains' instead!
-          dry_run: true
-          prefix: "https://cssnr.com/"
+          domains: ${{ env.ZONES }} # DO NOT USE 'domains' use 'zones' instead...
+          dry_run: ${{ env.DRY_RUN }}
           files: ${{ env.FILES }}
+          prefix: ${{ env.PREFIX }}
+          tags: ${{ env.TAGS }}
+          hosts: ${{ env.HOSTS }}
+          prefixes: ${{ env.PREFIXES }}
 
       - name: "Verify Outputs"
-        if: ${{ env.DOMAINS == 'cssnr.com,example.com' }}
+        if: ${{ env.ZONES == 'cssnr.com,example.com' }}
         run: |
           echo "success: '${{ steps.test.outputs.success }}'"
           if [ "${{ steps.test.outputs.success }}" != "cssnr.com" ];then
@@ -57,7 +65,7 @@ jobs:
           fi
 
       - name: "Schedule Failure Notification"
-        if: ${{ always() && failure() && github.event_name == 'schedule' }}
+        if: ${{ failure() && github.event_name == 'schedule' }}
         uses: sarisia/actions-status-discord@v1
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
