@@ -45,4 +45,4 @@ outputs:
 
 runs:
   using: "docker"
-  image: "docker://ghcr.io/cssnr/cloudflare-purge-cache-action:v2.0.0"
+  image: "docker://ghcr.io/cssnr/cloudflare-purge-cache-action:v2.0.1"
