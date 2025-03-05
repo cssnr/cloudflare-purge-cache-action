@@ -17,7 +17,7 @@ Linting (this is checked by actions):
 To run actions locally you need to install act: https://nektosact.com/installation/index.html
 
 1. Create a `.secrets` file with: `CLOUDFLARE_API_TOKEN="xxx"`
-2. Run: `act -j test --env DOMAINS=example.com` (with your domain!)
+2. Run: `act -j test --env ZONES=example.com` (with your zone!)
 
 The test updates the [action.yml](action.yml) to use the [Dockerfile](src/Dockerfile).
 This ensures the test will always use your local changes.

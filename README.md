@@ -16,7 +16,7 @@
 - [Support](#Support)
 - [Contributing](#Contributing)
 
-Purge Cloudflare cache for a domain or list of domains with optional file/url filter.
+Purge Cloudflare cache for a zone or list of zones with optional file/url filter.
 
 For more details see: [action.yml](action.yml) and [src/main.py](src/main.py).
 
@@ -25,17 +25,17 @@ For more details see: [action.yml](action.yml) and [src/main.py](src/main.py).
 | input   | required | default | description                       |
 | ------- | :------: | ------- | --------------------------------- |
 | token   | **Yes**  | -       | Cloudflare API Token              |
-| domains | **Yes**  | -       | Domain(s) to Purge \*             |
+| zones   | **Yes**  | -       | Zones(s) to Purge \*              |
 | files   |    -     | -       | Files to Purge \*                 |
 | prefix  |    -     | -       | File Prefix to Add \*             |
 | fail    |    -     | `all`   | Fail Mode: [`all`, `any`, `none`] |
 | summary |    -     | `true`  | Add Summary to Job \*             |
 | dry_run |    -     | `false` | Run Without Purging               |
 
-**domains** - CSV or Newline Delimited list of zones to purge.
+**zones** - CSV or Newline Delimited list of zones to purge.
 
 **files** - CSV or Newline Delimited list of files to purge.
-This is applied to all `domains` and is limited to 30 files on the free plan and 500 for enterprise.
+This is applied to all `zones` and is limited to 30 files on the free plan and 500 for enterprise.
 
 **prefix** - If provided, the `prefix` will be prepended to all the files. See the
 [Cloudflare Purge by single-file](https://developers.cloudflare.com/cache/how-to/purge-cache/purge-by-single-file/)
@@ -47,13 +47,13 @@ documentation for more information.
 
 ---
 
-⚠️ Only 1/2 Domains Purged!
+⚠️ Only 1/2 Zones Purged!
 
 ⚠️ Dry Run! Remove or disable `dry_run` to purge cache.
 
 <details><summary>Purge Results</summary><table><tr><th>🚽</th><th>Zone</th></tr><tr><td>✅</td><td>cssnr.com</td></tr><tr><td>⛔</td><td>example.com</td></tr></table></details>
 
-<details><summary>Inputs</summary><table><tr><th>Input</th><th>Value</th></tr><tr><td>domains</td><td>cssnr.com,example.com</td></tr><tr><td>files</td><td>-</td></tr><tr><td>prefix</td><td>-</td></tr><tr><td>fail</td><td>all</td></tr><tr><td>summary</td><td>true</td></tr><tr><td>dry_run</td><td>true</td></tr></table></details>
+<details><summary>Inputs</summary><table><tr><th>Input</th><th>Value</th></tr><tr><td>zones</td><td>cssnr.com,example.com</td></tr><tr><td>files</td><td>-</td></tr><tr><td>prefix</td><td>-</td></tr><tr><td>fail</td><td>all</td></tr><tr><td>summary</td><td>true</td></tr><tr><td>dry_run</td><td>true</td></tr></table></details>
 
 ---
 
@@ -69,7 +69,7 @@ With required inputs:
   uses: cssnr/cloudflare-purge-cache-action@v2
   with:
     token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-    domains: cssnr.com,example.com
+    zones: cssnr.com,example.com
 ```
 
 With all inputs:
@@ -79,7 +79,7 @@ With all inputs:
   uses: cssnr/cloudflare-purge-cache-action@v2
   with:
     token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-    domains: cssnr.com
+    zones: cssnr.com
     files: |
       favicon.ico
       static/logo.png
@@ -91,10 +91,10 @@ With all inputs:
 
 ## Outputs
 
-| output  | description             |
-| ------- | ----------------------- |
-| success | Successful Domains, CSV |
-| failed  | Failed Domains, CSV     |
+| output  | description           |
+| ------- | --------------------- |
+| success | Successful Zones, CSV |
+| failed  | Failed Zones, CSV     |
 
 ```yaml
 - name: 'Purge Cache Action'
@@ -102,7 +102,7 @@ With all inputs:
   uses: cssnr/cloudflare-purge-cache-action@v2
   with:
     token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-    domains: cssnr.com,example.com
+    zones: cssnr.com,example.com
 
 - name: 'Echo Output'
   run: |
@@ -129,7 +129,7 @@ jobs:
         uses: cssnr/cloudflare-purge-cache-action@v2
         with:
           token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          domains: |
+          zones: |
             cssnr.com
             example.com
 ```

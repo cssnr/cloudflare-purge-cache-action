@@ -9,8 +9,8 @@ inputs:
   token:
     description: "Cloudflare API Token"
     required: true
-  domains:
-    description: "Domains to Purge"
+  zones:
+    description: "Zones to Purge"
     required: false
     default: ""
   files:
@@ -34,14 +34,17 @@ inputs:
     required: false
     default: "false"
   zone:
-    description: "For Backwards Compatibility ONLY"
+    description: "DO NOT USE! Backwards Compatibility Only"
+    required: false
+  domains:
+    description: "DO NOT USE! Backwards Compatibility Only"
     required: false
 
 outputs:
   success:
-    description: "Successful Domains"
+    description: "Successful Zones"
   failed:
-    description: "Failed Domains"
+    description: "Failed Zones"
 
 runs:
   using: "docker"
