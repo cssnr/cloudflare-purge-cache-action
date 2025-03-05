@@ -19,7 +19,7 @@ input_notice = 'You are using a deprecated input "{old}". Change this to input "
 
 # Inputs
 
-print("::group::Parsed Inputs")
+print("::group::Inputs")
 
 input_token = os.environ["INPUT_TOKEN"].strip()
 print(f"input_token: \033[36;1m{input_token}")
@@ -98,12 +98,11 @@ def get_zone(zone_list: Optional[List[dict]], zone_name: str) -> Optional[dict]:
     return None
 
 
-# Action
+# Variables
 
 zones: list = [x.strip() for x in re.split("[,|\n]", input_zones)]
 total = len(zones)
 print(f"Parsed {total} Zones \n  \033[35;1m{zones}")
-
 
 purge_data: Dict[str, Any] = {}
 
@@ -133,20 +132,21 @@ if input_prefixes:
     purge_data = {"prefixes": prefixes}
 
 if not purge_data:
-    print("Purging Everything")
+    print("Purging Everything...")
     purge_data = {"purge_everything": True}
 
-print("Purge Data:")
+print("::group::Purge Data")
 print(f"\033[35;1m{pformat(purge_data)}")
+print("::endgroup::")  # Purge Data
 
+
+# Action
 
 # TODO: Allow also purging by zone ID
 # if only 1 zone is provided, use a filter when getting zones
 all_zones: Optional[list] = get_zones(zones[0] if total == 1 else "")
 # print(all_zones)  # sensitive information
 
-
-# print(f"⌛ Processing {total} Zone(s)")
 
 success: List[str] = []
 results: Dict[str, Optional[Any]] = dict.fromkeys(zones)
