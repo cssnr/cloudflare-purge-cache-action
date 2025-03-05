@@ -90,19 +90,21 @@ def get_zone(zone_list: Optional[List[dict]], zone_name: str) -> Optional[dict]:
 # Action
 
 zones: list = [x.strip() for x in re.split("[,|\n]", input_zones)]
-print(f"Parsed {len(zones)} Zones \n  \033[35;1m{zones}")
+total = len(zones)
+print(f"Parsed {total} Zones \n  \033[35;1m{zones}")
+
 
 purge_data: Dict[str, Any]
 
 if input_files:
     files: list = [f"{input_prefix}{x.strip()}" for x in re.split("[,|\n]", input_files)]
-    total = len(files)
-    print(f"::group::Parsed {total} Files")
+    files_count = len(files)
+    print(f"::group::Parsed {files_count} Files")
     # print(f"files: \033[36;1m{files}")
     # print(*files, sep="\n")
     # from itertools import count
     # print(*(map("{}: {}".format, count(), files)), sep="\n")
-    pad = len(str(total))
+    pad = len(str(files_count))
     for i, file in enumerate(files, 1):
         print(f"{i:0{pad}d}: {file}")
     print("::endgroup::")  # File Paths
@@ -112,17 +114,18 @@ else:
     purge_data = {"purge_everything": True}
 
 # if only 1 zone is provided, use a filter when getting zones
-all_zones: Optional[list] = get_zones(zones[0] if len(zones) == 1 else "")
+all_zones: Optional[list] = get_zones(zones[0] if total == 1 else "")
 # print(all_zones)  # sensitive information
 
-# print(f"⌛ Processing {len(zones)} Zone(s)")
 
-success = []
-results = dict.fromkeys(zones)
-for zone in zones:
+# print(f"⌛ Processing {total} Zone(s)")
+
+success: List[str] = []
+results: Dict[str, Any] = dict.fromkeys(zones)
+for name in zones:
     try:
-        print(f"Processing: \033[36;1m{zone}")
-        zone: Optional[dict] = get_zone(all_zones, zone)
+        print(f"Processing: \033[36;1m{name}")
+        zone: Optional[dict] = get_zone(all_zones, name)
         # print(f"zone: {zone}")  # sensitive information
         if not zone:
             # print(f"\033[33;1mZone Not Found: \033[0m{zone}")
@@ -132,7 +135,7 @@ for zone in zones:
         if input_dry_run in ["y", "yes", "true", "on"]:
             # print(f"\033[34;1mDry Run Enabled: \033[0m{zone}")
             print("\033[34;1m  Dry Run Enabled")
-            success.append(zone)
+            success.append(name)
             continue
 
         # Perform Purge
@@ -142,9 +145,9 @@ for zone in zones:
         r.raise_for_status()
         # print(f"Cache Purged: {zone}")
         result = r.json()
-        results[zone] = result
+        results[name] = result
         if result["success"]:
-            success.append(zone)
+            success.append(name)
             print("\033[32;1m  Purge Successful")
         else:
             print("\033[31;1m  Purge Failed")
@@ -154,27 +157,27 @@ for zone in zones:
         # print(f"⛔ Error: \033[31m{error}")
         print("\033[31;1m  Error Purging")
         print("  " + str(error))
-        results[zone] = error
+        results[name] = error
         continue
 
 
 # Results
 
-failed = []
+failed: List[str] = []
 results_table = ["<table><tr><th>🚽</th><th>Zone</th></tr>"]
-for zone in zones:
-    if zone not in success:
-        results_table.append(f"<tr><td>⛔</td><td>{zone}</td></tr>")
-        failed.append(zone)
-        print(f"::error::Failed to purge zone: {zone}")
+for name in zones:
+    if name not in success:
+        results_table.append(f"<tr><td>⛔</td><td>{name}</td></tr>")
+        failed.append(name)
+        print(f"::error::Failed to purge zone: {name}")
     else:
-        results_table.append(f"<tr><td>✅</td><td>{zone}</td></tr>")
+        results_table.append(f"<tr><td>✅</td><td>{name}</td></tr>")
 results_table.append("</table>")
 
 print("::group::Results")
 # print(f"results_table: {results_table}")
-# print(f"success: \033[32;1m{success}")
-# print(f"failed: \033[31;1m{failed}")
+print(f"success: \033[32;1m{success}")
+print(f"failed: \033[31;1m{failed}")
 # pprint(results)
 for zone, result in results.items():
     if zone in success:
@@ -208,15 +211,15 @@ if input_summary in ["y", "yes", "true", "on"]:
     with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as f:
         # noinspection PyTypeChecker
         print("## Cloudflare Purge Cache Action", file=f)
-        if len(success) == len(zones):
+        if len(success) == total:
             # noinspection PyTypeChecker
-            print(f"✅ All {len(zones)} Zones(s) were Successfully Purged.", file=f)
+            print(f"✅ All {total} Zones(s) were Successfully Purged.", file=f)
         elif not success:
             # noinspection PyTypeChecker
-            print(f"⛔ All {len(zones)} Zones(s) Failed to Purge!", file=f)
+            print(f"⛔ All {total} Zones(s) Failed to Purge!", file=f)
         else:
             # noinspection PyTypeChecker
-            print(f"⚠️ Only {len(failed)}/{len(zones)} Zones Purged!", file=f)
+            print(f"⚠️ Only {len(failed)}/{total} Zones Purged!", file=f)
         if input_dry_run in ["y", "yes", "true", "on"]:
             # noinspection PyTypeChecker
             print("\n⚠️ Dry Run! Remove or disable `dry_run` to purge cache.", file=f)
@@ -235,15 +238,15 @@ if input_dry_run in ["y", "yes", "true", "on"]:
     # noinspection PyTypeChecker
     print("\033[33mThis was a Dry Run! Remove or disable `dry_run` to purge cache.")
 
-if len(success) == len(zones):
+if len(success) == total:
     print("✅ \033[32;1mSuccessfully Purged All Zones")
 elif not success:
-    print(f"⛔ \033[31;1mAll {len(zones)} Cache Purges Failed")
+    print(f"⛔ \033[31;1mAll {total} Cache Purges Failed")
     if input_fail in ["all", "any"]:
-        raise ValueError(f"All {len(zones)} Cache Purges Failed!")
+        raise ValueError(f"All {total} Cache Purges Failed!")
 else:
     print(f"Successful zones: \033[32;1m{success}")
     print(f"Failed zones: \033[31;1m{failed}")
-    print(f"⚠️ \033[33;1mPurged Zones: {len(success)}/{len(zones)}")
+    print(f"⚠️ \033[33;1mPurged Zones: {len(success)}/{total}")
     if input_fail in ["any"]:
-        raise ValueError(f"Only Purged {len(success)}/{len(zones)} Zones!")
+        raise ValueError(f"Only Purged {len(success)}/{total} Zones!")
