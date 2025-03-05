@@ -153,7 +153,7 @@ results: Dict[str, Optional[Any]] = dict.fromkeys(zones)
 
 for name in zones:
     try:
-        print(f"Processing: \033[36;1m{name}")
+        print(f"⌛ Processing: \033[36;1m{name}")
         zone: Optional[dict] = get_zone(all_zones, name)
         # print(f"zone: {zone}")  # sensitive information
         if not zone:

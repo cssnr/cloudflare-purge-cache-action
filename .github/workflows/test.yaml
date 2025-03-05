@@ -7,9 +7,13 @@ on:
   push:
 
 env:
-  ZONES: cssnr.com,example.com
-  FILES: favicon.ico,static/logo.png
-  TAGS: dev, prod
+  ZONES: ${{ vars.ZONES || 'cssnr.com,example.com' }}
+  FILES: ""
+  PREFIX: ""
+  TAGS: ""
+  HOSTS: ""
+  PREFIXES: ""
+  DRY_RUN: "true"
 
 jobs:
   test:
@@ -38,11 +42,13 @@ jobs:
         uses: ./
         with:
           token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          domains: ${{ env.ZONES }} # DO NOT USE 'domains'! Use 'zones' instead...
-          dry_run: true
-          prefix: "https://cssnr.com/"
+          domains: ${{ env.ZONES }} # DO NOT USE 'domains' use 'zones' instead...
+          dry_run: ${{ env.DRY_RUN }}
           files: ${{ env.FILES }}
+          prefix: ${{ env.PREFIX }}
           tags: ${{ env.TAGS }}
+          hosts: ${{ env.HOSTS }}
+          prefixes: ${{ env.PREFIXES }}
 
       - name: "Verify Outputs"
         if: ${{ env.ZONES == 'cssnr.com,example.com' }}
