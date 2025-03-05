@@ -25,9 +25,9 @@ For more details see: [action.yml](action.yml) and [src/main.py](src/main.py).
 | input    | required | default | description                            |
 | -------- | :------: | ------- | -------------------------------------- |
 | token    | **Yes**  | -       | Cloudflare API Token                   |
-| zones    | **Yes**  | -       | Zones(s) to Purge \*                   |
+| zones    | **Yes**  | -       | Zone Names to Purge \*                 |
 | files    |    -     | -       | Files to Purge \*                      |
-| prefix   |    -     | -       | File Prefix to Add \*                  |
+| prefix   |    -     | -       | Prefix Prepended to Files \*           |
 | tags     |    -     | -       | Tags to Purge (Enterprise only) \*     |
 | hosts    |    -     | -       | Hosts to Purge (Enterprise only) \*    |
 | prefixes |    -     | -       | Prefixes to Purge (Enterprise only) \* |
@@ -35,18 +35,18 @@ For more details see: [action.yml](action.yml) and [src/main.py](src/main.py).
 | summary  |    -     | `true`  | Add Summary to Job \*                  |
 | dry_run  |    -     | `false` | Run Without Purging                    |
 
-**zones** - CSV or Newline Delimited list of zones to purge.
+**zones** - CSV or Newline Delimited list of zone names to purge.
 
 **files** - CSV or Newline Delimited list of files to purge.
 This is limited to 30 files on the free plan and 500 for enterprise.
 For more information view docs for purge by
-[file](https://developers.cloudflare.com/cache/how-to/purge-cache/purge-by-single-file/)
+[file](https://developers.cloudflare.com/cache/how-to/purge-cache/purge-by-single-file/).
 
-**prefix** - If provided, the `prefix` will be prepended to all the files.
+**prefix** - If provided, the `prefix` will be prepended to all the `files`. Useful for generating full links from file paths.
 
-**tags/hosts/prefixes** - CSV or Newline Delimited list of tags/hosts/prefixes to purge.
+**tags/hosts/prefixes** - Enterprise only. CSV or Newline Delimited list of `tags`, `hosts` or `prefixes` to purge.
 For more information view docs for purge by
-[tags](https://developers.cloudflare.com/cache/how-to/purge-cache/purge-by-tags/#purge-cache-by-cache-tags-enterprise-only),
+[tags](https://developers.cloudflare.com/cache/how-to/purge-cache/purge-by-tags/),
 [hostname](https://developers.cloudflare.com/cache/how-to/purge-cache/purge-by-hostname/),
 [prefix](https://developers.cloudflare.com/cache/how-to/purge-cache/purge_by_prefix/).
 
@@ -68,10 +68,7 @@ For more information view docs for purge by
 
 </details>
 
-To see a workflow run you can view a recent
-[test.yaml run](https://github.com/cssnr/cloudflare-purge-cache-action/actions/workflows/test.yaml) _(requires login)_.
-
-With required inputs:
+With minimal inputs, this will **purge everything**:
 
 ```yaml
 - name: 'Purge Cache Action'
@@ -80,6 +77,8 @@ With required inputs:
     token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
     zones: cssnr.com,example.com
 ```
+
+To limit what is purged, specify either `files`, `tags`, `hosts`, or `prefixes`.
 
 With all inputs:
 
@@ -94,10 +93,10 @@ With all inputs:
       static/logo.png
     prefix: 'https://cssnr.com/'
     tags: prod, dev
+    hosts: example.com, dev.example.com
     prefixes: |
       example.com
       example.com/foo
-    hosts: example.com, dev.example.com
     fail: all
     summary: true
     dry_run: false
