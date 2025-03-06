@@ -234,6 +234,7 @@ if input_summary in ["y", "yes", "true", "on"]:
     for x in ["zones", "files", "prefix", "tags", "hosts", "prefixes", "fail", "summary", "dry_run"]:
         value = globals()[f"input_{x}"] or ""
         input_lines.append(f"{x}: {value}")
+    input_text = "\n".join(input_lines)
 
     with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as f:
         # noinspection PyTypeChecker
@@ -254,7 +255,7 @@ if input_summary in ["y", "yes", "true", "on"]:
         print(f"<details><summary>Purge Results</summary>{''.join(results_table)}</details>\n", file=f)
         # noinspection PyTypeChecker
         # print(f"<details><summary>Inputs</summary>{''.join(inputs_table)}</details>\n", file=f)
-        print(f"```yaml\n{input_lines}\n```\n", file=f)
+        print(f"```yaml\n{input_text}\n```\n", file=f)
         url = "https://github.com/cssnr/cloudflare-purge-cache-action"
         # noinspection PyTypeChecker
         print(f"[Report an issue or request a feature]({url}?tab=readme-ov-file#readme)\n\n---", file=f)
