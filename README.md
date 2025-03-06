@@ -62,7 +62,21 @@ For more information view docs for purge by
 
 <details><summary>Purge Results</summary><table><tr><th>🚽</th><th>Zone</th></tr><tr><td>✅</td><td>cssnr.com</td></tr><tr><td>⛔</td><td>example.com</td></tr></table></details>
 
-<details><summary>Inputs</summary><table><tr><th>Input</th><th>Value</th></tr><tr><td>zones</td><td>cssnr.com,example.com</td></tr><tr><td>files</td><td>-</td></tr><tr><td>prefix</td><td>-</td></tr><tr><td>fail</td><td>all</td></tr><tr><td>summary</td><td>true</td></tr><tr><td>dry_run</td><td>true</td></tr></table></details>
+<details><summary>Inputs</summary>
+
+```yaml
+zones: cssnr.com,example.com
+files:
+prefix:
+tags:
+hosts:
+prefixes:
+fail: all
+summary: true
+dry_run: true
+```
+
+</details>
 
 ---
 
