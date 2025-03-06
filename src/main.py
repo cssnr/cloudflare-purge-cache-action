@@ -135,18 +135,17 @@ print("::group::Purge Data")
 print(f"\033[35;1m{pformat(purge_data)}")
 print("::endgroup::")  # Purge Data
 
-
-# Action
-
 zones: list = [x.strip() for x in re.split("[,|\n]", input_zones)]
 total = len(zones)
 print(f"Parsed {total} Zones \n  \033[35;1m{zones}")
+
+
+# Action
 
 # TODO: Allow also purging by zone ID
 # if only 1 zone is provided a filter is used when getting zones:
 all_zones: Optional[list] = get_zones(zones[0] if total == 1 else "")
 # print(all_zones)  # sensitive information
-
 
 success: List[str] = []
 results: Dict[str, Optional[Any]] = dict.fromkeys(zones)
@@ -157,11 +156,11 @@ for name in zones:
         zone: Optional[dict] = get_zone(all_zones, name)
         # print(f"zone: {zone}")  # sensitive information
         if not zone:
-            print("\033[33;1m  Zone Not Found")
+            print("\033[33;1mZone Not Found")
             continue
 
         if input_dry_run in ["y", "yes", "true", "on"]:
-            print("\033[34;1m  Dry Run Enabled")
+            print("\033[34;1mDry Run Enabled")
             success.append(name)
             continue
 
@@ -174,14 +173,14 @@ for name in zones:
         results[name] = result
         if result["success"]:
             success.append(name)
-            print("\033[32;1m  Purge Successful")
+            print("\033[32;1mPurge Successful")
         else:
-            print("\033[31;1m  Purge Failed")
-            print("  " + result)
+            print("\033[31;1mPurge Failed")
+            print(result)
 
     except Exception as error:
-        print("\033[31;1m  Error Purging")
-        print("  " + str(error))
+        print("\033[31;1mException Purging")
+        print(error)
         results[name] = error
         continue
 
