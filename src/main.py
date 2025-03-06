@@ -222,12 +222,18 @@ with open(os.environ["GITHUB_OUTPUT"], "a") as f:
 
 if input_summary in ["y", "yes", "true", "on"]:
     print("📝 Writing Job Summary")
-    inputs_table = ["<table><tr><th>Input</th><th>Value</th></tr>"]
-    for x in ["zones", "files", "prefix", "fail", "summary", "dry_run"]:
-        value = globals()[f"input_{x}"]
-        inputs_table.append(f"<tr><td>{x}</td><td>{value or '-'}</td></tr>")
-    inputs_table.append("</table>")
-    # print(f"inputs_table: {inputs_table}")
+
+    # inputs_table = ["<table><tr><th>Input</th><th>Value</th></tr>"]
+    # for x in ["zones", "files", "prefix", "fail", "summary", "dry_run"]:
+    #     value = globals()[f"input_{x}"]
+    #     inputs_table.append(f"<tr><td>{x}</td><td>{value or '-'}</td></tr>")
+    # inputs_table.append("</table>")
+    # # print(f"inputs_table: {inputs_table}")
+
+    input_lines = []
+    for x in ["zones", "files", "prefix", "tags", "hosts", "prefixes", "fail", "summary", "dry_run"]:
+        value = globals()[f"input_{x}"] or ""
+        input_lines.append(f"{x}: {value}")
 
     with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as f:
         # noinspection PyTypeChecker
@@ -247,7 +253,8 @@ if input_summary in ["y", "yes", "true", "on"]:
         # noinspection PyTypeChecker
         print(f"<details><summary>Purge Results</summary>{''.join(results_table)}</details>\n", file=f)
         # noinspection PyTypeChecker
-        print(f"<details><summary>Inputs</summary>{''.join(inputs_table)}</details>\n", file=f)
+        # print(f"<details><summary>Inputs</summary>{''.join(inputs_table)}</details>\n", file=f)
+        print(f"```yaml\n{input_lines}\n```\n", file=f)
         url = "https://github.com/cssnr/cloudflare-purge-cache-action"
         # noinspection PyTypeChecker
         print(f"[Report an issue or request a feature]({url}?tab=readme-ov-file#readme)\n\n---", file=f)
