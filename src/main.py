@@ -6,9 +6,6 @@ from typing import Any, Dict, List, Optional
 import requests
 
 
-# version = open("version.txt").read().strip() if os.path.isfile("version.txt") else "Local Source"
-# print(f"🏳️ Starting Cloudflare Purge Cache Action - {version}")
-
 version = os.environ.get("GITHUB_ACTION_REF") or "Local Source"
 if os.path.isfile("/src/version.txt"):
     with open("/src/version.txt", "r") as f:
@@ -100,11 +97,10 @@ def get_zone(zone_list: Optional[List[dict]], zone_name: str) -> Optional[dict]:
 
 # Variables
 
-zones: list = [x.strip() for x in re.split("[,|\n]", input_zones)]
-total = len(zones)
-print(f"Parsed {total} Zones \n  \033[35;1m{zones}")
-
 purge_data: Dict[str, Any] = {}
+
+if input_prefix and not input_files:
+    print('::warning::You provided input "prefix" with out "files"! Did you mean "prefixes"?')
 
 if input_files:
     files: list = [f"{input_prefix}{x.strip()}" for x in re.split("[,|\n]", input_files)]
@@ -115,7 +111,7 @@ if input_files:
     pad = len(str(files_count))
     for i, file in enumerate(files, 1):
         print(f"{i:0{pad}d}: {file}")
-    print("::endgroup::")  # File Paths
+    print("::endgroup::")  # Parsed Files
     purge_data = {"files": files}
 
 if input_tags:
@@ -139,14 +135,17 @@ print("::group::Purge Data")
 print(f"\033[35;1m{pformat(purge_data)}")
 print("::endgroup::")  # Purge Data
 
+zones: list = [x.strip() for x in re.split("[,|\n]", input_zones)]
+total = len(zones)
+print(f"Parsed {total} Zones \n  \033[35;1m{zones}")
+
 
 # Action
 
 # TODO: Allow also purging by zone ID
-# if only 1 zone is provided, use a filter when getting zones
+# if only 1 zone is provided a filter is used when getting zones:
 all_zones: Optional[list] = get_zones(zones[0] if total == 1 else "")
 # print(all_zones)  # sensitive information
-
 
 success: List[str] = []
 results: Dict[str, Optional[Any]] = dict.fromkeys(zones)
@@ -157,13 +156,11 @@ for name in zones:
         zone: Optional[dict] = get_zone(all_zones, name)
         # print(f"zone: {zone}")  # sensitive information
         if not zone:
-            # print(f"\033[33;1mZone Not Found: \033[0m{zone}")
-            print("\033[33;1m  Zone Not Found")
+            print("\033[33;1mZone Not Found")
             continue
 
         if input_dry_run in ["y", "yes", "true", "on"]:
-            # print(f"\033[34;1mDry Run Enabled: \033[0m{zone}")
-            print("\033[34;1m  Dry Run Enabled")
+            print("\033[34;1mDry Run Enabled")
             success.append(name)
             continue
 
@@ -172,20 +169,18 @@ for name in zones:
         r = requests.post(url, headers=headers, json=purge_data)
         # print(f"r.status_code: {r.status_code}")
         r.raise_for_status()
-        # print(f"Cache Purged: {zone}")
         result = r.json()
         results[name] = result
         if result["success"]:
             success.append(name)
-            print("\033[32;1m  Purge Successful")
+            print("\033[32;1mPurge Successful")
         else:
-            print("\033[31;1m  Purge Failed")
-            print("  " + result)
+            print("\033[31;1mPurge Failed")
+            print(result)
 
     except Exception as error:
-        # print(f"⛔ Error: \033[31m{error}")
-        print("\033[31;1m  Error Purging")
-        print("  " + str(error))
+        print("\033[31;1mException Purging")
+        print(error)
         results[name] = error
         continue
 
@@ -204,10 +199,6 @@ for name in zones:
 results_table.append("</table>")
 
 print("::group::Results")
-# print(f"results_table: {results_table}")
-# print(f"success: \033[32;1m{success}")
-# print(f"failed: \033[31;1m{failed}")
-# pprint(results)
 for zone, result in results.items():  # type: ignore
     if zone in success:
         print(f"\033[32;1m{zone}")
@@ -230,12 +221,12 @@ with open(os.environ["GITHUB_OUTPUT"], "a") as f:
 
 if input_summary in ["y", "yes", "true", "on"]:
     print("📝 Writing Job Summary")
-    inputs_table = ["<table><tr><th>Input</th><th>Value</th></tr>"]
-    for x in ["zones", "files", "prefix", "fail", "summary", "dry_run"]:
-        value = globals()[f"input_{x}"]
-        inputs_table.append(f"<tr><td>{x}</td><td>{value or '-'}</td></tr>")
-    inputs_table.append("</table>")
-    # print(f"inputs_table: {inputs_table}")
+
+    input_lines = []
+    for x in ["zones", "files", "prefix", "tags", "hosts", "prefixes", "fail", "summary", "dry_run"]:
+        value = globals()[f"input_{x}"] or ""
+        input_lines.append(f"{x}: {value}")
+    input_text = "\n".join(input_lines)
 
     with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as f:
         # noinspection PyTypeChecker
@@ -255,7 +246,7 @@ if input_summary in ["y", "yes", "true", "on"]:
         # noinspection PyTypeChecker
         print(f"<details><summary>Purge Results</summary>{''.join(results_table)}</details>\n", file=f)
         # noinspection PyTypeChecker
-        print(f"<details><summary>Inputs</summary>{''.join(inputs_table)}</details>\n", file=f)
+        print(f"<details><summary>Inputs</summary>\n\n```yaml\n{input_text}\n```\n\n</details>\n", file=f)
         url = "https://github.com/cssnr/cloudflare-purge-cache-action"
         # noinspection PyTypeChecker
         print(f"[Report an issue or request a feature]({url}?tab=readme-ov-file#readme)\n\n---", file=f)
