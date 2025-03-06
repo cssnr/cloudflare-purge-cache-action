@@ -6,9 +6,6 @@ from typing import Any, Dict, List, Optional
 import requests
 
 
-# version = open("version.txt").read().strip() if os.path.isfile("version.txt") else "Local Source"
-# print(f"🏳️ Starting Cloudflare Purge Cache Action - {version}")
-
 version = os.environ.get("GITHUB_ACTION_REF") or "Local Source"
 if os.path.isfile("/src/version.txt"):
     with open("/src/version.txt", "r") as f:
@@ -100,11 +97,10 @@ def get_zone(zone_list: Optional[List[dict]], zone_name: str) -> Optional[dict]:
 
 # Variables
 
-zones: list = [x.strip() for x in re.split("[,|\n]", input_zones)]
-total = len(zones)
-print(f"Parsed {total} Zones \n  \033[35;1m{zones}")
-
 purge_data: Dict[str, Any] = {}
+
+if input_prefix and not input_files:
+    print('::warning::You provided input "prefix" with out "files"! Did you mean "prefixes"?')
 
 if input_files:
     files: list = [f"{input_prefix}{x.strip()}" for x in re.split("[,|\n]", input_files)]
@@ -115,7 +111,7 @@ if input_files:
     pad = len(str(files_count))
     for i, file in enumerate(files, 1):
         print(f"{i:0{pad}d}: {file}")
-    print("::endgroup::")  # File Paths
+    print("::endgroup::")  # Parsed Files
     purge_data = {"files": files}
 
 if input_tags:
@@ -142,8 +138,12 @@ print("::endgroup::")  # Purge Data
 
 # Action
 
+zones: list = [x.strip() for x in re.split("[,|\n]", input_zones)]
+total = len(zones)
+print(f"Parsed {total} Zones \n  \033[35;1m{zones}")
+
 # TODO: Allow also purging by zone ID
-# if only 1 zone is provided, use a filter when getting zones
+# if only 1 zone is provided a filter is used when getting zones:
 all_zones: Optional[list] = get_zones(zones[0] if total == 1 else "")
 # print(all_zones)  # sensitive information
 
@@ -157,12 +157,10 @@ for name in zones:
         zone: Optional[dict] = get_zone(all_zones, name)
         # print(f"zone: {zone}")  # sensitive information
         if not zone:
-            # print(f"\033[33;1mZone Not Found: \033[0m{zone}")
             print("\033[33;1m  Zone Not Found")
             continue
 
         if input_dry_run in ["y", "yes", "true", "on"]:
-            # print(f"\033[34;1mDry Run Enabled: \033[0m{zone}")
             print("\033[34;1m  Dry Run Enabled")
             success.append(name)
             continue
@@ -172,7 +170,6 @@ for name in zones:
         r = requests.post(url, headers=headers, json=purge_data)
         # print(f"r.status_code: {r.status_code}")
         r.raise_for_status()
-        # print(f"Cache Purged: {zone}")
         result = r.json()
         results[name] = result
         if result["success"]:
@@ -183,7 +180,6 @@ for name in zones:
             print("  " + result)
 
     except Exception as error:
-        # print(f"⛔ Error: \033[31m{error}")
         print("\033[31;1m  Error Purging")
         print("  " + str(error))
         results[name] = error
@@ -204,10 +200,6 @@ for name in zones:
 results_table.append("</table>")
 
 print("::group::Results")
-# print(f"results_table: {results_table}")
-# print(f"success: \033[32;1m{success}")
-# print(f"failed: \033[31;1m{failed}")
-# pprint(results)
 for zone, result in results.items():  # type: ignore
     if zone in success:
         print(f"\033[32;1m{zone}")

@@ -31,7 +31,7 @@ jobs:
           echo "Deleting Release and Tag: ${{ github.ref_name }}"
           gh release delete ${{ github.ref_name }} --cleanup-tag
 
-      - name: "Schedule Failure Notification"
+      - name: "Send Failure Notification"
         if: ${{ failure() }}
         uses: sarisia/actions-status-discord@v1
         with:
@@ -60,7 +60,6 @@ jobs:
         with:
           images: "ghcr.io/${{ github.repository }}"
           tags: ${{ github.ref_name }}
-          latest: false
 
       - name: "Echo Tags"
         run: |
