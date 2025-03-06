@@ -82,6 +82,9 @@ dry_run: true
 
 </details>
 
+To view a workflow run, click on a recent run of
+[test.yaml](https://github.com/cssnr/portainer-stack-deploy-action/actions/workflows/test.yaml) _(requires login)_.
+
 With minimal inputs, this will **purge everything**:
 
 ```yaml
