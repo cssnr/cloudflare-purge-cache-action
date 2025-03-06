@@ -223,13 +223,6 @@ with open(os.environ["GITHUB_OUTPUT"], "a") as f:
 if input_summary in ["y", "yes", "true", "on"]:
     print("📝 Writing Job Summary")
 
-    # inputs_table = ["<table><tr><th>Input</th><th>Value</th></tr>"]
-    # for x in ["zones", "files", "prefix", "fail", "summary", "dry_run"]:
-    #     value = globals()[f"input_{x}"]
-    #     inputs_table.append(f"<tr><td>{x}</td><td>{value or '-'}</td></tr>")
-    # inputs_table.append("</table>")
-    # # print(f"inputs_table: {inputs_table}")
-
     input_lines = []
     for x in ["zones", "files", "prefix", "tags", "hosts", "prefixes", "fail", "summary", "dry_run"]:
         value = globals()[f"input_{x}"] or ""
