@@ -82,9 +82,6 @@ dry_run: true
 
 </details>
 
-To view a workflow run, click on a recent
-[Test](https://github.com/cssnr/cloudflare-purge-cache-action/actions/workflows/test.yaml) job _(requires login)_.
-
 With minimal inputs, this will **purge everything**:
 
 ```yaml

@@ -1,0 +1,9 @@
+bandit
+black
+flake8
+isort
+mypy
+pyyaml
+requests
+ruff
+types-requests
