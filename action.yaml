@@ -46,10 +46,12 @@ inputs:
     required: false
     default: "false"
   zone:
-    description: "DO NOT USE! Backwards Compatibility Only"
+    description: "This has been replaced by: zones"
+    deprecationMessage: "Please update this input to: zones"
     required: false
   domains:
-    description: "DO NOT USE! Backwards Compatibility Only"
+    description: "This has been replaced by: zones"
+    deprecationMessage: "Please update this input to: zones"
     required: false
 
 outputs:
