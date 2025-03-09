@@ -43,7 +43,7 @@ jobs:
           create-if-does-not-exist: false
           content: |
             runs:
-              image: src/Dockerfile
+              image: Dockerfile
 
       - name: "Test Local Action"
         id: test
