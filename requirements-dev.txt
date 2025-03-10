@@ -6,4 +6,5 @@ mypy
 pyyaml
 requests
 ruff
+yamllint
 types-requests
