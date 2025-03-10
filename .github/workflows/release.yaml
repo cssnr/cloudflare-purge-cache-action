@@ -5,12 +5,13 @@ on:
     types: [published]
 
 jobs:
-  verify:
-    name: "Verify"
+  build:
+    name: "Build"
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
       contents: write
+      packages: write
 
     steps:
       - name: "Checkout"
@@ -22,32 +23,6 @@ jobs:
           echo "Verifying Version TAG in action.yaml: ${GITHUB_REF_NAME}"
           echo "image: ghcr.io/${GITHUB_REPOSITORY}:${GITHUB_REF_NAME}"
           grep "ghcr.io/${GITHUB_REPOSITORY}:${GITHUB_REF_NAME}" action.yaml
-
-      - name: "Rollback Failed Verification"
-        if: ${{ failure() }}
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          echo "Deleting Release and Tag: ${{ github.ref_name }}"
-          gh release delete ${{ github.ref_name }} --cleanup-tag
-
-      - name: "Send Failure Notification"
-        if: ${{ failure() }}
-        uses: sarisia/actions-status-discord@v1
-        with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK }}
-
-  build:
-    name: "Build"
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    needs: [verify]
-    permissions:
-      packages: write
-
-    steps:
-      - name: "Checkout"
-        uses: actions/checkout@v4
 
       - name: "Write Version: ${{ github.ref_name }}"
         run: |
@@ -82,7 +57,7 @@ jobs:
       - name: "Build and Push"
         uses: docker/build-push-action@v6
         with:
-          context: src
+          context: .
           push: true
           tags: ${{ steps.tags.outputs.tags }}
           labels: ${{ steps.tags.outputs.labels }}
@@ -90,6 +65,20 @@ jobs:
           #platforms: linux/amd64,linux/arm64
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: "Rollback Failed Verification"
+        if: ${{ failure() }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Deleting Release and Tag: ${{ github.ref_name }}"
+          gh release delete ${{ github.ref_name }} --cleanup-tag
+
+      - name: "Send Failure Notification"
+        if: ${{ failure() }}
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
 
   tags:
     name: "Tags"
