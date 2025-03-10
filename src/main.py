@@ -14,6 +14,7 @@ print(f"🏳️ Starting Cloudflare Purge Cache Action - {version}")
 
 input_notice = 'You are using a deprecated input "{old}". Change this to input "{new}" before it is removed in v3.'
 
+
 # Inputs
 
 print("::group::Inputs")
@@ -26,13 +27,9 @@ input_zones: str = (
 )
 input_zones = input_zones.strip()
 print(f"input_zones: \033[36;1m{repr(input_zones)}")
-# TODO: These checks are only needed for backwards compatibility w/ INPUT_ZONE/INPUT_DOMAINS
 if not input_zones:
+    # Note: this can't be required until deprecated inputs are removed
     raise ValueError("No Zones Provided to Purge.")
-if os.environ.get("INPUT_ZONE"):
-    print(f"::notice::{input_notice.format(old='zone', new='zones')}")
-if os.environ.get("INPUT_DOMAINS"):
-    print(f"::notice::{input_notice.format(old='domains', new='zones')}")
 
 input_files = os.environ.get("INPUT_FILES", "").strip()
 print(f"input_files: \033[36;1m{repr(input_files)}")
@@ -58,6 +55,7 @@ if input_dry_run in ["y", "yes", "true", "on"]:
 print("::endgroup::")  # Inputs
 
 
+# Cloudflare
 # TODO: Split cloudflare class/functions into its own file
 
 base_url = "https://api.cloudflare.com/client/v4/{0}"

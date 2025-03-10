@@ -46,12 +46,12 @@ inputs:
     required: false
     default: "false"
   zone:
-    description: "This has been replaced by: zones"
-    deprecationMessage: "Please update this input to: zones"
+    description: "This has been changed to: zones"
+    deprecationMessage: "Changed this input to: zones"
     required: false
   domains:
-    description: "This has been replaced by: zones"
-    deprecationMessage: "Please update this input to: zones"
+    description: "This has been changed to: zones"
+    deprecationMessage: "Changed this input to: zones"
     required: false
 
 outputs:
@@ -62,4 +62,4 @@ outputs:
 
 runs:
   using: "docker"
-  image: "docker://ghcr.io/cssnr/cloudflare-purge-cache-action:v2.0.2"
+  image: "docker://ghcr.io/cssnr/cloudflare-purge-cache-action:v2.0.3"
