@@ -12,8 +12,6 @@ if os.path.isfile("/src/version.txt"):
         version = f.read().strip()
 print(f"🏳️ Starting Cloudflare Purge Cache Action - {version}")
 
-input_notice = 'You are using a deprecated input "{old}". Change this to input "{new}" before it is removed in v3.'
-
 
 # Inputs
 
@@ -49,10 +47,11 @@ input_summary = os.environ.get("INPUT_SUMMARY", "").strip().lower()
 print(f"input_summary: \033[36;1m{input_summary}")
 input_dry_run = os.environ.get("INPUT_DRY_RUN", "").strip().lower()
 print(f"input_dry_run: \033[36;1m{input_dry_run}")
-if input_dry_run in ["y", "yes", "true", "on"]:
-    print("::warning::Dry Run is enabled and no cache is being purged!")
 
 print("::endgroup::")  # Inputs
+
+if input_dry_run in ["y", "yes", "true", "on"]:
+    print("::warning::Dry Run is enabled and no cache is being purged!")
 
 
 # Cloudflare

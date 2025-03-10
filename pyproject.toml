@@ -2,6 +2,7 @@
 
 [tool.black]
 line-length = 119
+extend-exclude = '(\.github)'
 
 # Ruff
 
