@@ -6,3 +6,8 @@
 .ruff_cache/
 .mypy_cache/
 .pytest_cache/
+
+# Build
+dist/
+node_modules/
+.github/disabled/

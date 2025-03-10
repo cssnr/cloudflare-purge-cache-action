@@ -36,7 +36,7 @@ To run actions locally you need to install act: https://nektosact.com/installati
 1. Create a `.secrets` file with: `CLOUDFLARE_API_TOKEN="xxx"`
 2. Run: `act -j test --env ZONES=example.com` (with your ZONES)
 
-The test updates the [action.yaml](action.yaml) to use the [Dockerfile](src/Dockerfile).
+The test updates the [action.yaml](action.yaml) to use the [Dockerfile](Dockerfile).
 This ensures the test will always use your local changes.
 
 To test the docker image, run: [build.sh](build.sh)

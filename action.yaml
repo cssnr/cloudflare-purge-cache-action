@@ -46,10 +46,12 @@ inputs:
     required: false
     default: "false"
   zone:
-    description: "DO NOT USE! Backwards Compatibility Only"
+    description: "This has been changed to: zones"
+    deprecationMessage: "Changed this input to: zones"
     required: false
   domains:
-    description: "DO NOT USE! Backwards Compatibility Only"
+    description: "This has been changed to: zones"
+    deprecationMessage: "Changed this input to: zones"
     required: false
 
 outputs:
@@ -60,4 +62,4 @@ outputs:
 
 runs:
   using: "docker"
-  image: "docker://ghcr.io/cssnr/cloudflare-purge-cache-action:v2.0.2"
+  image: "docker://ghcr.io/cssnr/cloudflare-purge-cache-action:v2.0.3"

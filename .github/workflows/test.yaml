@@ -5,14 +5,13 @@ on:
   schedule:
     - cron: "18 18 * * 1,3,5"
   push:
-    tags: ["!**"]
     branches: ["**"]
     paths:
       - "dist/**"
       - "src/**"
       - ".github/workflows/test.yaml"
       - "package*.json"
-      - "requirements.txt"
+      - "requirements*.txt"
       - "action.yaml"
 
 env:
@@ -44,7 +43,7 @@ jobs:
           create-if-does-not-exist: false
           content: |
             runs:
-              image: src/Dockerfile
+              image: Dockerfile
 
       - name: "Test Local Action"
         id: test
