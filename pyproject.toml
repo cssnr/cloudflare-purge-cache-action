@@ -15,7 +15,7 @@ source = ["src"]
 [tool.isort]
 profile = "black"
 lines_after_imports = 2
-src_paths = ["app"]
+src_paths = ["src"]
 skip = ["venv", "node_modules", ".github"]
 
 # Mypy
