@@ -1,5 +1,5 @@
 [![Tags](https://img.shields.io/badge/tags-v2_%7C_v2.0-blue?logo=git&logoColor=white)](https://github.com/cssnr/cloudflare-purge-cache-action/tags)
-[![GitHub Release Version](https://img.shields.io/github/v/release/cssnr/cloudflare-purge-cache-action?logo=github&label=latest)](https://github.com/cssnr/cloudflare-purge-cache-action/releases/latest)
+[![GitHub Release Version](https://img.shields.io/github/v/release/cssnr/cloudflare-purge-cache-action?logo=git&logoColor=white&label=latest)](https://github.com/cssnr/cloudflare-purge-cache-action/releases/latest)
 [![GHCR Size](https://ghcr-badge.egpl.dev/cssnr/cloudflare-purge-cache-action/size)](https://github.com/cssnr/cloudflare-purge-cache-action/pkgs/container/cloudflare-purge-cache-action)
 [![Release WF](https://img.shields.io/github/actions/workflow/status/cssnr/cloudflare-purge-cache-action/release.yaml?logo=github&label=release)](https://github.com/cssnr/cloudflare-purge-cache-action/actions/workflows/release.yaml)
 [![Test WF](https://img.shields.io/github/actions/workflow/status/cssnr/cloudflare-purge-cache-action/test.yaml?logo=github&label=test)](https://github.com/cssnr/cloudflare-purge-cache-action/actions/workflows/test.yaml)
