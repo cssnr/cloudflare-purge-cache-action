@@ -170,9 +170,9 @@ The following [rolling tags](https://github.com/cssnr/cloudflare-purge-cache-act
 
 | Tag      | Example  | Bugs | Feat. | Description                            |
 | -------- | -------- | :--: | :---: | -------------------------------------- |
-| `vN`     | `v1`     |  ✅  |  ✅   | Points to latest `vN` release.         |
-| `vN.N`   | `v1.0`   |  ✅  |  ❌   | Points to latest `vN.N` release.       |
-| `vN.N.N` | `v1.0.0` |  ❌  |  ❌   | Points directly to a specific release. |
+| `vN`     | `v2`     |  ✅  |  ✅   | Points to latest `vN` release.         |
+| `vN.N`   | `v2.0`   |  ✅  |  ❌   | Points to latest `vN.N` release.       |
+| `vN.N.N` | `v2.0.0` |  ❌  |  ❌   | Points directly to a specific release. |
 
 **Important:** Make sure to use one of the [latest tags](https://github.com/cssnr/cloudflare-purge-cache-action/tags).
 
