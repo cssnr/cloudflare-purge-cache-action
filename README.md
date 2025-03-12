@@ -1,12 +1,13 @@
-[![Release](https://img.shields.io/github/actions/workflow/status/cssnr/cloudflare-purge-cache-action/release.yaml?logo=github&logoColor=white&label=release)](https://github.com/cssnr/cloudflare-purge-cache-action/actions/workflows/release.yaml)
-[![Test](https://img.shields.io/github/actions/workflow/status/cssnr/cloudflare-purge-cache-action/test.yaml?logo=github&logoColor=white&label=test)](https://github.com/cssnr/cloudflare-purge-cache-action/actions/workflows/test.yaml)
-[![Lint](https://img.shields.io/github/actions/workflow/status/cssnr/cloudflare-purge-cache-action/lint.yaml?logo=github&logoColor=white&label=lint)](https://github.com/cssnr/cloudflare-purge-cache-action/actions/workflows/lint.yaml)
+[![Tags](https://img.shields.io/badge/tags-v2_%7C_v2.0-blue?logo=git&logoColor=white)](https://github.com/cssnr/cloudflare-purge-cache-action/tags)
+[![GitHub Release Version](https://img.shields.io/github/v/release/cssnr/cloudflare-purge-cache-action?logo=git&logoColor=white&label=latest)](https://github.com/cssnr/cloudflare-purge-cache-action/releases/latest)
 [![GHCR Size](https://ghcr-badge.egpl.dev/cssnr/cloudflare-purge-cache-action/size)](https://github.com/cssnr/cloudflare-purge-cache-action/pkgs/container/cloudflare-purge-cache-action)
-[![GitHub Release Version](https://img.shields.io/github/v/release/cssnr/cloudflare-purge-cache-action?logo=github)](https://github.com/cssnr/cloudflare-purge-cache-action/releases/latest)
-[![GitHub Last Commit](https://img.shields.io/github/last-commit/cssnr/cloudflare-purge-cache-action?logo=github&logoColor=white&label=updated)](https://github.com/cssnr/cloudflare-purge-cache-action/graphs/commit-activity)
+[![Release WF](https://img.shields.io/github/actions/workflow/status/cssnr/cloudflare-purge-cache-action/release.yaml?logo=github&label=release)](https://github.com/cssnr/cloudflare-purge-cache-action/actions/workflows/release.yaml)
+[![Test WF](https://img.shields.io/github/actions/workflow/status/cssnr/cloudflare-purge-cache-action/test.yaml?logo=github&label=test)](https://github.com/cssnr/cloudflare-purge-cache-action/actions/workflows/test.yaml)
+[![Lint WF](https://img.shields.io/github/actions/workflow/status/cssnr/cloudflare-purge-cache-action/lint.yaml?logo=github&label=lint)](https://github.com/cssnr/cloudflare-purge-cache-action/actions/workflows/lint.yaml)
+[![GitHub Last Commit](https://img.shields.io/github/last-commit/cssnr/cloudflare-purge-cache-action?logo=github&label=updated)](https://github.com/cssnr/cloudflare-purge-cache-action/graphs/commit-activity)
 [![Codeberg Last Commit](https://img.shields.io/gitea/last-commit/cssnr/cloudflare-purge-cache-action/master?gitea_url=https%3A%2F%2Fcodeberg.org%2F&logo=codeberg&logoColor=white&label=updated)](https://codeberg.org/cssnr/cloudflare-purge-cache-action)
-[![GitHub Top Language](https://img.shields.io/github/languages/top/cssnr/cloudflare-purge-cache-action?logo=htmx&logoColor=white)](https://github.com/cssnr/cloudflare-purge-cache-action)
-[![GitHub Org Stars](https://img.shields.io/github/stars/cssnr?style=flat&logo=github&logoColor=white)](https://cssnr.github.io/)
+[![GitHub Top Language](https://img.shields.io/github/languages/top/cssnr/cloudflare-purge-cache-action?logo=htmx)](https://github.com/cssnr/cloudflare-purge-cache-action)
+[![GitHub Org Stars](https://img.shields.io/github/stars/cssnr?style=flat&logo=github)](https://cssnr.github.io/)
 [![Discord](https://img.shields.io/discord/899171661457293343?logo=discord&logoColor=white&label=discord&color=7289da)](https://discord.gg/wXy6m2X8wY)
 
 # Cloudflare Purge Cache Action
@@ -14,6 +15,7 @@
 - [Inputs](#Inputs)
 - [Outputs](#Outputs)
 - [Examples](#Examples)
+- [Tags](#Tags)
 - [Support](#Support)
 - [Contributing](#Contributing)
 
@@ -161,6 +163,20 @@ jobs:
             cssnr.com
             example.com
 ```
+
+## Tags
+
+The following [rolling tags](https://github.com/cssnr/cloudflare-purge-cache-action/tags) are maintained.
+
+| Tag      | Example  | Bugs | Feat. | Description                            |
+| -------- | -------- | :--: | :---: | -------------------------------------- |
+| `vN`     | `v2`     |  ✅  |  ✅   | Points to latest `vN` release.         |
+| `vN.N`   | `v2.0`   |  ✅  |  ❌   | Points to latest `vN.N` release.       |
+| `vN.N.N` | `v2.0.0` |  ❌  |  ❌   | Points directly to a specific release. |
+
+**Important:** Make sure to use one of the [latest tags](https://github.com/cssnr/cloudflare-purge-cache-action/tags).
+
+You can view the release notes for each version on the [Releases Page](https://github.com/cssnr/cloudflare-purge-cache-action/releases).
 
 # Support
 
