@@ -15,6 +15,7 @@
 - [Inputs](#Inputs)
 - [Outputs](#Outputs)
 - [Examples](#Examples)
+- [Tags](#Tags)
 - [Support](#Support)
 - [Contributing](#Contributing)
 
@@ -162,6 +163,20 @@ jobs:
             cssnr.com
             example.com
 ```
+
+## Tags
+
+The following [rolling tags](https://github.com/cssnr/cloudflare-purge-cache-action/tags) are maintained.
+
+| Tag      | Example  | Bugs | Feat. | Description                            |
+| -------- | -------- | :--: | :---: | -------------------------------------- |
+| `vN`     | `v1`     |  ✅  |  ✅   | Points to latest `vN` release.         |
+| `vN.N`   | `v1.0`   |  ✅  |  ❌   | Points to latest `vN.N` release.       |
+| `vN.N.N` | `v1.0.0` |  ❌  |  ❌   | Points directly to a specific release. |
+
+**Important:** Make sure to use one of the [latest tags](https://github.com/cssnr/cloudflare-purge-cache-action/tags).
+
+You can view the release notes for each version on the [Releases Page](https://github.com/cssnr/cloudflare-purge-cache-action/releases).
 
 # Support
 
