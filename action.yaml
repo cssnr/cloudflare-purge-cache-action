@@ -1,5 +1,5 @@
 name: "Cloudflare Purge Zone Cache"
-description: "Clear or Purge the cache of Cloudflare zones with optional filters."
+description: "Purge/Flush/Clear a Cloudflare zones cache with optional files/tags/hosts/prefixes filters."
 author: "Shane"
 branding:
   icon: "cloud"

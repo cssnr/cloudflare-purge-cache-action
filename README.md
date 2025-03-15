@@ -2,9 +2,9 @@
 [![GitHub Tag Minor](https://img.shields.io/github/v/tag/cssnr/cloudflare-purge-cache-action?sort=semver&filter=!v*.*.*&logo=git&logoColor=white&labelColor=585858&label=%20)](https://github.com/cssnr/cloudflare-purge-cache-action/tags)
 [![GitHub Release Version](https://img.shields.io/github/v/release/cssnr/cloudflare-purge-cache-action?logo=git&logoColor=white&labelColor=585858&label=%20)](https://github.com/cssnr/cloudflare-purge-cache-action/releases/latest)
 [![GHCR Size](https://ghcr-badge.egpl.dev/cssnr/cloudflare-purge-cache-action/size)](https://github.com/cssnr/cloudflare-purge-cache-action/pkgs/container/cloudflare-purge-cache-action)
-[![Release WF](https://img.shields.io/github/actions/workflow/status/cssnr/cloudflare-purge-cache-action/release.yaml?logo=github&label=release)](https://github.com/cssnr/cloudflare-purge-cache-action/actions/workflows/release.yaml)
-[![Test WF](https://img.shields.io/github/actions/workflow/status/cssnr/cloudflare-purge-cache-action/test.yaml?logo=github&label=test)](https://github.com/cssnr/cloudflare-purge-cache-action/actions/workflows/test.yaml)
-[![Lint WF](https://img.shields.io/github/actions/workflow/status/cssnr/cloudflare-purge-cache-action/lint.yaml?logo=github&label=lint)](https://github.com/cssnr/cloudflare-purge-cache-action/actions/workflows/lint.yaml)
+[![Workflow Release](https://img.shields.io/github/actions/workflow/status/cssnr/cloudflare-purge-cache-action/release.yaml?logo=github&label=release)](https://github.com/cssnr/cloudflare-purge-cache-action/actions/workflows/release.yaml)
+[![Workflow Test](https://img.shields.io/github/actions/workflow/status/cssnr/cloudflare-purge-cache-action/test.yaml?logo=github&label=test)](https://github.com/cssnr/cloudflare-purge-cache-action/actions/workflows/test.yaml)
+[![Workflow Lint](https://img.shields.io/github/actions/workflow/status/cssnr/cloudflare-purge-cache-action/lint.yaml?logo=github&label=lint)](https://github.com/cssnr/cloudflare-purge-cache-action/actions/workflows/lint.yaml)
 [![GitHub Last Commit](https://img.shields.io/github/last-commit/cssnr/cloudflare-purge-cache-action?logo=github&label=updated)](https://github.com/cssnr/cloudflare-purge-cache-action/graphs/commit-activity)
 [![Codeberg Last Commit](https://img.shields.io/gitea/last-commit/cssnr/cloudflare-purge-cache-action/master?gitea_url=https%3A%2F%2Fcodeberg.org%2F&logo=codeberg&logoColor=white&label=updated)](https://codeberg.org/cssnr/cloudflare-purge-cache-action)
 [![GitHub Top Language](https://img.shields.io/github/languages/top/cssnr/cloudflare-purge-cache-action?logo=htmx)](https://github.com/cssnr/cloudflare-purge-cache-action)
@@ -20,39 +20,35 @@
 - [Support](#Support)
 - [Contributing](#Contributing)
 
-Purge Cloudflare cache for a zone or list of zones with optional file/url filter.
+Purge Cloudflare cache for a zone or list of zones with optional filters including files, prefixes, tags, and hosts.
 
 For more details see: [action.yaml](action.yaml) and [src/main.py](src/main.py).
 
 ## Inputs
 
-| input    | required | default | description                            |
-| -------- | :------: | ------- | -------------------------------------- |
-| token    | **Yes**  | -       | Cloudflare API Token                   |
-| zones    | **Yes**  | -       | Zone Names to Purge \*                 |
-| files    |    -     | -       | Files to Purge \*                      |
-| prefix   |    -     | -       | Prefix Prepended to Files \*           |
-| tags     |    -     | -       | Tags to Purge (Enterprise only) \*     |
-| hosts    |    -     | -       | Hosts to Purge (Enterprise only) \*    |
-| prefixes |    -     | -       | Prefixes to Purge (Enterprise only) \* |
-| fail     |    -     | `all`   | Fail Mode: [`all`, `any`, `none`]      |
-| summary  |    -     | `true`  | Add Summary to Job \*                  |
-| dry_run  |    -     | `false` | Run Without Purging                    |
+| Input    |  Req.   | Default | Description                            |
+| :------- | :-----: | :------ | :------------------------------------- |
+| token    | **Yes** | -       | Cloudflare API Token                   |
+| zones    | **Yes** | -       | Zone Names to Purge \*                 |
+| files    |    -    | -       | Files to Purge \*                      |
+| prefix   |    -    | -       | Prefix Prepended to Files \*           |
+| tags     |    -    | -       | Tags to Purge (Enterprise only) \*     |
+| hosts    |    -    | -       | Hosts to Purge (Enterprise only) \*    |
+| prefixes |    -    | -       | Prefixes to Purge (Enterprise only) \* |
+| fail     |    -    | `all`   | Fail Mode: [`all`, `any`, `none`]      |
+| summary  |    -    | `true`  | Add Summary to Job \*                  |
+| dry_run  |    -    | `false` | Run Without Purging                    |
 
 **zones** - CSV or Newline Delimited list of zone names to purge.
 
 **files** - CSV or Newline Delimited list of files to purge.
 This is limited to 30 files on the free plan and 500 for enterprise.
-For more information view docs for purge by
-[file](https://developers.cloudflare.com/cache/how-to/purge-cache/purge-by-single-file/).
+For more information view docs for purge by [file](https://developers.cloudflare.com/cache/how-to/purge-cache/purge-by-single-file/).
 
 **prefix** - If provided, the `prefix` will be prepended to all the `files`. Useful for generating full links from file paths.
 
 **tags/hosts/prefixes** - Enterprise only. CSV or Newline Delimited list of `tags`, `hosts` or `prefixes` to purge.
-For more information view docs for purge by
-[tags](https://developers.cloudflare.com/cache/how-to/purge-cache/purge-by-tags/),
-[hostname](https://developers.cloudflare.com/cache/how-to/purge-cache/purge-by-hostname/),
-[prefix](https://developers.cloudflare.com/cache/how-to/purge-cache/purge_by_prefix/).
+For more information view docs for purge by [tags](https://developers.cloudflare.com/cache/how-to/purge-cache/purge-by-tags/), [hostname](https://developers.cloudflare.com/cache/how-to/purge-cache/purge-by-hostname/), [prefix](https://developers.cloudflare.com/cache/how-to/purge-cache/purge_by_prefix/).
 
 **summary** - Write a Summary for the job. To disable this set to `false`.
 
@@ -122,8 +118,8 @@ With all inputs:
 
 ## Outputs
 
-| output  | description           |
-| ------- | --------------------- |
+| Output  | Description           |
+| :------ | :-------------------- |
 | success | Successful Zones, CSV |
 | failed  | Failed Zones, CSV     |
 
@@ -169,11 +165,11 @@ jobs:
 
 The following rolling [tags](https://github.com/cssnr/cloudflare-purge-cache-action/tags) are maintained.
 
-| Tag                                                                                                                                                                                                                                               | Example  | Target   | Bugs | Feat. | Description                                               |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | -------- | :--: | :---: | --------------------------------------------------------- |
-| [![GitHub Tag Major](https://img.shields.io/github/v/tag/cssnr/cloudflare-purge-cache-action?sort=semver&filter=!v*.*&style=for-the-badge&label=%20&color=limegreen)](https://github.com/cssnr/cloudflare-purge-cache-action/releases/latest)     | `vN`     | `vN.x.x` |  ✅  |  ✅   | Includes new features but is always backwards compatible. |
-| [![GitHub Tag Minor](https://img.shields.io/github/v/tag/cssnr/cloudflare-purge-cache-action?sort=semver&filter=!v*.*.*&style=for-the-badge&label=%20&color=yellowgreen)](https://github.com/cssnr/cloudflare-purge-cache-action/releases/latest) | `vN.N`   | `vN.N.x` |  ✅  |  ❌   | Only receives bug fixes. This is the most stable tag.     |
-| [![GitHub Release](https://img.shields.io/github/v/release/cssnr/cloudflare-purge-cache-action?style=for-the-badge&label=%20&color=orange)](https://github.com/cssnr/cloudflare-purge-cache-action/releases/latest)                               | `vN.N.N` | `vN.N.N` |  ❌  |  ❌   | Not a rolling tag. **Not** recommended.                   |
+| Version&nbsp;Tag                                                                                                                                                                                                                           | Rolling | Bugs | Feat. | Target   | Example  |
+| :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-----: | :--: | :---: | :------- | :------- |
+| [![GitHub Tag Major](https://img.shields.io/github/v/tag/cssnr/cloudflare-purge-cache-action?sort=semver&filter=!v*.*&style=for-the-badge&label=%20&color=44cc10)](https://github.com/cssnr/cloudflare-purge-cache-action/releases/latest) |   ✅    |  ✅  |  ✅   | `vN.x.x` | `vN`     |
+| [![GitHub Tag Minor](https://img.shields.io/github/v/tag/cssnr/cloudflare-purge-cache-action?sort=semver&filter=!v*.*.*&style=for-the-badge&label=%20&color=blue)](https://github.com/cssnr/cloudflare-purge-cache-action/releases/latest) |   ✅    |  ✅  |  ❌   | `vN.N.x` | `vN.N`   |
+| [![GitHub Release](https://img.shields.io/github/v/release/cssnr/cloudflare-purge-cache-action?style=for-the-badge&label=%20&color=red)](https://github.com/cssnr/cloudflare-purge-cache-action/releases/latest)                           |   ❌    |  ❌  |  ❌   | `vN.N.N` | `vN.N.N` |
 
 You can view the release notes for each version on the [releases](https://github.com/cssnr/cloudflare-purge-cache-action/releases) page.
 
