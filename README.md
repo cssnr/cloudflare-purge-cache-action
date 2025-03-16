@@ -26,7 +26,7 @@ For more details see: [action.yaml](action.yaml) and [src/main.py](src/main.py).
 
 ## Inputs
 
-| Input    |  Req.   | Default | Short&nbsp;Description                 |
+| Input    |  Req.   | Default | Input&nbsp;Description                 |
 | :------- | :-----: | :------ | :------------------------------------- |
 | token    | **Yes** | -       | Cloudflare API Token                   |
 | zones    | **Yes** | -       | Zone Names to Purge \*                 |
