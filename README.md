@@ -26,7 +26,7 @@ For more details see: [action.yaml](action.yaml) and [src/main.py](src/main.py).
 
 ## Inputs
 
-| Input    |  Req.   | Default | Description                            |
+| Input    |  Req.   | Default | Short&nbsp;Description                 |
 | :------- | :-----: | :------ | :------------------------------------- |
 | token    | **Yes** | -       | Cloudflare API Token                   |
 | zones    | **Yes** | -       | Zone Names to Purge \*                 |
@@ -165,16 +165,16 @@ jobs:
 
 The following rolling [tags](https://github.com/cssnr/cloudflare-purge-cache-action/tags) are maintained.
 
-| Version&nbsp;Tag                                                                                                                                                                                                                           | Rolling | Bugs | Feat. | Target   | Example  |
-| :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-----: | :--: | :---: | :------- | :------- |
-| [![GitHub Tag Major](https://img.shields.io/github/v/tag/cssnr/cloudflare-purge-cache-action?sort=semver&filter=!v*.*&style=for-the-badge&label=%20&color=44cc10)](https://github.com/cssnr/cloudflare-purge-cache-action/releases/latest) |   ✅    |  ✅  |  ✅   | `vN.x.x` | `vN`     |
-| [![GitHub Tag Minor](https://img.shields.io/github/v/tag/cssnr/cloudflare-purge-cache-action?sort=semver&filter=!v*.*.*&style=for-the-badge&label=%20&color=blue)](https://github.com/cssnr/cloudflare-purge-cache-action/releases/latest) |   ✅    |  ✅  |  ❌   | `vN.N.x` | `vN.N`   |
-| [![GitHub Release](https://img.shields.io/github/v/release/cssnr/cloudflare-purge-cache-action?style=for-the-badge&label=%20&color=red)](https://github.com/cssnr/cloudflare-purge-cache-action/releases/latest)                           |   ❌    |  ❌  |  ❌   | `vN.N.N` | `vN.N.N` |
+| Version&nbsp;Tag                                                                                                                                                                                                                           | Rolling | Bugs | Feat. |   Name    |  Target  | Example  |
+| :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-----: | :--: | :---: | :-------: | :------: | :------- |
+| [![GitHub Tag Major](https://img.shields.io/github/v/tag/cssnr/cloudflare-purge-cache-action?sort=semver&filter=!v*.*&style=for-the-badge&label=%20&color=44cc10)](https://github.com/cssnr/cloudflare-purge-cache-action/releases/latest) |   ✅    |  ✅  |  ✅   | **Major** | `vN.x.x` | `vN`     |
+| [![GitHub Tag Minor](https://img.shields.io/github/v/tag/cssnr/cloudflare-purge-cache-action?sort=semver&filter=!v*.*.*&style=for-the-badge&label=%20&color=blue)](https://github.com/cssnr/cloudflare-purge-cache-action/releases/latest) |   ✅    |  ✅  |  ❌   | **Minor** | `vN.N.x` | `vN.N`   |
+| [![GitHub Release](https://img.shields.io/github/v/release/cssnr/cloudflare-purge-cache-action?style=for-the-badge&label=%20&color=red)](https://github.com/cssnr/cloudflare-purge-cache-action/releases/latest)                           |   ❌    |  ❌  |  ❌   | **Micro** | `vN.N.N` | `vN.N.N` |
 
 You can view the release notes for each version on the [releases](https://github.com/cssnr/cloudflare-purge-cache-action/releases) page.
 
-The Major tag is recommended. It is the most up-to-date and always backwards compatible.
-Breaking changes will always result in a major version bump. At a minimum you should use a Minor tag.
+The **Major** tag is recommended. It is the most up-to-date and always backwards compatible.
+Breaking changes would result in a **Major** version bump. At a minimum you should use a **Minor** tag.
 
 # Support
 
