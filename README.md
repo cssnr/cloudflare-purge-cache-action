@@ -173,6 +173,9 @@ The following rolling [tags](https://github.com/cssnr/cloudflare-purge-cache-act
 
 You can view the release notes for each version on the [releases](https://github.com/cssnr/cloudflare-purge-cache-action/releases) page.
 
+The Major tag is recommended. It is the most up-to-date and always backwards compatible.
+Breaking changes will always result in a major version bump. At a minimum you should use a Minor tag.
+
 # Support
 
 For general help or to request a feature, see:
