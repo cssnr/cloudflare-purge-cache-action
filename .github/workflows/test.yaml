@@ -23,6 +23,10 @@ env:
   PREFIXES: ""
   DRY_RUN: "true"
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     name: "Test"

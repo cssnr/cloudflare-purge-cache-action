@@ -71,7 +71,7 @@ def get_zones(zone_name: str = "") -> Optional[list]:
     # print(f"params: {params}")
     zone_list = []
     while True:
-        response = requests.get(zones_url, headers=headers, params=params)
+        response = requests.get(zones_url, headers=headers, params=params, timeout=60)
         # print(f"response.status_code: {response.status_code}")
         response.raise_for_status()
         data = response.json()
@@ -163,7 +163,7 @@ for name in zones:
 
         # Perform Purge
         url: str = base_url.format(f"zones/{zone['id']}/purge_cache")
-        r = requests.post(url, headers=headers, json=purge_data)
+        r = requests.post(url, headers=headers, json=purge_data, timeout=60)
         # print(f"r.status_code: {r.status_code}")
         r.raise_for_status()
         result = r.json()

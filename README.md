@@ -26,7 +26,7 @@ For more details see: [action.yaml](action.yaml) and [src/main.py](src/main.py).
 
 ## Inputs
 
-| Input    |  Req.   | Default | Description                            |
+| Input    |  Req.   | Default | Input&nbsp;Description                 |
 | :------- | :-----: | :------ | :------------------------------------- |
 | token    | **Yes** | -       | Cloudflare API Token                   |
 | zones    | **Yes** | -       | Zone Names to Purge \*                 |
@@ -39,18 +39,18 @@ For more details see: [action.yaml](action.yaml) and [src/main.py](src/main.py).
 | summary  |    -    | `true`  | Add Summary to Job \*                  |
 | dry_run  |    -    | `false` | Run Without Purging                    |
 
-**zones** - CSV or Newline Delimited list of zone names to purge.
+**zones:** CSV or Newline Delimited list of zone names to purge.
 
-**files** - CSV or Newline Delimited list of files to purge.
+**files:** CSV or Newline Delimited list of files to purge.
 This is limited to 30 files on the free plan and 500 for enterprise.
 For more information view docs for purge by [file](https://developers.cloudflare.com/cache/how-to/purge-cache/purge-by-single-file/).
 
-**prefix** - If provided, the `prefix` will be prepended to all the `files`. Useful for generating full links from file paths.
+**prefix:** If provided, the `prefix` will be prepended to all the `files`. Useful for generating full links from file paths.
 
-**tags/hosts/prefixes** - Enterprise only. CSV or Newline Delimited list of `tags`, `hosts` or `prefixes` to purge.
+**tags/hosts/prefixes:** Enterprise only. CSV or Newline Delimited list of `tags`, `hosts` or `prefixes` to purge.
 For more information view docs for purge by [tags](https://developers.cloudflare.com/cache/how-to/purge-cache/purge-by-tags/), [hostname](https://developers.cloudflare.com/cache/how-to/purge-cache/purge-by-hostname/), [prefix](https://developers.cloudflare.com/cache/how-to/purge-cache/purge_by_prefix/).
 
-**summary** - Write a Summary for the job. To disable this set to `false`.
+**summary:** Write a Summary for the job. To disable this set to `false`.
 
 <details><summary>👀 View Example Job Summary</summary>
 
@@ -118,10 +118,10 @@ With all inputs:
 
 ## Outputs
 
-| Output  | Description           |
-| :------ | :-------------------- |
-| success | Successful Zones, CSV |
-| failed  | Failed Zones, CSV     |
+| Output  | Output&nbsp;Description |
+| :------ | :---------------------- |
+| success | Successful Zones, CSV   |
+| failed  | Failed Zones, CSV       |
 
 ```yaml
 - name: 'Purge Cache Action'
@@ -161,17 +161,23 @@ jobs:
             example.com
 ```
 
+For more examples, you can check out other projects using this action:  
+https://github.com/cssnr/cloudflare-purge-cache-action/network/dependents
+
 ## Tags
 
 The following rolling [tags](https://github.com/cssnr/cloudflare-purge-cache-action/tags) are maintained.
 
-| Version&nbsp;Tag                                                                                                                                                                                                                           | Rolling | Bugs | Feat. | Target   | Example  |
-| :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-----: | :--: | :---: | :------- | :------- |
-| [![GitHub Tag Major](https://img.shields.io/github/v/tag/cssnr/cloudflare-purge-cache-action?sort=semver&filter=!v*.*&style=for-the-badge&label=%20&color=44cc10)](https://github.com/cssnr/cloudflare-purge-cache-action/releases/latest) |   ✅    |  ✅  |  ✅   | `vN.x.x` | `vN`     |
-| [![GitHub Tag Minor](https://img.shields.io/github/v/tag/cssnr/cloudflare-purge-cache-action?sort=semver&filter=!v*.*.*&style=for-the-badge&label=%20&color=blue)](https://github.com/cssnr/cloudflare-purge-cache-action/releases/latest) |   ✅    |  ✅  |  ❌   | `vN.N.x` | `vN.N`   |
-| [![GitHub Release](https://img.shields.io/github/v/release/cssnr/cloudflare-purge-cache-action?style=for-the-badge&label=%20&color=red)](https://github.com/cssnr/cloudflare-purge-cache-action/releases/latest)                           |   ❌    |  ❌  |  ❌   | `vN.N.N` | `vN.N.N` |
+| Version&nbsp;Tag                                                                                                                                                                                                                           | Rolling | Bugs | Feat. |   Name    |  Target  | Example  |
+| :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-----: | :--: | :---: | :-------: | :------: | :------- |
+| [![GitHub Tag Major](https://img.shields.io/github/v/tag/cssnr/cloudflare-purge-cache-action?sort=semver&filter=!v*.*&style=for-the-badge&label=%20&color=44cc10)](https://github.com/cssnr/cloudflare-purge-cache-action/releases/latest) |   ✅    |  ✅  |  ✅   | **Major** | `vN.x.x` | `vN`     |
+| [![GitHub Tag Minor](https://img.shields.io/github/v/tag/cssnr/cloudflare-purge-cache-action?sort=semver&filter=!v*.*.*&style=for-the-badge&label=%20&color=blue)](https://github.com/cssnr/cloudflare-purge-cache-action/releases/latest) |   ✅    |  ✅  |  ❌   | **Minor** | `vN.N.x` | `vN.N`   |
+| [![GitHub Release](https://img.shields.io/github/v/release/cssnr/cloudflare-purge-cache-action?style=for-the-badge&label=%20&color=red)](https://github.com/cssnr/cloudflare-purge-cache-action/releases/latest)                           |   ❌    |  ❌  |  ❌   | **Micro** | `vN.N.N` | `vN.N.N` |
 
 You can view the release notes for each version on the [releases](https://github.com/cssnr/cloudflare-purge-cache-action/releases) page.
+
+The **Major** tag is recommended. It is the most up-to-date and always backwards compatible.
+Breaking changes would result in a **Major** version bump. At a minimum you should use a **Minor** tag.
 
 # Support
 
@@ -204,5 +210,7 @@ Additionally, you can support other GitHub Actions I have published:
 - [Cloudflare Purge Cache Action](https://github.com/cssnr/cloudflare-purge-cache-action?tab=readme-ov-file#readme)
 - [Mozilla Addon Update Action](https://github.com/cssnr/mozilla-addon-update-action?tab=readme-ov-file#readme)
 - [Docker Tags Action](https://github.com/cssnr/docker-tags-action?tab=readme-ov-file#readme)
+- [Package Changelog Action](https://github.com/cssnr/package-changelog-action?tab=readme-ov-file#readme)
+- [NPM Outdated Check Action](https://github.com/cssnr/npm-outdated-action?tab=readme-ov-file#readme)
 
 For a full list of current projects to support visit: [https://cssnr.github.io/](https://cssnr.github.io/)
