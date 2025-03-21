@@ -39,18 +39,18 @@ For more details see: [action.yaml](action.yaml) and [src/main.py](src/main.py).
 | summary  |    -    | `true`  | Add Summary to Job \*                  |
 | dry_run  |    -    | `false` | Run Without Purging                    |
 
-**zones** - CSV or Newline Delimited list of zone names to purge.
+**zones:** CSV or Newline Delimited list of zone names to purge.
 
-**files** - CSV or Newline Delimited list of files to purge.
+**files:** CSV or Newline Delimited list of files to purge.
 This is limited to 30 files on the free plan and 500 for enterprise.
 For more information view docs for purge by [file](https://developers.cloudflare.com/cache/how-to/purge-cache/purge-by-single-file/).
 
-**prefix** - If provided, the `prefix` will be prepended to all the `files`. Useful for generating full links from file paths.
+**prefix:** If provided, the `prefix` will be prepended to all the `files`. Useful for generating full links from file paths.
 
-**tags/hosts/prefixes** - Enterprise only. CSV or Newline Delimited list of `tags`, `hosts` or `prefixes` to purge.
+**tags/hosts/prefixes:** Enterprise only. CSV or Newline Delimited list of `tags`, `hosts` or `prefixes` to purge.
 For more information view docs for purge by [tags](https://developers.cloudflare.com/cache/how-to/purge-cache/purge-by-tags/), [hostname](https://developers.cloudflare.com/cache/how-to/purge-cache/purge-by-hostname/), [prefix](https://developers.cloudflare.com/cache/how-to/purge-cache/purge_by_prefix/).
 
-**summary** - Write a Summary for the job. To disable this set to `false`.
+**summary:** Write a Summary for the job. To disable this set to `false`.
 
 <details><summary>👀 View Example Job Summary</summary>
 
@@ -118,10 +118,10 @@ With all inputs:
 
 ## Outputs
 
-| Output  | Description           |
-| :------ | :-------------------- |
-| success | Successful Zones, CSV |
-| failed  | Failed Zones, CSV     |
+| Output  | Output&nbsp;Description |
+| :------ | :---------------------- |
+| success | Successful Zones, CSV   |
+| failed  | Failed Zones, CSV       |
 
 ```yaml
 - name: 'Purge Cache Action'
@@ -160,6 +160,9 @@ jobs:
             cssnr.com
             example.com
 ```
+
+For more examples, you can check out other projects using this action:  
+https://github.com/cssnr/cloudflare-purge-cache-action/network/dependents
 
 ## Tags
 
