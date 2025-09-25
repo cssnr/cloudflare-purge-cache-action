@@ -15,7 +15,11 @@ jobs:
 
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
+
+      - name: "Debug event.json"
+        run: |
+          cat "${GITHUB_EVENT_PATH}"
 
       - name: "Verify Action Tag"
         run: |
@@ -66,7 +70,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: "Rollback Failed Verification"
+      - name: "Rollback Release"
         if: ${{ failure() }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -105,3 +109,9 @@ jobs:
         with:
           tags: ${{ steps.tags.outputs.tags }}
           location: tail
+
+      - name: "Send Failure Notification"
+        if: ${{ failure() }}
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
