@@ -1,15 +1,21 @@
 [![GitHub Tag Major](https://img.shields.io/github/v/tag/cssnr/cloudflare-purge-cache-action?sort=semver&filter=!v*.*&logo=git&logoColor=white&labelColor=585858&label=%20)](https://github.com/cssnr/cloudflare-purge-cache-action/tags)
-[![GitHub Tag Minor](https://img.shields.io/github/v/tag/cssnr/cloudflare-purge-cache-action?sort=semver&filter=!v*.*.*&logo=git&logoColor=white&labelColor=585858&label=%20)](https://github.com/cssnr/cloudflare-purge-cache-action/tags)
+[![GitHub Tag Minor](https://img.shields.io/github/v/tag/cssnr/cloudflare-purge-cache-action?sort=semver&filter=!v*.*.*&logo=git&logoColor=white&labelColor=585858&label=%20)](https://github.com/cssnr/cloudflare-purge-cache-action/releases)
 [![GitHub Release Version](https://img.shields.io/github/v/release/cssnr/cloudflare-purge-cache-action?logo=git&logoColor=white&labelColor=585858&label=%20)](https://github.com/cssnr/cloudflare-purge-cache-action/releases/latest)
 [![GHCR Size](https://ghcr-badge.egpl.dev/cssnr/cloudflare-purge-cache-action/size)](https://github.com/cssnr/cloudflare-purge-cache-action/pkgs/container/cloudflare-purge-cache-action)
-[![Workflow Release](https://img.shields.io/github/actions/workflow/status/cssnr/cloudflare-purge-cache-action/release.yaml?logo=github&label=release)](https://github.com/cssnr/cloudflare-purge-cache-action/actions/workflows/release.yaml)
-[![Workflow Test](https://img.shields.io/github/actions/workflow/status/cssnr/cloudflare-purge-cache-action/test.yaml?logo=github&label=test)](https://github.com/cssnr/cloudflare-purge-cache-action/actions/workflows/test.yaml)
-[![Workflow Lint](https://img.shields.io/github/actions/workflow/status/cssnr/cloudflare-purge-cache-action/lint.yaml?logo=github&label=lint)](https://github.com/cssnr/cloudflare-purge-cache-action/actions/workflows/lint.yaml)
-[![GitHub Last Commit](https://img.shields.io/github/last-commit/cssnr/cloudflare-purge-cache-action?logo=github&label=updated)](https://github.com/cssnr/cloudflare-purge-cache-action/graphs/commit-activity)
+[![Workflow Release](https://img.shields.io/github/actions/workflow/status/cssnr/cloudflare-purge-cache-action/release.yaml?logo=cachet&label=release)](https://github.com/cssnr/cloudflare-purge-cache-action/actions/workflows/release.yaml)
+[![Workflow Test](https://img.shields.io/github/actions/workflow/status/cssnr/cloudflare-purge-cache-action/test.yaml?logo=cachet&label=test)](https://github.com/cssnr/cloudflare-purge-cache-action/actions/workflows/test.yaml)
+[![Workflow Lint](https://img.shields.io/github/actions/workflow/status/cssnr/cloudflare-purge-cache-action/lint.yaml?logo=cachet&label=lint)](https://github.com/cssnr/cloudflare-purge-cache-action/actions/workflows/lint.yaml)
+[![GitHub Last Commit](https://img.shields.io/github/last-commit/cssnr/cloudflare-purge-cache-action?logo=github&label=updated)](https://github.com/cssnr/cloudflare-purge-cache-action/pulse)
 [![Codeberg Last Commit](https://img.shields.io/gitea/last-commit/cssnr/cloudflare-purge-cache-action/master?gitea_url=https%3A%2F%2Fcodeberg.org%2F&logo=codeberg&logoColor=white&label=updated)](https://codeberg.org/cssnr/cloudflare-purge-cache-action)
+[![GitHub Contributors](https://img.shields.io/github/contributors/cssnr/cloudflare-purge-cache-action?logo=github)](https://github.com/cssnr/cloudflare-purge-cache-action/graphs/contributors)
+[![GitHub Repo Size](https://img.shields.io/github/repo-size/cssnr/cloudflare-purge-cache-action?logo=bookstack&logoColor=white&label=repo%20size)](https://github.com/cssnr/cloudflare-purge-cache-action?tab=readme-ov-file#readme)
 [![GitHub Top Language](https://img.shields.io/github/languages/top/cssnr/cloudflare-purge-cache-action?logo=htmx)](https://github.com/cssnr/cloudflare-purge-cache-action)
-[![GitHub Org Stars](https://img.shields.io/github/stars/cssnr?style=flat&logo=github)](https://cssnr.github.io/)
+[![GitHub Forks](https://img.shields.io/github/forks/cssnr/cloudflare-purge-cache-action?style=flat&logo=github)](https://github.com/cssnr/cloudflare-purge-cache-action/forks)
+[![GitHub Discussions](https://img.shields.io/github/discussions/cssnr/cloudflare-purge-cache-action?logo=github)](https://github.com/cssnr/cloudflare-purge-cache-action/discussions)
+[![GitHub Repo Stars](https://img.shields.io/github/stars/cssnr/cloudflare-purge-cache-action?style=flat&logo=github)](https://github.com/cssnr/cloudflare-purge-cache-action/stargazers)
+[![GitHub Org Stars](https://img.shields.io/github/stars/cssnr?style=flat&logo=github&label=org%20stars)](https://cssnr.github.io/)
 [![Discord](https://img.shields.io/discord/899171661457293343?logo=discord&logoColor=white&label=discord&color=7289da)](https://discord.gg/wXy6m2X8wY)
+[![Ko-fi](https://img.shields.io/badge/Ko--fi-72a5f2?logo=kofi&label=support)](https://ko-fi.com/cssnr)
 
 # Cloudflare Purge Cache Action
 
@@ -26,7 +32,7 @@ For more details see: [action.yaml](action.yaml) and [src/main.py](src/main.py).
 
 ## Inputs
 
-| Input    |  Req.   | Default | Input&nbsp;Description                 |
+| Input    |  Req.   | Default | Description&nbsp;of&nbsp;Input         |
 | :------- | :-----: | :------ | :------------------------------------- |
 | token    | **Yes** | -       | Cloudflare API Token                   |
 | zones    | **Yes** | -       | Zone Names to Purge \*                 |
@@ -192,11 +198,16 @@ If you are experiencing an issue/bug or getting unexpected results, you can:
 - Chat with us on Discord: https://discord.gg/wXy6m2X8wY
 - Provide General Feedback: [https://cssnr.github.io/feedback/](https://cssnr.github.io/feedback/?app=Cloudflare%20Purge%20Cache%20Action)
 
+For more information, see the CSSNR [SUPPORT.md](https://github.com/cssnr/.github/blob/master/.github/SUPPORT.md#support).
+
 # Contributing
 
-Currently, the best way to contribute to this project is to star this project on GitHub.
+Please consider making a donation to support the development of this project
+and [additional](https://cssnr.com/) open source projects.
 
-If you would like to submit a PR, please review the [CONTRIBUTING.md](CONTRIBUTING.md).
+[![Ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/cssnr)
+
+If you would like to submit a PR, please review the [CONTRIBUTING.md](#contributing-ov-file).
 
 Additionally, you can support other GitHub Actions I have published:
 
@@ -212,5 +223,8 @@ Additionally, you can support other GitHub Actions I have published:
 - [Docker Tags Action](https://github.com/cssnr/docker-tags-action?tab=readme-ov-file#readme)
 - [Package Changelog Action](https://github.com/cssnr/package-changelog-action?tab=readme-ov-file#readme)
 - [NPM Outdated Check Action](https://github.com/cssnr/npm-outdated-action?tab=readme-ov-file#readme)
+- [Label Creator Action](https://github.com/cssnr/label-creator-action?tab=readme-ov-file#readme)
+- [Algolia Crawler Action](https://github.com/cssnr/algolia-crawler-action?tab=readme-ov-file#readme)
+- [Upload Release Action](https://github.com/cssnr/upload-release-action?tab=readme-ov-file#readme)
 
-For a full list of current projects to support visit: [https://cssnr.github.io/](https://cssnr.github.io/)
+For a full list of current projects visit: [https://cssnr.github.io/](https://cssnr.github.io/)

@@ -12,7 +12,7 @@ on:
       - ".github/workflows/test.yaml"
       - "package*.json"
       - "requirements*.txt"
-      - "action.yaml"
+      - "action.y*l"
 
 env:
   ZONES: ${{ vars.ZONES || 'cssnr.com,example.com' }}
@@ -37,7 +37,7 @@ jobs:
 
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: "Edit YAML"
         uses: Liam-Johnston/yaml-helper@V1
