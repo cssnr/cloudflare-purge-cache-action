@@ -9,7 +9,7 @@ on:
     paths:
       - "dist/**"
       - "src/**"
-      - ".github/workflows/test.yaml"
+      - ".github/workflows/test.yaml" # retarded GitHub
       - "package*.json"
       - "requirements*.txt"
       - "action.y*l"
