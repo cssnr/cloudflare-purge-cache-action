@@ -34,31 +34,54 @@ For more details see: [action.yaml](action.yaml) and [src/main.py](src/main.py).
 
 ## Inputs
 
-| Input    |  Req.   | Default | Description&nbsp;of&nbsp;Input         |
-| :------- | :-----: | :------ | :------------------------------------- |
-| token    | **Yes** | -       | Cloudflare API Token                   |
-| zones    | **Yes** | -       | Zone Names to Purge \*                 |
-| files    |    -    | -       | Files to Purge \*                      |
-| prefix   |    -    | -       | Prefix Prepended to Files \*           |
-| tags     |    -    | -       | Tags to Purge (Enterprise only) \*     |
-| hosts    |    -    | -       | Hosts to Purge (Enterprise only) \*    |
-| prefixes |    -    | -       | Prefixes to Purge (Enterprise only) \* |
-| fail     |    -    | `all`   | Fail Mode: [`all`, `any`, `none`]      |
-| summary  |    -    | `true`  | Add Summary to Job \*                  |
-| dry_run  |    -    | `false` | Run Without Purging                    |
+| Input    | Default    | Description&nbsp;of&nbsp;the&nbsp;Input&nbsp;Value           |
+| :------- | :--------- | :----------------------------------------------------------- |
+| token    | _Required_ | Cloudflare API Token [⤵️](#token)                            |
+| zones    | _Required_ | Zone Names to Purge [⤵️](#zones)                             |
+| files    | -          | Files to Purge [⤵️](#files)                                  |
+| prefix   | -          | Prefix Prepended to Files [⤵️](#prefix)                      |
+| tags     | -          | Tags to Purge (Enterprise only) [⤵️](#tagshostsprefixes)     |
+| hosts    | -          | Hosts to Purge (Enterprise only) [⤵️](#tagshostsprefixes)    |
+| prefixes | -          | Prefixes to Purge (Enterprise only) [⤵️](#tagshostsprefixes) |
+| fail     | `all`      | Fail Mode: [`all`, `any`, `none`] [⤵️](#fail)                |
+| dry_run  | `false`    | Run Without Purging [⤵️](#dry_run)                           |
+| summary  | `true`     | Add Summary to Job [⤵️](#summary)                            |
 
-**zones:** CSV or Newline Delimited list of zone names to purge.
+### token
 
-**files:** CSV or Newline Delimited list of files to purge.
+You need a [Cloudflare Token](https://developers.cloudflare.com/fundamentals/api/get-started/create-token/) with the permission `Zone.Cache Purge`.
+
+### zones
+
+CSV or Newline Delimited list of zone names to purge.
+
+### files
+
+CSV or Newline Delimited list of files to purge.
 This is limited to 30 files on the free plan and 500 for enterprise.
 For more information view docs for purge by [file](https://developers.cloudflare.com/cache/how-to/purge-cache/purge-by-single-file/).
 
-**prefix:** If provided, the `prefix` will be prepended to all the `files`. Useful for generating full links from file paths.
+### prefix
 
-**tags/hosts/prefixes:** Enterprise only. CSV or Newline Delimited list of `tags`, `hosts` or `prefixes` to purge.
+If provided, the `prefix` will be prepended to all the `files`. Useful for generating full links from file paths.
+
+### tags/hosts/prefixes
+
+Enterprise only. CSV or Newline Delimited list of `tags`, `hosts` or `prefixes` to purge.
 For more information view docs for purge by [tags](https://developers.cloudflare.com/cache/how-to/purge-cache/purge-by-tags/), [hostname](https://developers.cloudflare.com/cache/how-to/purge-cache/purge-by-hostname/), [prefix](https://developers.cloudflare.com/cache/how-to/purge-cache/purge_by_prefix/).
 
-**summary:** Write a Summary for the job. To disable this set to `false`.
+### fail
+
+When purging multiple domains, set when the action should fail.
+Options are `all`, `any` or `none`. Default is `all`.
+
+### dry_run
+
+With this enabled it will only output the results and not purge any cache.
+
+### summary
+
+Write a Summary for the job. To disable this set to `false`.
 
 <details><summary>👀 View Example Job Summary</summary>
 
