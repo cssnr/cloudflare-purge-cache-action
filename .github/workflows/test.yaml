@@ -39,9 +39,15 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v5
 
-      - name: "Edit YAML"
-        uses: Liam-Johnston/yaml-helper@V1
+      - name: "Debug Event"
         if: ${{ !github.event.act }}
+        continue-on-error: true
+        run: |
+          cat "${GITHUB_EVENT_PATH}"
+
+      - name: "Edit YAML"
+        if: ${{ !github.event.act }}
+        uses: Liam-Johnston/yaml-helper@V1
         with:
           file-location: "action.yaml"
           create-if-does-not-exist: false

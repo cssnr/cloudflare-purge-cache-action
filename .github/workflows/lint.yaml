@@ -72,12 +72,6 @@ jobs:
           echo "::endgroup::"
           npx prettier --check .
 
-      - name: "Hadolint"
-        if: ${{ !cancelled() }}
-        uses: hadolint/hadolint-action@v3.1.0
-        with:
-          dockerfile: Dockerfile
-
       - name: "Yamllint"
         if: ${{ !cancelled() }}
         env:
@@ -103,6 +97,12 @@ jobs:
           "${RUNNER_TEMP}/actionlint" --version
           echo "::endgroup::"
           "${RUNNER_TEMP}/actionlint" -color -verbose -shellcheck= -pyflakes=
+
+      - name: "Hadolint"
+        if: ${{ !cancelled() }}
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: Dockerfile
 
       #- name: "Vale"
       #  if: ${{ !cancelled() }}
