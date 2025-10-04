@@ -30,8 +30,6 @@
 
 Purge Cloudflare cache for a zone or list of zones with optional filters including files, prefixes, tags, and hosts.
 
-For more details see: [action.yaml](action.yaml) and [src/main.py](src/main.py).
-
 ```yaml
 - name: 'Purge Cache Action'
   uses: cssnr/cloudflare-purge-cache-action@v2
@@ -39,6 +37,10 @@ For more details see: [action.yaml](action.yaml) and [src/main.py](src/main.py).
     token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
     zones: cssnr.com,example.com
 ```
+
+&nbsp;
+
+For more details see: [action.yaml](action.yaml) and [src/main.py](src/main.py).
 
 ## Inputs
 
@@ -63,11 +65,15 @@ You need a [Cloudflare Token](https://developers.cloudflare.com/fundamentals/api
 
 CSV or Newline Delimited list of zone names to purge.
 
-<details><summary>View Examples</summary>
+<details><summary>View <b>CSV and Newline Delimited</b> Examples</summary>
+
+CSV - Comma Seperated Value
 
 ```yaml
 zones: cssnr.com,example.com
 ```
+
+Newline Delimited
 
 ```yaml
 zones: |
