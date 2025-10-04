@@ -65,6 +65,8 @@ CSV or Newline Delimited list of zone names to purge.
 
 <details><summary>View <b>CSV and Newline Delimited</b> Examples</summary>
 
+---
+
 CSV - Comma Seperated Value:
 
 ```yaml
@@ -78,6 +80,8 @@ zones: |
   cssnr.com
   example.com
 ```
+
+---
 
 </details>
 
@@ -141,7 +145,7 @@ dry_run: true
 
 &nbsp;
 
-View the [Examples](#examples) to see more...
+> View the [Examples](#examples) to see more...
 
 ## Outputs
 
