@@ -38,8 +38,6 @@ Purge Cloudflare cache for a zone or list of zones with optional filters includi
     zones: cssnr.com,example.com
 ```
 
-&nbsp;
-
 For more details see: [action.yaml](action.yaml) and [src/main.py](src/main.py).
 
 ## Inputs
@@ -67,13 +65,13 @@ CSV or Newline Delimited list of zone names to purge.
 
 <details><summary>View <b>CSV and Newline Delimited</b> Examples</summary>
 
-CSV - Comma Seperated Value
+CSV - Comma Seperated Value:
 
 ```yaml
 zones: cssnr.com,example.com
 ```
 
-Newline Delimited
+Newline Delimited:
 
 ```yaml
 zones: |
@@ -141,7 +139,9 @@ dry_run: true
 
 </details>
 
-View the [Examples](#examples) for more details.
+&nbsp;
+
+View the [Examples](#examples) to see more...
 
 ## Outputs
 
