@@ -1,5 +1,5 @@
 name: "Cloudflare Purge Zone Cache"
-description: "Purge/Flush/Clear a Cloudflare zones cache with optional files/tags/hosts/prefixes filters."
+description: "Purge/Flush/Clear Cloudflare domains or zones cache with optional files/tags/hosts/prefixes filters."
 author: "Shane"
 branding:
   icon: "cloud"
@@ -37,14 +37,14 @@ inputs:
     description: "Fail Mode"
     required: false
     default: "all"
-  summary:
-    description: "Add Summary to Job"
-    required: false
-    default: "true"
   dry_run:
     description: "Run Without Purging Cache"
     required: false
     default: "false"
+  summary:
+    description: "Add Summary to Job"
+    required: false
+    default: "true"
   zone:
     description: "This has been changed to: zones"
     deprecationMessage: "Changed this input to: zones"

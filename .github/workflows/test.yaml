@@ -7,12 +7,14 @@ on:
   push:
     branches: ["**"]
     paths:
+      - ".github/workflows/test.yaml"
       - "dist/**"
       - "src/**"
-      - ".github/workflows/test.yaml"
       - "package*.json"
       - "requirements*.txt"
       - "action.y*l"
+      - "Dockerfile"
+      - "pyproject.toml"
 
 env:
   ZONES: ${{ vars.ZONES || 'cssnr.com,example.com' }}
@@ -32,6 +34,7 @@ jobs:
     name: "Test"
     runs-on: ubuntu-latest
     timeout-minutes: 5
+
     permissions:
       contents: write
 
