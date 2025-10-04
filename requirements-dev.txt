@@ -4,7 +4,6 @@ flake8
 isort
 mypy
 pyyaml
-requests
 ruff
 yamllint
 types-requests

@@ -7,4 +7,3 @@ __pycache__/
 .env
 .secrets
 .vars
-src/version.txt

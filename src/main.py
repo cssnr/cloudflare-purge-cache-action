@@ -6,10 +6,7 @@ from typing import Any, Dict, List, Optional
 import requests
 
 
-version = os.environ.get("GITHUB_ACTION_REF") or "Local Source"
-if os.path.isfile("/src/version.txt"):
-    with open("/src/version.txt", "r") as f:
-        version = f.read().strip()
+version = os.environ.get("APP_VERSION", os.environ.get("GITHUB_ACTION_REF", "Local Source"))
 print(f"🏳️ Starting Cloudflare Purge Cache Action - {version}")
 
 

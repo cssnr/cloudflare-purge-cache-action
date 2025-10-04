@@ -1,7 +1,9 @@
 [![GitHub Tag Major](https://img.shields.io/github/v/tag/cssnr/cloudflare-purge-cache-action?sort=semver&filter=!v*.*&logo=git&logoColor=white&labelColor=585858&label=%20)](https://github.com/cssnr/cloudflare-purge-cache-action/tags)
 [![GitHub Tag Minor](https://img.shields.io/github/v/tag/cssnr/cloudflare-purge-cache-action?sort=semver&filter=!v*.*.*&logo=git&logoColor=white&labelColor=585858&label=%20)](https://github.com/cssnr/cloudflare-purge-cache-action/releases)
 [![GitHub Release Version](https://img.shields.io/github/v/release/cssnr/cloudflare-purge-cache-action?logo=git&logoColor=white&labelColor=585858&label=%20)](https://github.com/cssnr/cloudflare-purge-cache-action/releases/latest)
-[![GHCR Size](https://ghcr-badge.egpl.dev/cssnr/cloudflare-purge-cache-action/size)](https://github.com/cssnr/cloudflare-purge-cache-action/pkgs/container/cloudflare-purge-cache-action)
+[![Image Size](https://badges.cssnr.com/ghcr/size/cssnr/cloudflare-purge-cache-action)](https://github.com/cssnr/cloudflare-purge-cache-action/pkgs/container/cloudflare-purge-cache-action)
+[![Image Latest](https://badges.cssnr.com/ghcr/tags/cssnr/cloudflare-purge-cache-action/latest)](https://github.com/cssnr/cloudflare-purge-cache-action/pkgs/container/cloudflare-purge-cache-action)
+[![YAML Version](https://badges.cssnr.com/yaml/https%3A%2F%2Fraw.githubusercontent.com%2Fcssnr%2Fcloudflare-purge-cache-action%2Frefs%2Fheads%2Fmaster%2Faction.yaml/%24.runs.image?split=:&index=2&label=action.yaml)](https://github.com/cssnr/cloudflare-purge-cache-action/blob/master/action.yaml#L65)
 [![Workflow Release](https://img.shields.io/github/actions/workflow/status/cssnr/cloudflare-purge-cache-action/release.yaml?logo=cachet&label=release)](https://github.com/cssnr/cloudflare-purge-cache-action/actions/workflows/release.yaml)
 [![Workflow Test](https://img.shields.io/github/actions/workflow/status/cssnr/cloudflare-purge-cache-action/test.yaml?logo=cachet&label=test)](https://github.com/cssnr/cloudflare-purge-cache-action/actions/workflows/test.yaml)
 [![Workflow Lint](https://img.shields.io/github/actions/workflow/status/cssnr/cloudflare-purge-cache-action/lint.yaml?logo=cachet&label=lint)](https://github.com/cssnr/cloudflare-purge-cache-action/actions/workflows/lint.yaml)
@@ -30,33 +32,64 @@ Purge Cloudflare cache for a zone or list of zones with optional filters includi
 
 For more details see: [action.yaml](action.yaml) and [src/main.py](src/main.py).
 
+```yaml
+- name: 'Purge Cache Action'
+  uses: cssnr/cloudflare-purge-cache-action@v2
+  with:
+    token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+    zones: cssnr.com,example.com
+```
+
 ## Inputs
 
-| Input    |  Req.   | Default | Description&nbsp;of&nbsp;Input         |
-| :------- | :-----: | :------ | :------------------------------------- |
-| token    | **Yes** | -       | Cloudflare API Token                   |
-| zones    | **Yes** | -       | Zone Names to Purge \*                 |
-| files    |    -    | -       | Files to Purge \*                      |
-| prefix   |    -    | -       | Prefix Prepended to Files \*           |
-| tags     |    -    | -       | Tags to Purge (Enterprise only) \*     |
-| hosts    |    -    | -       | Hosts to Purge (Enterprise only) \*    |
-| prefixes |    -    | -       | Prefixes to Purge (Enterprise only) \* |
-| fail     |    -    | `all`   | Fail Mode: [`all`, `any`, `none`]      |
-| summary  |    -    | `true`  | Add Summary to Job \*                  |
-| dry_run  |    -    | `false` | Run Without Purging                    |
+| Input    | Default    | Description&nbsp;of&nbsp;the&nbsp;Input&nbsp;Value           |
+| :------- | :--------- | :----------------------------------------------------------- |
+| token    | _Required_ | Cloudflare API Token [⤵️](#token)                            |
+| zones    | _Required_ | Zone Names to Purge [⤵️](#zones)                             |
+| files    | -          | Files to Purge [⤵️](#files)                                  |
+| prefix   | -          | Prefix Prepended to Files [⤵️](#prefix)                      |
+| tags     | -          | Tags to Purge (Enterprise only) [⤵️](#tagshostsprefixes)     |
+| hosts    | -          | Hosts to Purge (Enterprise only) [⤵️](#tagshostsprefixes)    |
+| prefixes | -          | Prefixes to Purge (Enterprise only) [⤵️](#tagshostsprefixes) |
+| fail     | `all`      | Fail Mode: [`all`, `any`, `none`] [⤵️](#fail)                |
+| dry_run  | `false`    | Run Without Purging [⤵️](#dry_run)                           |
+| summary  | `true`     | Add Summary to Job [⤵️](#summary)                            |
 
-**zones:** CSV or Newline Delimited list of zone names to purge.
+### token
 
-**files:** CSV or Newline Delimited list of files to purge.
+You need a [Cloudflare Token](https://developers.cloudflare.com/fundamentals/api/get-started/create-token/) with the permission `Zone.Cache Purge`.
+
+### zones
+
+CSV or Newline Delimited list of zone names to purge.
+
+### files
+
+CSV or Newline Delimited list of files to purge.
 This is limited to 30 files on the free plan and 500 for enterprise.
 For more information view docs for purge by [file](https://developers.cloudflare.com/cache/how-to/purge-cache/purge-by-single-file/).
 
-**prefix:** If provided, the `prefix` will be prepended to all the `files`. Useful for generating full links from file paths.
+### prefix
 
-**tags/hosts/prefixes:** Enterprise only. CSV or Newline Delimited list of `tags`, `hosts` or `prefixes` to purge.
+If provided, the `prefix` will be prepended to all the `files`. Useful for generating full links from file paths.
+
+### tags/hosts/prefixes
+
+Enterprise only. CSV or Newline Delimited list of `tags`, `hosts` or `prefixes` to purge.
 For more information view docs for purge by [tags](https://developers.cloudflare.com/cache/how-to/purge-cache/purge-by-tags/), [hostname](https://developers.cloudflare.com/cache/how-to/purge-cache/purge-by-hostname/), [prefix](https://developers.cloudflare.com/cache/how-to/purge-cache/purge_by_prefix/).
 
-**summary:** Write a Summary for the job. To disable this set to `false`.
+### fail
+
+When purging multiple domains, set when the action should fail.
+Options are `all`, `any` or `none`. Default is `all`.
+
+### dry_run
+
+With this enabled it will only output the results and not purge any cache.
+
+### summary
+
+Write a Summary for the job. To disable this set to `false`.
 
 <details><summary>👀 View Example Job Summary</summary>
 
@@ -212,19 +245,53 @@ If you would like to submit a PR, please review the [CONTRIBUTING.md](#contribut
 Additionally, you can support other GitHub Actions I have published:
 
 - [Stack Deploy Action](https://github.com/cssnr/stack-deploy-action?tab=readme-ov-file#readme)
-- [Portainer Stack Deploy](https://github.com/cssnr/portainer-stack-deploy-action?tab=readme-ov-file#readme)
+- [Portainer Stack Deploy Action](https://github.com/cssnr/portainer-stack-deploy-action?tab=readme-ov-file#readme)
+- [Docker Context Action](https://github.com/cssnr/docker-context-action?tab=readme-ov-file#readme)
 - [VirusTotal Action](https://github.com/cssnr/virustotal-action?tab=readme-ov-file#readme)
 - [Mirror Repository Action](https://github.com/cssnr/mirror-repository-action?tab=readme-ov-file#readme)
 - [Update Version Tags Action](https://github.com/cssnr/update-version-tags-action?tab=readme-ov-file#readme)
+- [Docker Tags Action](https://github.com/cssnr/docker-tags-action?tab=readme-ov-file#readme)
 - [Update JSON Value Action](https://github.com/cssnr/update-json-value-action?tab=readme-ov-file#readme)
+- [JSON Key Value Check Action](https://github.com/cssnr/json-key-value-check-action?tab=readme-ov-file#readme)
 - [Parse Issue Form Action](https://github.com/cssnr/parse-issue-form-action?tab=readme-ov-file#readme)
 - [Cloudflare Purge Cache Action](https://github.com/cssnr/cloudflare-purge-cache-action?tab=readme-ov-file#readme)
 - [Mozilla Addon Update Action](https://github.com/cssnr/mozilla-addon-update-action?tab=readme-ov-file#readme)
-- [Docker Tags Action](https://github.com/cssnr/docker-tags-action?tab=readme-ov-file#readme)
 - [Package Changelog Action](https://github.com/cssnr/package-changelog-action?tab=readme-ov-file#readme)
 - [NPM Outdated Check Action](https://github.com/cssnr/npm-outdated-action?tab=readme-ov-file#readme)
 - [Label Creator Action](https://github.com/cssnr/label-creator-action?tab=readme-ov-file#readme)
 - [Algolia Crawler Action](https://github.com/cssnr/algolia-crawler-action?tab=readme-ov-file#readme)
 - [Upload Release Action](https://github.com/cssnr/upload-release-action?tab=readme-ov-file#readme)
+- [Check Build Action](https://github.com/cssnr/check-build-action?tab=readme-ov-file#readme)
+- [Web Request Action](https://github.com/cssnr/web-request-action?tab=readme-ov-file#readme)
+- [Get Commit Action](https://github.com/cssnr/get-commit-action?tab=readme-ov-file#readme)
+
+<details><summary>❔ Unpublished Actions</summary>
+
+These actions are not published on the Marketplace, but may be useful.
+
+- [cssnr/draft-release-action](https://github.com/cssnr/draft-release-action?tab=readme-ov-file#readme) - Keep a draft release ready to publish.
+- [cssnr/env-json-action](https://github.com/cssnr/env-json-action?tab=readme-ov-file#readme) - Convert env file to json or vice versa.
+- [cssnr/push-artifacts-action](https://github.com/cssnr/push-artifacts-action?tab=readme-ov-file#readme) - Sync files to a remote host with rsync.
+- [smashedr/update-release-notes-action](https://github.com/smashedr/update-release-notes-action?tab=readme-ov-file#readme) - Update release notes.
+- [smashedr/combine-release-notes-action](https://github.com/smashedr/combine-release-notes-action?tab=readme-ov-file#readme) - Combine release notes.
+
+---
+
+</details>
+
+<details><summary>📝 Template Actions</summary>
+
+These are basic action templates that I use for creating new actions.
+
+- [js-test-action](https://github.com/smashedr/js-test-action?tab=readme-ov-file#readme) - JavaScript
+- [py-test-action](https://github.com/smashedr/py-test-action?tab=readme-ov-file#readme) - Python
+- [ts-test-action](https://github.com/smashedr/ts-test-action?tab=readme-ov-file#readme) - TypeScript
+- [docker-test-action](https://github.com/smashedr/docker-test-action?tab=readme-ov-file#readme) - Docker Image
+
+Note: The `docker-test-action` builds, runs and pushes images to [GitHub Container Registry](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry).
+
+---
+
+</details>
 
 For a full list of current projects visit: [https://cssnr.github.io/](https://cssnr.github.io/)

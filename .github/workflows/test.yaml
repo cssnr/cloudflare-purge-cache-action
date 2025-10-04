@@ -7,12 +7,14 @@ on:
   push:
     branches: ["**"]
     paths:
+      - ".github/workflows/test.yaml"
       - "dist/**"
       - "src/**"
-      - ".github/workflows/test.yaml"
       - "package*.json"
       - "requirements*.txt"
       - "action.y*l"
+      - "Dockerfile"
+      - "pyproject.toml"
 
 env:
   ZONES: ${{ vars.ZONES || 'cssnr.com,example.com' }}
@@ -32,6 +34,7 @@ jobs:
     name: "Test"
     runs-on: ubuntu-latest
     timeout-minutes: 5
+
     permissions:
       contents: write
 
@@ -39,9 +42,15 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v5
 
-      - name: "Edit YAML"
-        uses: Liam-Johnston/yaml-helper@V1
+      - name: "Debug Event"
         if: ${{ !github.event.act }}
+        continue-on-error: true
+        run: |
+          cat "${GITHUB_EVENT_PATH}"
+
+      - name: "Edit YAML"
+        if: ${{ !github.event.act }}
+        uses: Liam-Johnston/yaml-helper@V1
         with:
           file-location: "action.yaml"
           create-if-does-not-exist: false
