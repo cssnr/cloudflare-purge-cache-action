@@ -18,12 +18,12 @@ on:
 
 env:
   ZONES: ${{ vars.ZONES || 'cssnr.com,example.com' }}
+  DRY_RUN: "true"
   FILES: ""
   PREFIX: ""
   TAGS: ""
   HOSTS: ""
   PREFIXES: ""
-  DRY_RUN: "true"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

@@ -9,7 +9,13 @@ on:
     types: [completed]
 
 env:
-  TAG: "test-tag"
+  ZONES: ${{ vars.ZONES || 'cssnr.com,example.com' }}
+  DRY_RUN: "true"
+  FILES: ""
+  PREFIX: ""
+  TAGS: ""
+  HOSTS: ""
+  PREFIXES: ""
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -36,8 +42,13 @@ jobs:
         id: test
         with:
           token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          zones: cssnr.com,example.com
-          dry_run: true
+          domains: ${{ env.ZONES }} # DO NOT USE 'domains' use 'zones' instead...
+          dry_run: ${{ env.DRY_RUN }}
+          files: ${{ env.FILES }}
+          prefix: ${{ env.PREFIX }}
+          tags: ${{ env.TAGS }}
+          hosts: ${{ env.HOSTS }}
+          prefixes: ${{ env.PREFIXES }}
 
       - name: "Verify Outputs"
         run: |

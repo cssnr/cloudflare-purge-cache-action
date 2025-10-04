@@ -42,18 +42,18 @@ For more details see: [action.yaml](action.yaml) and [src/main.py](src/main.py).
 
 ## Inputs
 
-| Input    | Default    | Description&nbsp;of&nbsp;the&nbsp;Input&nbsp;Value           |
-| :------- | :--------- | :----------------------------------------------------------- |
-| token    | _Required_ | Cloudflare API Token [⤵️](#token)                            |
-| zones    | _Required_ | Zone Names to Purge [⤵️](#zones)                             |
-| files    | -          | Files to Purge [⤵️](#files)                                  |
-| prefix   | -          | Prefix Prepended to Files [⤵️](#prefix)                      |
-| tags     | -          | Tags to Purge (Enterprise only) [⤵️](#tagshostsprefixes)     |
-| hosts    | -          | Hosts to Purge (Enterprise only) [⤵️](#tagshostsprefixes)    |
-| prefixes | -          | Prefixes to Purge (Enterprise only) [⤵️](#tagshostsprefixes) |
-| fail     | `all`      | Fail Mode: [`all`, `any`, `none`] [⤵️](#fail)                |
-| dry_run  | `false`    | Run Without Purging [⤵️](#dry_run)                           |
-| summary  | `true`     | Add Summary to Job [⤵️](#summary)                            |
+| Input     | Default    | Short&nbsp;Description&nbsp;of&nbsp;the&nbsp;Input&nbsp;Value |
+| :-------- | :--------- | :------------------------------------------------------------ |
+| **token** | _Required_ | Cloudflare API Token [⤵️](#token)                             |
+| **zones** | _Required_ | Zone Names to Purge [⤵️](#zones)                              |
+| files     | -          | Files to Purge [⤵️](#files)                                   |
+| prefix    | -          | Prefix Prepended to Files [⤵️](#prefix)                       |
+| tags      | -          | Tags to Purge (Enterprise only) [⤵️](#tagshostsprefixes)      |
+| hosts     | -          | Hosts to Purge (Enterprise only) [⤵️](#tagshostsprefixes)     |
+| prefixes  | -          | Prefixes to Purge (Enterprise only) [⤵️](#tagshostsprefixes)  |
+| fail      | `all`      | Fail Mode: [`all`, `any`, `none`] [⤵️](#fail)                 |
+| dry_run   | `false`    | Run Without Purging [⤵️](#dry_run)                            |
+| summary   | `true`     | Add Summary to Job [⤵️](#summary)                             |
 
 ### token
 
@@ -62,6 +62,20 @@ You need a [Cloudflare Token](https://developers.cloudflare.com/fundamentals/api
 ### zones
 
 CSV or Newline Delimited list of zone names to purge.
+
+<details><summary>View Examples</summary>
+
+```yaml
+zones: cssnr.com,example.com
+```
+
+```yaml
+zones: |
+  cssnr.com
+  example.com
+```
+
+</details>
 
 ### files
 
@@ -121,6 +135,31 @@ dry_run: true
 
 </details>
 
+View the [Examples](#examples) for more details.
+
+## Outputs
+
+| Output  | Output&nbsp;Description |
+| :------ | :---------------------- |
+| success | Successful Zones, CSV   |
+| failed  | Failed Zones, CSV       |
+
+```yaml
+- name: 'Purge Cache Action'
+  id: purge
+  uses: cssnr/cloudflare-purge-cache-action@v2
+  with:
+    token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+    zones: cssnr.com,example.com
+
+- name: 'Echo Output'
+  run: |
+    echo "success: '${{ steps.purge.outputs.success }}'"
+    echo "failed: '${{ steps.purge.outputs.failed }}'"
+```
+
+## Examples
+
 With minimal inputs, this will **purge everything**:
 
 ```yaml
@@ -155,28 +194,7 @@ With all inputs:
     dry_run: false
 ```
 
-## Outputs
-
-| Output  | Output&nbsp;Description |
-| :------ | :---------------------- |
-| success | Successful Zones, CSV   |
-| failed  | Failed Zones, CSV       |
-
-```yaml
-- name: 'Purge Cache Action'
-  id: purge
-  uses: cssnr/cloudflare-purge-cache-action@v2
-  with:
-    token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-    zones: cssnr.com,example.com
-
-- name: 'Echo Output'
-  run: |
-    echo "success: '${{ steps.purge.outputs.success }}'"
-    echo "failed: '${{ steps.purge.outputs.failed }}'"
-```
-
-## Examples
+Workflow Example.
 
 ```yaml
 name: 'Cloudflare Purge Cache'

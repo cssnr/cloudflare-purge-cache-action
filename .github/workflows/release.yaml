@@ -18,10 +18,11 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v5
 
-      - name: "Debug event.json"
+      - name: "Debug github"
         continue-on-error: true
-        run: |
-          cat "${GITHUB_EVENT_PATH}"
+        env:
+          GITHUB_CTX: ${{ toJSON(github) }}
+        run: echo "$GITHUB_CTX"
 
       - name: "Verify Action Tag"
         run: |
@@ -81,9 +82,9 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "\n### Deleted Release Body\n\n\`\`\`text" >> $GITHUB_STEP_SUMMARY
-          echo "${{ github.event.release.body }}" >> $GITHUB_STEP_SUMMARY
-          echo "\`\`\`\n" >> $GITHUB_STEP_SUMMARY
+          echo -e "\n## Deleted Release Body\n\n\`\`\`text" >> $GITHUB_STEP_SUMMARY
+          echo -e "${{ github.event.release.body }}" >> $GITHUB_STEP_SUMMARY
+          echo -e "\`\`\`\n" >> $GITHUB_STEP_SUMMARY
           echo "Deleting Release and Tag: ${{ github.ref_name }}"
           gh release delete ${{ github.ref_name }} --cleanup-tag
 
