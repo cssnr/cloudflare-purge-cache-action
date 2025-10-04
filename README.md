@@ -32,6 +32,14 @@ Purge Cloudflare cache for a zone or list of zones with optional filters includi
 
 For more details see: [action.yaml](action.yaml) and [src/main.py](src/main.py).
 
+```yaml
+- name: 'Purge Cache Action'
+  uses: cssnr/cloudflare-purge-cache-action@v2
+  with:
+    token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+    zones: cssnr.com,example.com
+```
+
 ## Inputs
 
 | Input    | Default    | Description&nbsp;of&nbsp;the&nbsp;Input&nbsp;Value           |

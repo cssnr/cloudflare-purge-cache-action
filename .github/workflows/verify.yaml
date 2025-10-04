@@ -1,0 +1,59 @@
+name: "Verify"
+
+on:
+  workflow_dispatch:
+  #schedule:
+  #  - cron: "18 18 * * 1,3,5"
+  workflow_run:
+    workflows: ["Release"]
+    types: [completed]
+
+env:
+  TAG: "test-tag"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    name: "Verify"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: "Debug Event"
+        if: ${{ !github.event.act }}
+        continue-on-error: true
+        run: |
+          cat "${GITHUB_EVENT_PATH}"
+
+      - name: "Test Published Action"
+        uses: cssnr/cloudflare-purge-cache-action@v2
+        id: test
+        with:
+          token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          zones: cssnr.com,example.com
+          dry_run: true
+
+      - name: "Verify Outputs"
+        run: |
+          echo "success: '${{ steps.test.outputs.success }}'"
+          if [ "${{ steps.test.outputs.success }}" != "cssnr.com" ];then
+            echo "Output Verification Failed: success"
+            exit 1
+          fi
+          echo "failed: '${{ steps.test.outputs.failed }}'"
+          if [ "${{ steps.test.outputs.failed }}" != "example.com" ];then
+            echo "Output Verification Failed: failed"
+            exit 1
+          fi
+
+      - name: "Schedule Failure Notification"
+        if: ${{ failure() && github.event_name != 'workflow_dispatch' }}
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
