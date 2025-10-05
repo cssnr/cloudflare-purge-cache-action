@@ -39,6 +39,6 @@ To run actions locally you need to install act: https://nektosact.com/installati
 The test updates the [action.yaml](action.yaml) to use the [Dockerfile](Dockerfile).
 This ensures the test will always use your local changes.
 
-To test the docker image, run: [build.sh](build.sh)
+To test the docker image, run: [build.sh](build.sh) `--env ZONES=example.com`
 
 To see all available jobs run: `act -l`

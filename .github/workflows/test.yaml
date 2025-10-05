@@ -18,12 +18,12 @@ on:
 
 env:
   ZONES: ${{ vars.ZONES || 'cssnr.com,example.com' }}
+  DRY_RUN: "true"
   FILES: ""
   PREFIX: ""
   TAGS: ""
   HOSTS: ""
   PREFIXES: ""
-  DRY_RUN: "true"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -42,11 +42,18 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v5
 
-      - name: "Debug Event"
+      #- name: "Debug Event"
+      #  if: ${{ !github.event.act }}
+      #  continue-on-error: true
+      #  run: |
+      #    cat "${GITHUB_EVENT_PATH}"
+
+      - name: "Debug CTX github"
         if: ${{ !github.event.act }}
         continue-on-error: true
-        run: |
-          cat "${GITHUB_EVENT_PATH}"
+        env:
+          GITHUB_CTX: ${{ toJSON(github) }}
+        run: echo "$GITHUB_CTX"
 
       - name: "Edit YAML"
         if: ${{ !github.event.act }}
