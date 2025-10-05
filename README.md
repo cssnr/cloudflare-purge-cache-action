@@ -30,6 +30,8 @@
 
 Purge Cloudflare cache for a zone or list of zones with optional filters including files, prefixes, tags, and hosts.
 
+Loaded with [Options](#inputs) including job summary, fail mode, dry run, custom files prefix and [Outputs](#outputs).
+
 ```yaml
 - name: 'Purge Cache Action'
   uses: cssnr/cloudflare-purge-cache-action@v2
@@ -47,10 +49,10 @@ For more details see: [action.yaml](action.yaml) and [src/main.py](src/main.py).
 | **token** | _Required_ | Cloudflare API Token [⤵️](#token)                             |
 | **zones** | _Required_ | Zone Names to Purge [⤵️](#zones)                              |
 | files     | -          | Files to Purge [⤵️](#files)                                   |
-| prefix    | -          | Prefix Prepended to Files [⤵️](#prefix)                       |
-| tags      | -          | Tags to Purge (Enterprise only) [⤵️](#tagshostsprefixes)      |
-| hosts     | -          | Hosts to Purge (Enterprise only) [⤵️](#tagshostsprefixes)     |
-| prefixes  | -          | Prefixes to Purge (Enterprise only) [⤵️](#tagshostsprefixes)  |
+| prefix    | -          | Prefix Prepended to `files` [⤵️](#prefix)                     |
+| tags      | -          | Tags to Purge (Enterprise) [⤵️](#tagshostsprefixes)           |
+| hosts     | -          | Hosts to Purge (Enterprise) [⤵️](#tagshostsprefixes)          |
+| prefixes  | -          | Prefixes to Purge (Enterprise) [⤵️](#tagshostsprefixes)       |
 | fail      | `all`      | Fail Mode: [`all`, `any`, `none`] [⤵️](#fail)                 |
 | dry_run   | `false`    | Run Without Purging [⤵️](#dry_run)                            |
 | summary   | `true`     | Add Summary to Job [⤵️](#summary)                             |
@@ -97,7 +99,7 @@ If provided, the `prefix` will be prepended to all the `files`. Useful for gener
 
 ### tags/hosts/prefixes
 
-Enterprise only. CSV or Newline Delimited list of `tags`, `hosts` or `prefixes` to purge.
+_Enterprise Only._ CSV or Newline Delimited list of `tags`, `hosts` or `prefixes` to purge.
 For more information view docs for purge by [tags](https://developers.cloudflare.com/cache/how-to/purge-cache/purge-by-tags/), [hostname](https://developers.cloudflare.com/cache/how-to/purge-cache/purge-by-hostname/), [prefix](https://developers.cloudflare.com/cache/how-to/purge-cache/purge_by_prefix/).
 
 ### fail
@@ -145,7 +147,7 @@ dry_run: true
 
 &nbsp;
 
-> View the [Examples](#examples) to see more...
+View the [Examples](#examples) to see more...
 
 ## Outputs
 
