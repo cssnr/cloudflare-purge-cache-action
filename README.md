@@ -167,8 +167,8 @@ View the [Examples](#examples) to see more...
 
 - name: 'Echo Output'
   run: |
-    echo "success: '${{ steps.purge.outputs.success }}'"
-    echo "failed: '${{ steps.purge.outputs.failed }}'"
+    echo "success: ${{ steps.purge.outputs.success }}"
+    echo "failed: ${{ steps.purge.outputs.failed }}"
 ```
 
 ## Examples
@@ -272,6 +272,8 @@ Please consider making a donation to support the development of this project
 and [additional](https://cssnr.com/) open source projects.
 
 [![Ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/cssnr)
+
+[![Actions Tools](https://raw.githubusercontent.com/smashedr/repo-images/refs/heads/master/actions/actions-tools.png)](https://actions-tools.cssnr.com/)
 
 Additionally, you can support other [GitHub Actions](https://actions.cssnr.com/) I have published:
 
