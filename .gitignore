@@ -1,9 +1,15 @@
 .idea/
 *.iml
 .vscode/
+.venv/
 venv/
 __pycache__/
+*.egg-info/
+dist/
+*.log
 *.pyc
+.coverage
+coverage.xml
 .env
 .secrets
 .vars

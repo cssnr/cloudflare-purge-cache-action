@@ -1,9 +1,9 @@
 bandit
 black
-flake8
 isort
 mypy
 pyyaml
 ruff
 yamllint
+ty
 types-requests
