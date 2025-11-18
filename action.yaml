@@ -1,6 +1,7 @@
 name: "Cloudflare Purge Zone Cache"
 description: "Purge/Flush/Clear Cloudflare domains or zones cache with optional files/tags/hosts/prefixes filters."
 author: "Shane"
+
 branding:
   icon: "cloud"
   color: "orange"
