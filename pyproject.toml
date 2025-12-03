@@ -1,3 +1,21 @@
+[dependency-groups]
+dev = [
+  "bandit",
+  "black",
+  "isort",
+  "mypy",
+  "pyyaml",
+  "ruff",
+  "ty",
+  "types-requests",
+  "yamllint",
+]
+all = [
+  { include-group = "dev" },
+  { include-group = "prod" },
+]
+prod = ["requests>=2,<3"]
+
 # Bandit
 # https://bandit.readthedocs.io/en/latest/config.html
 [tool.bandit]
@@ -26,7 +44,7 @@ skip = ["venv", ".github"]
 # Mypy
 # https://mypy.readthedocs.io/en/stable/config_file.html
 [tool.mypy]
-#ignore_missing_imports = true
+# ignore_missing_imports = true
 exclude = ["venv"]
 
 # Ruff

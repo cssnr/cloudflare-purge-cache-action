@@ -1,9 +1,0 @@
-bandit
-black
-isort
-mypy
-pyyaml
-ruff
-yamllint
-ty
-types-requests
