@@ -1,0 +1,5 @@
+paths:
+  .github/workflows/**/*.{yml,yaml}:
+    ignore:
+      - '"paths" section must be sequence node but got alias node with "" tag'
+      - 'avoid using deprecated input "domains" in action "Cloudflare Purge Zone Cache" defined at "./": Changed this input to: zones'

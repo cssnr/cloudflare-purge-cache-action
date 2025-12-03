@@ -83,11 +83,11 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo -e "\n## Deleted Release Body\n\n\`\`\`text" >> $GITHUB_STEP_SUMMARY
-          echo -e "${{ github.event.release.body }}" >> $GITHUB_STEP_SUMMARY
-          echo -e "\`\`\`\n" >> $GITHUB_STEP_SUMMARY
+          echo -e "\n## Deleted Release Body\n\n\`\`\`text" >> "$GITHUB_STEP_SUMMARY"
+          echo -e "${{ github.event.release.body }}" >> "$GITHUB_STEP_SUMMARY"
+          echo -e "\`\`\`\n" >> "$GITHUB_STEP_SUMMARY"
           echo "Deleting Release and Tag: ${{ github.ref_name }}"
-          gh release delete ${{ github.ref_name }} --cleanup-tag
+          gh release delete "${{ github.ref_name }}" --cleanup-tag
 
       - name: "Send Failure Notification"
         if: ${{ failure() }}
