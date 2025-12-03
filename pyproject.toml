@@ -6,6 +6,7 @@ dev = [
   "mypy",
   "pyyaml",
   "ruff",
+  "tombi",
   "ty",
   "types-requests",
   "yamllint",
