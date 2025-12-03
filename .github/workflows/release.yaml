@@ -39,12 +39,17 @@ jobs:
         continue-on-error: true
         uses: smashedr/update-release-notes-action@master
         with:
-          tags: ${{ steps.tags.outputs.tags }}
-          location: tail
-          type: "actions"
+          location: "tail"
+          actions: |
+            tags: ${{ steps.tags.outputs.tags }}
+
+      #- name: "Package Changelog Action"
+      #  continue-on-error: true
+      #  uses: cssnr/package-changelog-action@latest
 
       - name: "Send Failure Notification"
         if: ${{ failure() }}
         uses: sarisia/actions-status-discord@b8381b25576cb341b2af39926ab42c5056cc44ed # v1.15.5
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          description: ${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}
