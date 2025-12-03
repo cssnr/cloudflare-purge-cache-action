@@ -11,6 +11,7 @@ LABEL org.opencontainers.image.authors="smashedr"
 #COPY --from=python /usr/local/bin/ /usr/local/bin/
 
 COPY pyproject.toml /
+# hadolint ignore=DL3013
 RUN python -m pip install --no-cache-dir --group prod
 
 COPY src /src
